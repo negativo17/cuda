@@ -1,0 +1,9 @@
+cudaroot=/usr
+libdir=${cudaroot}/lib64
+includedir=${cudaroot}/include
+
+Name: nvToolsExt
+Description: NVIDIA Tools Extension
+Version: CUDA_VERSION
+Libs: -L${libdir} -lnvToolsExt
+Cflags: -I${includedir} 

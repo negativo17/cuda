@@ -1,0 +1,9 @@
+cudaroot=/usr
+libdir=${cudaroot}/lib64
+includedir=${cudaroot}/include
+
+Name: cufftw
+Description: CUDA Fast Fourier Transform Wide
+Version: CUDA_VERSION
+Libs: -L${libdir} -lcufftw
+Cflags: -I${includedir} 

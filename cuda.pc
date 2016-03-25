@@ -1,0 +1,9 @@
+cudaroot=/usr
+libdir=${cudaroot}/lib64
+includedir=${cudaroot}/include
+
+Name: cuda
+Description: CUDA Driver Library
+Version: CUDA_VERSION
+Libs: -L${libdir} -lcuda
+Cflags: -I${includedir} 

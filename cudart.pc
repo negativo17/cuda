@@ -1,0 +1,9 @@
+cudaroot=/usr
+libdir=${cudaroot}/lib64
+includedir=${cudaroot}/include
+
+Name: cudart
+Description: CUDA Runtime Library
+Version: CUDA_VERSION
+Libs: -L${libdir} -lcudart
+Cflags: -I${includedir} 

@@ -1,0 +1,9 @@
+cudaroot=/usr
+libdir=${cudaroot}/lib64
+includedir=${cudaroot}/include
+
+Name: curand
+Description: CUDA Random Number Generation Library
+Version: CUDA_VERSION
+Libs: -L${libdir} -lcurand
+Cflags: -I${includedir} 

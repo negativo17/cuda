@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=NVIDIA Nsight Eclipse Edition
+GenericName=NVIDIA Nsight Eclipse Edition
+Icon=nsight
+Exec=nsight
+Keywords=cuda;gpu;nvidia;debugger;
+X-AppInstall-Keywords=cuda;gpu;nvidia;debugger;
+X-GNOME-Keywords=cuda;gpu;nvidia;debugger;
+Terminal=false
+Categories=Development;IDE;Debugger;
