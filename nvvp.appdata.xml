@@ -2,35 +2,43 @@
 <component type="desktop">
   <id>nvvp.desktop</id>
   <name>NVIDIA Visual Profiler</name>
-  <summary>Performance profiling tool for CUDA C/C++ applications.</summary>
+  <summary>Performance profiling tool for CUDA C/C++ applications</summary>
   <description>
-  <p>
-   The NVIDIA Visual Profiler is a cross-platform performance profiling tool
-   that delivers developers vital feedback for optimizing CUDA C/C++
-   applications. 
-  </p>
-  <ul>
-   <li>Focus on the information that matters</li>
-   <li>Automated performance analysis</li>
-   <li>Unified CPU and GPU Timeline</li>
-   <li>CUDA API trace</li>
-   <li>Drill down to raw data</li>
-   <li>Compare results across multiple sessions</li>
-   <li>Analyze data collected from remote systems</li>
-   <li>CUDA Dynamic Parallelism</li>
-   <li>Guided Application Analysis</li>
-   <li>Power, thermal, and clock profiling</li>
-  </p>
-</description>
-  <keywords/>
+    <p>
+      The NVIDIA Visual Profiler is a cross-platform performance profiling tool that delivers developers vital feedback for optimizing CUDA C/C++ applications.
+    </p>
+    <p>
+      First introduced in 2008, Visual Profiler supports all 350 million+ CUDA capable NVIDIA GPUs shipped since 2006 on Linux, Mac OS X, and Windows. The NVIDIA Visual Profiler is available is part of the CUDA Toolkit.
+    </p>
+    <ul>
+      <li>Focus on the information that matters</li>
+      <li>Automated performance analysis</li>
+      <li>Unified CPU and GPU Timeline</li>
+      <li>CUDA API tracing</li>
+      <li>Drill down to raw data</li>
+      <li>Compare results across multiple sessions</li>
+      <li>Analyze data collected from remote systems</li>
+      <li>CUDA Dynamic Parallelism</li>
+      <li>Guided Application Analysis</li>
+      <li>Power, thermal, and clock profiling</li>
+    </ul>
+  </description>
+  <translation/>
+  <keywords>
+    <keyword>NVIDIA</keyword>
+    <keyword>CUDA</keyword>
+    <keyword>Profiling</keyword>
+  </keywords>
   <url type="homepage">http://www.nvidia.com/</url>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>LicenseRef-proprietary:NVIDIA</project_license>
   <developer_name>NVIDIA Corporation</developer_name>
-  <!-- screenshots>
-    <screenshot type="default">
+  <update_contact>negativo17@gmail.com</update_contact>
+  <screenshots>
+    <screenshot/>
+    <!-- screenshot type="default">
       <caption>Main screen after installation</caption>
       <image height="630" width="1120">XXX: http://www.my-screenshot.png</image>
-    </screenshot>
-  </screenshots -->
+    </screenshot -->
+  </screenshots>
 </component>

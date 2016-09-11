@@ -4,31 +4,37 @@
   <name>NVIDIA Nsight Eclipse Edition</name>
   <summary>All-in-one IDE to edit, build, debug and profile CUDA-C applications</summary>
   <description>
-
-  <p>
-   NVIDIA® Nsight™ is the ultimate development platform for heterogeneous
-   computing. Work with powerful debugging and profiling tools that enable you
-   to fully optimize the performance of the CPU and GPU. Not only do these
-   feature-rich tools optimize performance, they help you gain a better
-   understanding of your code - identify and analyze bottlenecks and observe the
-   behavior of all system activities.
-  </p>
-  <p>
-   NVIDIA® Nsight™ Eclipse Edition is a full-featured IDE powered by the Eclipse
-   platform that provides an all-in-one integrated environment to edit, build,
-   debug and profile CUDA-C applications. Nsight Eclipse Edition supports a rich
-   set of commercial and free plugins.
-  </p>
-</description>
-  <keywords/>
+    <p>
+      NVIDIA® Nsight™ is the ultimate development platform for heterogeneous
+      computing. Work with powerful debugging and profiling tools that enable you
+      to fully optimize the performance of the CPU and GPU. Not only do these
+      feature-rich tools optimize performance, they help you gain a better
+      understanding of your code - identify and analyze bottlenecks and observe the
+      behavior of all system activities.
+    </p>
+    <p>
+      NVIDIA® Nsight™ Eclipse Edition is a full-featured IDE powered by the Eclipse
+      platform that provides an all-in-one integrated environment to edit, build,
+      debug and profile CUDA-C applications. Nsight Eclipse Edition supports a rich
+      set of commercial and free plugins.
+    </p>
+  </description>
+  <translation/>
+  <keywords>
+    <keyword>NVIDIA</keyword>
+    <keyword>CUDA</keyword>
+    <keyword>IDE</keyword>
+  </keywords>
   <url type="homepage">http://www.nvidia.com/</url>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>LicenseRef-proprietary:NVIDIA</project_license>
   <developer_name>NVIDIA Corporation</developer_name>
-  <!-- screenshots>
-    <screenshot type="default">
+  <update_contact>negativo17@gmail.com</update_contact>
+  <screenshots>
+    <screenshot/>
+    <!-- screenshot type="default">
       <caption>Main screen after installation</caption>
       <image height="630" width="1120">XXX: http://www.my-screenshot.png</image>
-    </screenshot>
-  </screenshots -->
+    </screenshot -->
+  </screenshots>
 </component>
