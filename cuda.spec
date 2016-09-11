@@ -39,6 +39,7 @@ Source31:       npps.pc
 Source32:       nvrtc.pc
 Source33:       nvToolsExt.pc
 
+BuildRequires:  ImageMagick
 BuildRequires:  desktop-file-utils
 # For RUNPATH removal
 BuildRequires:  chrpath
@@ -286,16 +287,17 @@ mv extras/CUPTI/sample samples/CUPTI
 # Java stuff
 sed -i -e '/^-vm/d' -e '/jre\/bin\/java/d' libnsight/nsight.ini libnvvp/nvvp.ini
 
-install -m 644 -p libnsight/icon.xpm %{buildroot}%{_datadir}/pixmaps/nsight.xpm
-install -m 644 -p libnvvp/icon.xpm %{buildroot}%{_datadir}/pixmaps/nvvp.xpm
-rm -f libnsight/icon.xpm libnvvp/icon.xpm
+# Convert icons for appstream
+convert libnsight/icon.xpm nsight.png
+convert libnvvp/icon.xpm nvvp.png
 
+# Install Java GUI programs
+install -m 644 -p nsight.png %{buildroot}%{_datadir}/pixmaps/nsight.png
+install -m 644 -p nvvp.png %{buildroot}%{_datadir}/pixmaps/nvvp.png
 cp -fr libnsight %{buildroot}%{_libdir}/nsight
 cp -fr libnvvp %{buildroot}%{_libdir}/nvvp
-
 ln -sf %{_libdir}/nsight/nsight %{buildroot}%{_bindir}/
 ln -sf %{_libdir}/nvvp/nvvp %{buildroot}%{_bindir}/
-
 desktop-file-install --dir %{buildroot}%{_datadir}/applications/ %{SOURCE5} %{SOURCE7}
 
 # Only Fedora and RHEL 7+ desktop-file-validate binaries can check multiple
@@ -427,7 +429,7 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_datadir}/appdata/nsight.appdata.xml
 %endif
 %{_datadir}/applications/nsight.desktop
-%{_datadir}/pixmaps/nsight.xpm
+%{_datadir}/pixmaps/nsight.png
 %{_libdir}/nsight
 %{_mandir}/man1/nsight.*
 
@@ -438,13 +440,14 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_datadir}/appdata/nvvp.appdata.xml
 %endif
 %{_datadir}/applications/nvvp.desktop
-%{_datadir}/pixmaps/nvvp.xpm
+%{_datadir}/pixmaps/nvvp.png
 %{_mandir}/man1/nvvp.*
 %{_libdir}/nvvp
 
 %changelog
 * Sun Sep 11 2016 Simone Caronni <negativo17@gmail.com> - 1:7.5.18-5
-- Add AppStream metadatai for Fedora 25+.
+- Convert Java GUI programs icons to png for AppStream metadata.
+- Add AppStream metadata for Fedora 25+.
 
 * Thu Mar 24 2016 Simone Caronni <negativo17@gmail.com> - 1:7.5.18-4
 - Streamline pkg-config files versioning.

@@ -30,11 +30,4 @@
   <project_license>LicenseRef-proprietary:NVIDIA</project_license>
   <developer_name>NVIDIA Corporation</developer_name>
   <update_contact>negativo17@gmail.com</update_contact>
-  <screenshots>
-    <screenshot/>
-    <!-- screenshot type="default">
-      <caption>Main screen after installation</caption>
-      <image height="630" width="1120">XXX: http://www.my-screenshot.png</image>
-    </screenshot -->
-  </screenshots>
 </component>
