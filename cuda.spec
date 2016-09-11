@@ -5,7 +5,7 @@
 
 Name:           cuda
 Version:        7.5.18
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -19,8 +19,10 @@ Source1:        %{name}-generate-tarballs.sh
 Source3:        %{name}.sh
 Source4:        %{name}.csh
 Source5:        nsight.desktop
-Source6:        nvvp.desktop
-Source7:        http://docs.nvidia.com/cuda/pdf/CUDA_Toolkit_Release_Notes.pdf
+Source6:        nsight.appdata.xml
+Source7:        nvvp.desktop
+Source8:        nvvp.appdata.xml
+Source9:        http://docs.nvidia.com/cuda/pdf/CUDA_Toolkit_Release_Notes.pdf
 
 Source20:       cublas.pc
 Source21:       cuda.pc
@@ -253,7 +255,7 @@ mv %{buildroot}%{_mandir}/man3/deprecated.3.gz \
 # Docs
 mv extras/CUPTI/Readme.txt extras/CUPTI/Readme-CUPTI.txt
 mv extras/Debugger/Readme.txt extras/Debugger/Readme-Debugger.txt
-cp %{SOURCE7} .
+cp %{SOURCE9} .
 
 # Headers
 cp -fr src %{buildroot}%{_includedir}/%{name}/fortran/
@@ -294,13 +296,18 @@ cp -fr libnvvp %{buildroot}%{_libdir}/nvvp
 ln -sf %{_libdir}/nsight/nsight %{buildroot}%{_bindir}/
 ln -sf %{_libdir}/nvvp/nvvp %{buildroot}%{_bindir}/
 
-desktop-file-install --dir %{buildroot}%{_datadir}/applications/ %{SOURCE5} %{SOURCE6}
+desktop-file-install --dir %{buildroot}%{_datadir}/applications/ %{SOURCE5} %{SOURCE7}
 
 # Only Fedora and RHEL 7+ desktop-file-validate binaries can check multiple
 # desktop files at the same time
 desktop-file-validate %{buildroot}%{_datadir}/applications/nsight.desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/nvvp.desktop
 
+%if 0%{?fedora} >= 25
+# install AppData and add modalias provides
+mkdir -p %{buildroot}%{_datadir}/appdata
+install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
+%endif
 
 %post -p /sbin/ldconfig
 
@@ -416,20 +423,29 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/nvvp.desktop
 
 %files nsight
 %{_bindir}/nsight
-%{_libdir}/nsight
+%if 0%{?fedora} >= 25
+%{_datadir}/appdata/nsight.appdata.xml
+%endif
 %{_datadir}/applications/nsight.desktop
 %{_datadir}/pixmaps/nsight.xpm
+%{_libdir}/nsight
 %{_mandir}/man1/nsight.*
 
 %files nvvp
 %{_bindir}/computeprof
 %{_bindir}/nvvp
-%{_libdir}/nvvp
+%if 0%{?fedora} >= 25
+%{_datadir}/appdata/nvvp.appdata.xml
+%endif
 %{_datadir}/applications/nvvp.desktop
 %{_datadir}/pixmaps/nvvp.xpm
 %{_mandir}/man1/nvvp.*
+%{_libdir}/nvvp
 
 %changelog
+* Sun Sep 11 2016 Simone Caronni <negativo17@gmail.com> - 1:7.5.18-5
+- Add AppStream metadatai for Fedora 25+.
+
 * Thu Mar 24 2016 Simone Caronni <negativo17@gmail.com> - 1:7.5.18-4
 - Streamline pkg-config files versioning.
 - Fix cuFFT library versions.
