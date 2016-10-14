@@ -1,0 +1,9 @@
+cudaroot=/usr
+libdir=${cudaroot}/lib64
+includedir=${cudaroot}/include
+
+Name: nvgraph
+Description: NVIDIA Accelerated Graph Analytics
+Version: CUDA_VERSION
+Libs: -L${libdir} -lnvgraph
+Cflags: -I${includedir} 

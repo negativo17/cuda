@@ -1,11 +1,13 @@
 %global         debug_package %{nil}
 #global         __strip /bin/true
+%global         cuda_version 8.0
+%global         major_package_version 8-0
 
 # Todo: filter libunixfile_1_0_0.so from cuda-nsight.
 
 Name:           cuda
-Version:        7.5.18
-Release:        5%{?dist}
+Version:        %{cuda_version}.44
+Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -15,6 +17,7 @@ ExclusiveArch:  %{ix86} x86_64
 # See Source1 for tarball generation - saves ~400Mb.
 Source0:        %{name}-%{version}-x86_64.tar.xz
 Source1:        %{name}-generate-tarballs.sh
+Source2:        http://http.download.nvidia.com/cuda-toolkit/%{version}/cuda-gdb-%{version}.src.tar.gz
 
 Source3:        %{name}.sh
 Source4:        %{name}.csh
@@ -22,7 +25,6 @@ Source5:        nsight.desktop
 Source6:        nsight.appdata.xml
 Source7:        nvvp.desktop
 Source8:        nvvp.appdata.xml
-Source9:        http://docs.nvidia.com/cuda/pdf/CUDA_Toolkit_Release_Notes.pdf
 
 Source20:       cublas.pc
 Source21:       cuda.pc
@@ -36,8 +38,10 @@ Source28:       cusparse.pc
 Source29:       nppc.pc
 Source30:       nppi.pc
 Source31:       npps.pc
-Source32:       nvrtc.pc
-Source33:       nvToolsExt.pc
+Source32:       nvgraph.pc
+Source33:       nvml.pc
+Source34:       nvrtc.pc
+Source35:       nvToolsExt.pc
 
 BuildRequires:  ImageMagick
 BuildRequires:  desktop-file-utils
@@ -51,12 +55,12 @@ BuildRequires:  prelink
 %endif
 
 Requires:       %{name}-libs%{?_isa} = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-7-5 = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-core-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-core-7-5 = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-minimal-build-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-minimal-build-7-5 = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-core-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-core-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-minimal-build-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-minimal-build-%{major_package_version} = %{?epoch}:%{version}-%{release}
 
 %description
 CUDA is a parallel computing platform and programming model that enables
@@ -68,8 +72,9 @@ Summary:        Compute Unified Device Architecture command-line tools
 Requires:       %{name} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-devel = %{?epoch}:%{version}-%{release}
 Requires:       expat >= 1.95
-Obsoletes:      %{name}-command-line-tools-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-command-line-tools-7-5 = %{?epoch}:%{version}-%{release}
+Requires:       gdb
+Obsoletes:      %{name}-command-line-tools-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-command-line-tools-%{major_package_version} = %{?epoch}:%{version}-%{release}
 
 %description cli-tools
 Contains the command line tools to debug and profile CUDA applications.
@@ -77,12 +82,14 @@ Contains the command line tools to debug and profile CUDA applications.
 %package libs
 Summary:        Compute Unified Device Architecture native run-time library
 Requires(post): ldconfig
-Obsoletes:      %{name}-license-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-license-7-5 = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-cudart-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-cudart-7-5 = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-core-libs-7-5 < %{?epoch}:%{version}
-Provides:       %{name}-core-libs-7-5 = %{?epoch}:%{version}
+Obsoletes:      %{name}-driver-dev-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-driver-dev-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-license-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-license-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-cudart-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-cudart-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-core-libs-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-core-libs-%{major_package_version} = %{?epoch}:%{version}
 
 %description libs
 Contains the CUDA run-time library required to run CUDA application natively.
@@ -90,24 +97,26 @@ Contains the CUDA run-time library required to run CUDA application natively.
 %package extra-libs
 Summary:        Compute Unified Device Architecture native libraries
 Requires(post): ldconfig
-Obsoletes:      %{name}-cublas-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-cublas-7-5 = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-cudart-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-cudart-7-5 = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-cufft-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-cufft-7-5 = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-curand-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-curand-7-5 = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-cusolver-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-cusolver-7-5 = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-cusparse-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-cusparse-7-5 = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-npp-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-npp-7-5 = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-nvrtc-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-nvrtc-7-5 = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-runtime-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-runtime-7-5 = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-cublas-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-cublas-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-cudart-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-cudart-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-cufft-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-cufft-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-curand-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-curand-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-cusolver-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-cusolver-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-cusparse-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-cusparse-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-npp-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-npp-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-nvgraph-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-nvgraph-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-nvrtc-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-nvrtc-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-runtime-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-runtime-%{major_package_version} = %{?epoch}:%{version}-%{release}
 
 %description extra-libs
 Native CUDA platform libraries (CUBLAS, CUFFT, CURAND, CUSPARSE, NPP, Thrust).
@@ -117,26 +126,35 @@ Summary:        Development files for %{name}
 Requires:       %{name}%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-libs%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-extra-libs%{_isa} = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-headers-7-5 < %{?epoch}:%{version}
-Provides:       %{name}-headers-7-5 = %{?epoch}:%{version}
-Obsoletes:      %{name}-cublas-dev-7-5 < %{?epoch}:%{version}
-Provides:       %{name}-cublas-dev-7-5 = %{?epoch}:%{version}
-Obsoletes:      %{name}-cudart-dev-7-5 < %{?epoch}:%{version}
-Provides:       %{name}-cudart-dev-7-5 = %{?epoch}:%{version}
-Obsoletes:      %{name}-cufft-dev-7-5 < %{?epoch}:%{version}
-Provides:       %{name}-cufft-dev-7-5 = %{?epoch}:%{version}
-Obsoletes:      %{name}-curand-dev-7-5 < %{?epoch}:%{version}
-Provides:       %{name}-curand-dev-7-5 = %{?epoch}:%{version}
-Obsoletes:      %{name}-cusolver-dev-7-5 < %{?epoch}:%{version}
-Provides:       %{name}-cusolver-dev-7-5 = %{?epoch}:%{version}
-Obsoletes:      %{name}-cusparse-dev-7-5 < %{?epoch}:%{version}
-Provides:       %{name}-cusparse-dev-7-5 = %{?epoch}:%{version}
-Obsoletes:      %{name}-npp-dev-7-5 < %{?epoch}:%{version}
-Provides:       %{name}-npp-dev-7-5 = %{?epoch}:%{version}
-Obsoletes:      %{name}-nvrtc-dev-7-5 < %{?epoch}:%{version}
-Provides:       %{name}-nvrtc-dev-7-5 = %{?epoch}:%{version}
-Obsoletes:      %{name}-toolkit-7-5 < %{?epoch}:%{version}
-Provides:       %{name}-toolkit-7-5 = %{?epoch}:%{version}
+Requires:       nvidia-driver-NVML%{_isa}
+Obsoletes:      nvidia-driver-NVML-devel < %{?epoch}:%{version}
+Provides:       nvidia-driver-NVML-devel = %{?epoch}:%{version}
+Obsoletes:      %{name}-headers-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-headers-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-cublas-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-cublas-dev-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-cudart-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-cudart-dev-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-cufft-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-cufft-dev-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-curand-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-curand-dev-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-cusolver-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-cusolver-dev-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-cusparse-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-cusparse-dev-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-misc-headers-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-misc-headers-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-npp-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-npp-dev-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-nvgraph-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-nvgraph-dev-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-nvml-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-nvml-dev-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-nvrtc-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-nvrtc-dev-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-toolkit-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-toolkit-%{major_package_version} = %{?epoch}:%{version}
 
 %description devel
 This package provides the development files of the %{name} package.
@@ -151,17 +169,20 @@ This package provides static archives for normal CUDA libraries.
 %package docs
 Summary:        Compute Unified Device Architecture toolkit documentation
 BuildArch:      noarch
-Obsoletes:      %{name}-documentation-7-5 < %{?epoch}:%{version}
-Provides:       %{name}-documentation-7-5 = %{?epoch}:%{version}
+Obsoletes:      %{name}-documentation-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-documentation-%{major_package_version} = %{?epoch}:%{version}
 
 %description docs
 Contains all guides and library documentation for CUDA.
 
 %package samples
 Summary:        Compute Unified Device Architecture toolkit samples
-BuildArch:      noarch
-Obsoletes:      %{name}-samples-7-5 < %{?epoch}:%{version}
-Provides:       %{name}-samples-7-5 = %{?epoch}:%{version}
+Obsoletes:      %{name}-demo-suite-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-demo-suite-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-samples-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-samples-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-samples < %{?epoch}:%{version}
+Provides:       %{name}-samples = %{?epoch}:%{version}
 Requires:       cuda-devel = %{?epoch}:%{version}
 Requires:       gcc
 Requires:       freeglut-devel
@@ -177,8 +198,8 @@ Contains an extensive set of example CUDA programs.
 %package nsight
 Summary:        NVIDIA Nsight Eclipse Edition
 Requires:       %{name} = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-visual-tools-7-5 < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-visual-tools-7-5 = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-visual-tools-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-visual-tools-%{major_package_version} = %{?epoch}:%{version}-%{release}
 
 %description nsight
 NVIDIA Nsight Eclipse Edition is a full-featured IDE powered by the Eclipse
@@ -202,11 +223,11 @@ delivers developers vital feedback for optimizing CUDA C/C++ applications.
 execstack -c nvvm/bin/cicc nvvm/%{_lib}/*
 
 # Remove RUNPATH on binaries
-#chrpath -d {libnsight,libnvvp}/libcairo-swt.so
 chrpath -d nvvm/bin/cicc
 
 # RPMlint issues
 find . -name "*.h" -exec chmod 644 {} \;
+find . -name "*.hpp" -exec chmod 644 {} \;
 find . -name "*.bat" -delete
 find . -size 0 -delete
 
@@ -217,11 +238,11 @@ sed -i -e '/#error -- unsupported GNU version!/d' include/host_config.h
 find samples -name "Makefile" -exec sed -i -e 's|"/usr"|/usr|g' {} \;
 
 # Remove unused stuff
-rm -f doc/man/man1/cuda-install-samples-7.5.sh.1
-rm -f samples/uninstall_cuda_samples_7.5.pl
+rm -f doc/man/man1/cuda-install-samples-%{major_package_version}.sh.1
+rm -f samples/uninstall_cuda_samples_%{cuda_version}.pl
 rm -f samples/.uninstall_manifest_do_not_delete.txt
-rm -f bin/uninstall_cuda_toolkit_7.5.pl
-rm -f bin/cuda-install-samples-7.5.sh
+rm -f bin/uninstall_cuda_toolkit_%{cuda_version}.pl
+rm -f bin/cuda-install-samples-%{major_package_version}.sh
 rm -f bin/.uninstall_manifest_do_not_delete.txt
 
 %build
@@ -256,7 +277,9 @@ mv %{buildroot}%{_mandir}/man3/deprecated.3.gz \
 # Docs
 mv extras/CUPTI/Readme.txt extras/CUPTI/Readme-CUPTI.txt
 mv extras/Debugger/Readme.txt extras/Debugger/Readme-Debugger.txt
-cp %{SOURCE9} .
+
+# Base license file
+mv samples/EULA.txt .
 
 # Headers
 cp -fr src %{buildroot}%{_includedir}/%{name}/fortran/
@@ -268,21 +291,28 @@ cp -fr extras/Debugger/include %{buildroot}%{_includedir}/%{name}/Debugger/
 cp -fr %{_lib}/* nvvm/%{_lib}/* %{buildroot}%{_libdir}/
 cp -fr extras/CUPTI/%{_lib}/* %{buildroot}%{_libdir}/
 cp -fr nvvm/libdevice/* %{buildroot}%{_datadir}/%{name}/
-
-# Fix duplicate libraries
 rm -f %{buildroot}%{_libdir}/libOpenCL.so*
+ln -sf libnvidia-ml.so.1 %{buildroot}%{_libdir}/libnvidia-ml.so
 
 # pkg-config files
 install -pm 644 %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24} \
     %{SOURCE25} %{SOURCE26} %{SOURCE27} %{SOURCE28} %{SOURCE29} %{SOURCE30} \
-    %{SOURCE31} %{SOURCE32} %{SOURCE33} %{buildroot}/%{_libdir}/pkgconfig
-sed -i -e 's/CUDA_VERSION/7.5/g' %{buildroot}/%{_libdir}/pkgconfig/*.pc
+    %{SOURCE31} %{SOURCE32} %{SOURCE33} %{SOURCE34} %{SOURCE35} \
+    %{buildroot}/%{_libdir}/pkgconfig
+sed -i -e 's/CUDA_VERSION/%{cuda_version}/g' %{buildroot}/%{_libdir}/pkgconfig/*.pc
 
 # Binaries
 cp -fr bin/* nvvm/bin/* %{buildroot}%{_bindir}/
 
+# GDB stuff
+cp -fr share/gdb %{buildroot}%{_datadir}/gdb
+
 # Additional samples
-mv extras/CUPTI/sample samples/CUPTI
+cp -fr samples %{buildroot}%{_datadir}/%{name}/
+cp -fr extras/CUPTI/sample %{buildroot}%{_datadir}/%{name}/samples/CUPTI
+mv nvml/example %{buildroot}%{_datadir}/%{name}/samples/nvml
+mv nvvm/libnvvm-samples %{buildroot}%{_datadir}/%{name}/samples/nvvm
+mv extras/demo_suite %{buildroot}%{_datadir}/%{name}/
 
 # Java stuff
 sed -i -e '/^-vm/d' -e '/jre\/bin\/java/d' libnsight/nsight.ini libnvvp/nvvp.ini
@@ -344,8 +374,8 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_bindir}/cudafe
 %{_bindir}/cudafe++
 %{_bindir}/cuobjdump
+%{_bindir}/gpu-library-advisor
 %{_bindir}/fatbinary
-%{_bindir}/filehash
 %{_bindir}/nvcc
 %{_bindir}/nvlink
 %{_bindir}/nvprune
@@ -364,6 +394,7 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_bindir}/cuda-memcheck
 %{_bindir}/nvdisasm
 %{_bindir}/nvprof
+%{_datadir}/gdb/*
 %{_mandir}/man1/cuda-gdb.*
 %{_mandir}/man1/cuda-gdbserver.*
 %{_mandir}/man1/cuda-memcheck.*
@@ -371,6 +402,7 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_mandir}/man1/nvprof.*
 
 %files libs
+%license EULA.txt
 %{_libdir}/libcudart.so.*
 %{_libdir}/libcuinj%{__isa_bits}.so.*
 %{_libdir}/libnvToolsExt.so.*
@@ -386,8 +418,19 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/libcusparse.so.*
 %{_libdir}/libnppc.so.*
 %{_libdir}/libnppi.so.*
+%{_libdir}/libnppial.so.*
+%{_libdir}/libnppicc.so.*
+%{_libdir}/libnppicom.so.*
+%{_libdir}/libnppidei.so.*
+%{_libdir}/libnppif.so.*
+%{_libdir}/libnppig.so.*
+%{_libdir}/libnppim.so.*
+%{_libdir}/libnppist.so.*
+%{_libdir}/libnppisu.so.*
+%{_libdir}/libnppitc.so.*
 %{_libdir}/libnpps.so.*
 %{_libdir}/libnvblas.so.*
+%{_libdir}/libnvgraph.so.*
 %{_libdir}/libnvrtc.so.*
 %{_libdir}/libnvrtc-builtins.so.*
 
@@ -414,14 +457,14 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/libnppc_static.a
 %{_libdir}/libnppi_static.a
 %{_libdir}/libnpps_static.a
+%{_libdir}/libnvgraph_static.a
 
 %files docs
 %doc doc/pdf doc/html tools/*
-%doc *.pdf
 
 %files samples
-%doc samples/*
-%doc nvvm/libnvvm-samples
+%{_datadir}/%{name}/samples
+%{_datadir}/%{name}/demo_suite
 
 %files nsight
 %{_bindir}/nsight
@@ -445,6 +488,16 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/nvvp
 
 %changelog
+* Sun Oct 02 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-1
+- Update to 8.0.44:
+  * Add additional nvgraph library and gpu-library-advisor command.
+  * Obsoletes/Provides nvidia-driver-NVML-devel in devel subpackage.
+- Make major version conditional for most of the SPEC file.
+- Move samples under %{_datadir}.
+- Add base text license (EULA) to libs subpackage.
+- Make samples package architecture dependent as it contains pre-built binaries
+  and objects. Make it obsolete the noarch one.
+
 * Sun Sep 11 2016 Simone Caronni <negativo17@gmail.com> - 1:7.5.18-5
 - Convert Java GUI programs icons to png for AppStream metadata.
 - Add AppStream metadata for Fedora 25+.
