@@ -1,0 +1,9 @@
+cudaroot=/usr
+libdir=${cudaroot}/lib64
+includedir=${cudaroot}/include
+
+Name: nppig
+Description: NVIDIA Performance Primitives - Image Processing - Geometry
+Version: CUDA_VERSION
+Libs: -L${libdir} -lnppig
+Cflags: -I${includedir}

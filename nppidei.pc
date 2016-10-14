@@ -1,0 +1,9 @@
+cudaroot=/usr
+libdir=${cudaroot}/lib64
+includedir=${cudaroot}/include
+
+Name: nppidei
+Description: NVIDIA Performance Primitives - Image Processing - DEI
+Version: CUDA_VERSION
+Libs: -L${libdir} -lnppidei
+Cflags: -I${includedir}

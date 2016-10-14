@@ -1,0 +1,9 @@
+cudaroot=/usr
+libdir=${cudaroot}/lib64
+includedir=${cudaroot}/include
+
+Name: nppim
+Description: NVIDIA Performance Primitives - Image Processing - Morphological
+Version: CUDA_VERSION
+Libs: -L${libdir} -lnppim
+Cflags: -I${includedir}

@@ -36,12 +36,21 @@ Source26:       curand.pc
 Source27:       cusolver.pc
 Source28:       cusparse.pc
 Source29:       nppc.pc
-Source30:       nppi.pc
-Source31:       npps.pc
-Source32:       nvgraph.pc
-Source33:       nvml.pc
-Source34:       nvrtc.pc
-Source35:       nvToolsExt.pc
+Source30:       nppial.pc
+Source31:       nppicc.pc
+Source32:       nppicom.pc
+Source33:       nppidei.pc
+Source34:       nppif.pc
+Source35:       nppig.pc
+Source36:       nppim.pc
+Source37:       nppi.pc
+Source38:       nppist.pc
+Source39:       nppisu.pc
+Source40:       nppitc.pc
+Source41:       npps.pc
+Source42:       nvgraph.pc
+Source43:       nvml.pc
+Source44:       nvrtc.pc
 
 BuildRequires:  ImageMagick
 BuildRequires:  desktop-file-utils
@@ -291,14 +300,16 @@ cp -fr extras/Debugger/include %{buildroot}%{_includedir}/%{name}/Debugger/
 cp -fr %{_lib}/* nvvm/%{_lib}/* %{buildroot}%{_libdir}/
 cp -fr extras/CUPTI/%{_lib}/* %{buildroot}%{_libdir}/
 cp -fr nvvm/libdevice/* %{buildroot}%{_datadir}/%{name}/
+# Libraries in the driver package
 rm -f %{buildroot}%{_libdir}/libOpenCL.so*
 ln -sf libnvidia-ml.so.1 %{buildroot}%{_libdir}/libnvidia-ml.so
 
 # pkg-config files
 install -pm 644 %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24} \
     %{SOURCE25} %{SOURCE26} %{SOURCE27} %{SOURCE28} %{SOURCE29} %{SOURCE30} \
-    %{SOURCE31} %{SOURCE32} %{SOURCE33} %{SOURCE34} %{SOURCE35} \
-    %{buildroot}/%{_libdir}/pkgconfig
+    %{SOURCE31} %{SOURCE32} %{SOURCE33} %{SOURCE34} %{SOURCE35} %{SOURCE36} \
+    %{SOURCE37} %{SOURCE38} %{SOURCE39} %{SOURCE40} %{SOURCE41} %{SOURCE42} \
+    %{SOURCE43} %{SOURCE44} %{buildroot}/%{_libdir}/pkgconfig
 sed -i -e 's/CUDA_VERSION/%{cuda_version}/g' %{buildroot}/%{_libdir}/pkgconfig/*.pc
 
 # Binaries
