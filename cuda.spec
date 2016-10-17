@@ -7,7 +7,7 @@
 
 Name:           cuda
 Version:        %{cuda_version}.44
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -51,6 +51,7 @@ Source41:       npps.pc
 Source42:       nvgraph.pc
 Source43:       nvml.pc
 Source44:       nvrtc.pc
+Source45:       nvToolsExt.pc
 
 BuildRequires:  ImageMagick
 BuildRequires:  desktop-file-utils
@@ -91,14 +92,14 @@ Contains the command line tools to debug and profile CUDA applications.
 %package libs
 Summary:        Compute Unified Device Architecture native run-time library
 Requires(post): ldconfig
+Obsoletes:      %{name}-core-libs-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-core-libs-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-cudart-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-cudart-%{major_package_version} = %{?epoch}:%{version}-%{release}
 Obsoletes:      %{name}-driver-dev-%{major_package_version} < %{?epoch}:%{version}-%{release}
 Provides:       %{name}-driver-dev-%{major_package_version} = %{?epoch}:%{version}-%{release}
 Obsoletes:      %{name}-license-%{major_package_version} < %{?epoch}:%{version}-%{release}
 Provides:       %{name}-license-%{major_package_version} = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-cudart-%{major_package_version} < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-cudart-%{major_package_version} = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-core-libs-%{major_package_version} < %{?epoch}:%{version}
-Provides:       %{name}-core-libs-%{major_package_version} = %{?epoch}:%{version}
 
 %description libs
 Contains the CUDA run-time library required to run CUDA application natively.
@@ -106,74 +107,229 @@ Contains the CUDA run-time library required to run CUDA application natively.
 %package extra-libs
 Summary:        Compute Unified Device Architecture native libraries
 Requires(post): ldconfig
-Obsoletes:      %{name}-cublas-%{major_package_version} < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-cublas-%{major_package_version} = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-cudart-%{major_package_version} < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-cudart-%{major_package_version} = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-cufft-%{major_package_version} < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-cufft-%{major_package_version} = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-curand-%{major_package_version} < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-curand-%{major_package_version} = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-cusolver-%{major_package_version} < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-cusolver-%{major_package_version} = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-cusparse-%{major_package_version} < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-cusparse-%{major_package_version} = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-npp-%{major_package_version} < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-npp-%{major_package_version} = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-nvgraph-%{major_package_version} < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-nvgraph-%{major_package_version} = %{?epoch}:%{version}-%{release}
-Obsoletes:      %{name}-nvrtc-%{major_package_version} < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-nvrtc-%{major_package_version} = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-cublas = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-cufft = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-curand = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-cusolver = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-cusparse = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-npp = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-nvgraph = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-nvrtc = %{?epoch}:%{version}-%{release}
 Obsoletes:      %{name}-runtime-%{major_package_version} < %{?epoch}:%{version}-%{release}
 Provides:       %{name}-runtime-%{major_package_version} = %{?epoch}:%{version}-%{release}
 
 %description extra-libs
-Native CUDA platform libraries (CUBLAS, CUFFT, CURAND, CUSPARSE, NPP, Thrust).
+Native CUDA platform libraries (CUBLAS, CUFFT, CURAND, CUSPARSE, Thrust).
+
+%package cublas
+Summary:        NVIDIA CUDA Basic Linear Algebra Subroutines (cuBLAS) libraries
+Requires(post): ldconfig
+Obsoletes:      %{name}-cublas-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-cublas-%{major_package_version} = %{?epoch}:%{version}-%{release}
+
+%description cublas
+The NVIDIA CUDA Basic Linear Algebra Subroutines (cuBLAS) library is a
+GPU-accelerated version of the complete standard BLAS library that delivers 6x
+to 17x faster performance than the latest MKL BLAS.
+
+%package cublas-devel
+Summary:        Development files for NVIDIA CUDA Basic Linear Algebra Subroutines (cuBLAS)
+Requires:       %{name}-cublas%{_isa} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-cublas-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-cublas-dev-%{major_package_version} = %{?epoch}:%{version}
+
+%description cublas-devel
+This package provides development files for the NVIDIA CUDA Basic Linear
+Algebra Subroutines (cuBLAS) libraries.
+
+%package cufft
+Summary:        NVIDIA CUDA Fast Fourier Transform library (cuFFT) libraries
+Requires(post): ldconfig
+Obsoletes:      %{name}-cufft-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-cufft-%{major_package_version} = %{?epoch}:%{version}-%{release}
+
+%description cufft
+The NVIDIA CUDA Fast Fourier Transform libraries (cuFFT) provide a simple
+interface for computing FFTs up to 10x faster.  By using hundreds of processor
+cores inside NVIDIA GPUs, cuFFT delivers the floating‐point performance of a
+GPU without having to develop your own custom GPU FFT implementation.
+
+%package cufft-devel
+Summary:        Development files for NVIDIA CUDA Fast Fourier Transform library (cuFFT)
+Requires:       %{name}-cufft%{_isa} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-cufft-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-cufft-dev-%{major_package_version} = %{?epoch}:%{version}
+
+%description cufft-devel
+This package provides development files for the NVIDIA CUDA Fast Fourier
+Transform library (cuFFT) libraries.
+
+%package curand
+Summary:        NVIDIA CUDA Random Number Generation library (cuRAND)
+Requires(post): ldconfig
+Obsoletes:      %{name}-curand-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-curand-%{major_package_version} = %{?epoch}:%{version}-%{release}
+
+%description curand
+The NVIDIA CUDA Random Number Generation library (cuRAND) delivers high
+performance GPU-accelerated random number generation (RNG). The cuRAND library
+delivers high quality random numbers 8x faster using hundreds of processor
+cores available in NVIDIA GPUs.
+
+%package curand-devel
+Summary:        Development files for NVIDIA CUDA Random Number Generation library (cuRAND)
+Requires:       %{name}-curand%{_isa} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-curand-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-curand-dev-%{major_package_version} = %{?epoch}:%{version}
+
+%description curand-devel
+This package provides development files for the NVIDIA CUDA Random Number
+Generation library (cuRAND).
+
+%package cusolver
+Summary:        NVIDIA cuSOLVER library
+Requires(post): ldconfig
+Obsoletes:      %{name}-cusolver-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-cusolver-%{major_package_version} = %{?epoch}:%{version}-%{release}
+
+%description cusolver
+The NVIDIA cuSOLVER library provides a collection of dense and sparse direct
+solvers which deliver significant acceleration for Computer Vision, CFD,
+Computational Chemistry, and Linear Optimization applications.
+
+%package cusolver-devel
+Summary:        Development files for NVIDIA cuSOLVER library
+Requires:       %{name}-cusolver%{_isa} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-cusolver-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-cusolver-dev-%{major_package_version} = %{?epoch}:%{version}
+
+%description cusolver-devel
+This package provides development files for the NVIDIA cuSOLVER library.
+
+%package cusparse
+Summary:        NVIDIA CUDA Sparse Matrix library (cuSPARSE) library
+Requires(post): ldconfig
+Obsoletes:      %{name}-cusparse-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-cusparse-%{major_package_version} = %{?epoch}:%{version}-%{release}
+
+%description cusparse
+The NVIDIA CUDA Sparse Matrix library (cuSPARSE) provides a collection of basic
+linear algebra subroutines used for sparse matrices that delivers up to 8x
+faster performance than the latest MKL. The cuSPARSE library is designed to be
+called from C or C++, and the latest release includes a sparse triangular
+solver.
+
+%package cusparse-devel
+Summary:        Development files for NVIDIA CUDA Sparse Matrix library (cuSPARSE) library
+Requires:       %{name}-cusparse%{_isa} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-cusparse-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-cusparse-dev-%{major_package_version} = %{?epoch}:%{version}
+
+%description cusparse-devel
+This package provides development files for the NVIDIA CUDA Sparse Matrix
+library (cuSPARSE) library.
+
+%package npp
+Summary:        NVIDIA Performance Primitives libraries
+Requires(post): ldconfig
+Obsoletes:      %{name}-npp-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-npp-%{major_package_version} = %{?epoch}:%{version}-%{release}
+
+%description npp
+The NVIDIA Performance Primitives library (NPP) is a collection of
+GPU-accelerated image, video, and signal processing functions that deliver 5x
+to 10x faster performance than comparable CPU-only implementations. Using NPP,
+developers can take advantage of over 1900 image processing and approx 600
+signal processing primitives to achieve significant improvements in application
+performance in a matter of hours.
+
+%package npp-devel
+Summary:        Development files for NVIDIA Performance Primitives
+Requires:       %{name}-npp%{_isa} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-npp-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-npp-dev-%{major_package_version} = %{?epoch}:%{version}
+
+%description npp-devel
+This package provides development files for the NVIDIA Performance Primitives
+libraries.
+
+%package nvgraph
+Summary:        NVIDIA Graph Analytics library (nvGRAPH)
+Requires(post): ldconfig
+Obsoletes:      %{name}-nvgraph-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-nvgraph-%{major_package_version} = %{?epoch}:%{version}-%{release}
+
+%description nvgraph
+The NVIDIA Graph Analytics library (nvGRAPH) comprises of parallel algorithms
+for high performance analytics on graphs with up to 2 billion edges. nvGRAPH
+makes it possible to build interactive and high throughput graph analytics
+applications.
+
+%package nvgraph-devel
+Summary:        Development files for NVIDIA Graph Analytics library (nvGRAPH)
+Requires:       %{name}-nvgraph%{_isa} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-nvgraph-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-nvgraph-dev-%{major_package_version} = %{?epoch}:%{version}
+
+%description nvgraph-devel
+This package provides development files for the NVIDIA Graph Analytics library
+(nvGRAPH).
+
+%package nvrtc
+Summary:        NVRTC runtime compilation library
+Requires(post): ldconfig
+Obsoletes:      %{name}-nvrtc-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-nvrtc-%{major_package_version} = %{?epoch}:%{version}-%{release}
+
+%description nvrtc
+NVRTC is a runtime compilation library for CUDA C++. It accepts CUDA C++ source
+code in character string form and creates handles that can be used to obtain
+the PTX. The PTX string generated by NVRTC can be loaded by cuModuleLoadData and
+cuModuleLoadDataEx, and linked with other modules by cuLinkAddData of the CUDA
+Driver API. This facility can often provide optimizations and performance not
+possible in a purely offline static compilation.
+
+%package nvrtc-devel
+Summary:        Development files for the NVRTC runtime compilation library
+Requires:       %{name}-nvrtc%{_isa} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-nvrtc-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-nvrtc-dev-%{major_package_version} = %{?epoch}:%{version}
+
+%description nvrtc-devel
+This package provides development files for the NVRTC runtime compilation
+library.
 
 %package devel
 Summary:        Development files for %{name}
 Requires:       %{name}%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-libs%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-extra-libs%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-cublas-devel%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-cufft-devel%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-curand-devel%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-cusolver-devel%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-cusparse-devel%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-npp-devel%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-nvgraph-devel%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-nvrtc-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       nvidia-driver-NVML%{_isa}
 Obsoletes:      nvidia-driver-NVML-devel < %{?epoch}:%{version}
 Provides:       nvidia-driver-NVML-devel = %{?epoch}:%{version}
 Obsoletes:      %{name}-headers-%{major_package_version} < %{?epoch}:%{version}
 Provides:       %{name}-headers-%{major_package_version} = %{?epoch}:%{version}
-Obsoletes:      %{name}-cublas-dev-%{major_package_version} < %{?epoch}:%{version}
-Provides:       %{name}-cublas-dev-%{major_package_version} = %{?epoch}:%{version}
 Obsoletes:      %{name}-cudart-dev-%{major_package_version} < %{?epoch}:%{version}
 Provides:       %{name}-cudart-dev-%{major_package_version} = %{?epoch}:%{version}
-Obsoletes:      %{name}-cufft-dev-%{major_package_version} < %{?epoch}:%{version}
-Provides:       %{name}-cufft-dev-%{major_package_version} = %{?epoch}:%{version}
-Obsoletes:      %{name}-curand-dev-%{major_package_version} < %{?epoch}:%{version}
-Provides:       %{name}-curand-dev-%{major_package_version} = %{?epoch}:%{version}
-Obsoletes:      %{name}-cusolver-dev-%{major_package_version} < %{?epoch}:%{version}
-Provides:       %{name}-cusolver-dev-%{major_package_version} = %{?epoch}:%{version}
-Obsoletes:      %{name}-cusparse-dev-%{major_package_version} < %{?epoch}:%{version}
-Provides:       %{name}-cusparse-dev-%{major_package_version} = %{?epoch}:%{version}
 Obsoletes:      %{name}-misc-headers-%{major_package_version} < %{?epoch}:%{version}
 Provides:       %{name}-misc-headers-%{major_package_version} = %{?epoch}:%{version}
-Obsoletes:      %{name}-npp-dev-%{major_package_version} < %{?epoch}:%{version}
-Provides:       %{name}-npp-dev-%{major_package_version} = %{?epoch}:%{version}
-Obsoletes:      %{name}-nvgraph-dev-%{major_package_version} < %{?epoch}:%{version}
-Provides:       %{name}-nvgraph-dev-%{major_package_version} = %{?epoch}:%{version}
 Obsoletes:      %{name}-nvml-dev-%{major_package_version} < %{?epoch}:%{version}
 Provides:       %{name}-nvml-dev-%{major_package_version} = %{?epoch}:%{version}
-Obsoletes:      %{name}-nvrtc-dev-%{major_package_version} < %{?epoch}:%{version}
-Provides:       %{name}-nvrtc-dev-%{major_package_version} = %{?epoch}:%{version}
 Obsoletes:      %{name}-toolkit-%{major_package_version} < %{?epoch}:%{version}
 Provides:       %{name}-toolkit-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      %{name}-static < %{?epoch}:%{version}
+Provides:       %{name}-static = %{?epoch}:%{version}
 
 %description devel
 This package provides the development files of the %{name} package.
-
-%package static
-Summary:        Static libraries for %{name}
-Requires:       %{name}-devel%{_isa} = %{?epoch}:%{version}-%{release}
-
-%description static
-This package provides static archives for normal CUDA libraries.
 
 %package docs
 Summary:        Compute Unified Device Architecture toolkit documentation
@@ -300,6 +456,7 @@ cp -fr extras/Debugger/include %{buildroot}%{_includedir}/%{name}/Debugger/
 cp -fr %{_lib}/* nvvm/%{_lib}/* %{buildroot}%{_libdir}/
 cp -fr extras/CUPTI/%{_lib}/* %{buildroot}%{_libdir}/
 cp -fr nvvm/libdevice/* %{buildroot}%{_datadir}/%{name}/
+
 # Libraries in the driver package
 rm -f %{buildroot}%{_libdir}/libOpenCL.so*
 ln -sf libnvidia-ml.so.1 %{buildroot}%{_libdir}/libnvidia-ml.so
@@ -309,7 +466,7 @@ install -pm 644 %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24} \
     %{SOURCE25} %{SOURCE26} %{SOURCE27} %{SOURCE28} %{SOURCE29} %{SOURCE30} \
     %{SOURCE31} %{SOURCE32} %{SOURCE33} %{SOURCE34} %{SOURCE35} %{SOURCE36} \
     %{SOURCE37} %{SOURCE38} %{SOURCE39} %{SOURCE40} %{SOURCE41} %{SOURCE42} \
-    %{SOURCE43} %{SOURCE44} %{buildroot}/%{_libdir}/pkgconfig
+    %{SOURCE43} %{SOURCE44} %{SOURCE45} %{buildroot}/%{_libdir}/pkgconfig
 sed -i -e 's/CUDA_VERSION/%{cuda_version}/g' %{buildroot}/%{_libdir}/pkgconfig/*.pc
 
 # Binaries
@@ -358,11 +515,43 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 
 %post extra-libs -p /sbin/ldconfig
 
+%post cublas -p /sbin/ldconfig
+
+%post cufft -p /sbin/ldconfig
+
+%post curand -p /sbin/ldconfig
+
+%post cusolver -p /sbin/ldconfig
+
+%post cusparse -p /sbin/ldconfig
+
+%post npp -p /sbin/ldconfig
+
+%post nvgraph -p /sbin/ldconfig
+
+%post nvrtc -p /sbin/ldconfig
+
 %postun -p /sbin/ldconfig
 
 %postun libs -p /sbin/ldconfig
 
 %postun extra-libs -p /sbin/ldconfig
+
+%postun cublas -p /sbin/ldconfig
+
+%postun cufft -p /sbin/ldconfig
+
+%postun curand -p /sbin/ldconfig
+
+%postun cusolver -p /sbin/ldconfig
+
+%postun cusparse -p /sbin/ldconfig
+
+%postun npp -p /sbin/ldconfig
+
+%postun nvgraph -p /sbin/ldconfig
+
+%postun nvrtc -p /sbin/ldconfig
 
 %post nsight
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -391,6 +580,7 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_bindir}/nvlink
 %{_bindir}/nvprune
 %{_bindir}/ptxas
+%dir %{_includedir}/%{name}
 %{_libexecdir}/%{name}/
 %{_mandir}/man1/cuda-binaries.*
 %{_mandir}/man1/cuobjdump.*
@@ -421,54 +611,212 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 
 %files extra-libs
 %{_libdir}/libcupti.so.*
+
+%files cublas
+%license EULA.txt
 %{_libdir}/libcublas.so.*
+%{_libdir}/libnvblas.so.*
+
+%files cublas-devel
+%{_includedir}/%{name}/cublas*
+%{_includedir}/%{name}/nvblas*
+%{_libdir}/libcublas_device.a
+%{_libdir}/libcublas_static.a
+%{_libdir}/libcublas.so
+%{_libdir}/libnvblas.so
+%{_libdir}/pkgconfig/cublas.pc
+
+%files cufft
+%license EULA.txt
 %{_libdir}/libcufft.so.*
 %{_libdir}/libcufftw.so.*
+
+%files cufft-devel
+%{_includedir}/%{name}/cufft*
+%{_libdir}/libcufft_static.a
+%{_libdir}/libcufft.so
+%{_libdir}/libcufftw_static.a
+%{_libdir}/libcufftw.so
+%{_libdir}/pkgconfig/cufft.pc
+%{_libdir}/pkgconfig/cufftw.pc
+
+%files curand
+%license EULA.txt
 %{_libdir}/libcurand.so.*
+
+%files curand-devel
+%{_includedir}/%{name}/curand*
+%{_includedir}/%{name}/sobol_direction_vectors.h
+%{_libdir}/libcurand_static.a
+%{_libdir}/libcurand.so.*
+%{_libdir}/pkgconfig/curand.pc
+
+%files cusolver
+%license EULA.txt
 %{_libdir}/libcusolver.so.*
+
+%files cusolver-devel
+%{_includedir}/%{name}/cusolver*
+%{_libdir}/libcusolver_static.a
+%{_libdir}/libcusolver.so.*
+%{_libdir}/pkgconfig/cusolver.pc
+
+%files cusparse
+%license EULA.txt
 %{_libdir}/libcusparse.so.*
-%{_libdir}/libnppc.so.*
-%{_libdir}/libnppi.so.*
-%{_libdir}/libnppial.so.*
-%{_libdir}/libnppicc.so.*
-%{_libdir}/libnppicom.so.*
-%{_libdir}/libnppidei.so.*
-%{_libdir}/libnppif.so.*
-%{_libdir}/libnppig.so.*
-%{_libdir}/libnppim.so.*
-%{_libdir}/libnppist.so.*
-%{_libdir}/libnppisu.so.*
-%{_libdir}/libnppitc.so.*
-%{_libdir}/libnpps.so.*
-%{_libdir}/libnvblas.so.*
+
+%files cusparse-devel
+%{_includedir}/%{name}/cusparse*
+%{_libdir}/libcusparse_static.a
+%{_libdir}/libcusparse.so.*
+%{_libdir}/pkgconfig/cusparse.pc
+
+%files npp
+%license EULA.txt
+%{_libdir}/libnpp*_static.a
+%{_libdir}/libnpp*.so.*
+
+%files npp-devel
+%{_includedir}/%{name}/npp*
+%{_libdir}/libnpp*.so
+%{_libdir}/pkgconfig/npp*.pc
+
+%files nvgraph
+%license EULA.txt
+%{_libdir}/libnvgraph_static.a
 %{_libdir}/libnvgraph.so.*
-%{_libdir}/libnvrtc.so.*
+
+%files nvgraph-devel
+%{_includedir}/%{name}/nvgraph*
+%{_libdir}/libnvgraph.so
+%{_libdir}/pkgconfig/nvgraph.pc
+
+%files nvrtc
+%license EULA.txt
+%{_libdir}/libnvrtc_static.a
 %{_libdir}/libnvrtc-builtins.so.*
+%{_libdir}/libnvrtc.so.*
+
+%files nvrtc-devel
+%{_includedir}/%{name}/nvrtc*
+%{_libdir}/libnvrtc-builtins.so
+%{_libdir}/libnvrtc.so
+%{_libdir}/pkgconfig/nvrtc.pc
 
 %files devel
 %doc extras/CUPTI/Readme-CUPTI.txt
 %doc extras/Debugger/Readme-Debugger.txt
-%{_includedir}/%{name}/
+### To remove
+%{_includedir}/%{name}/CUPTI
+%{_includedir}/%{name}/Debugger
+%{_includedir}/%{name}/crt
+%{_includedir}/%{name}/cuda_device_runtime_api.h
+%{_includedir}/%{name}/cuda_runtime.h
+%{_includedir}/%{name}/cuda_runtime_api.h
+%{_includedir}/%{name}/fortran  
+%{_includedir}/%{name}/nvToolsExtCudaRt.h
+%{_includedir}/%{name}/nvml.h
+%{_includedir}/%{name}/nvvm.h
+###
+%{_includedir}/%{name}/CL
+%{_includedir}/%{name}/builtin_types.h
+%{_includedir}/%{name}/channel_descriptor.h
+%{_includedir}/%{name}/common_functions.h
+%{_includedir}/%{name}/cuComplex.h
+%{_includedir}/%{name}/cuda.h
+%{_includedir}/%{name}/cudaGL.h
+%{_includedir}/%{name}/cudaProfiler.h
+%{_includedir}/%{name}/cudaVDPAU.h
+%{_includedir}/%{name}/cuda_fp16.h
+%{_includedir}/%{name}/cuda_gl_interop.h
+%{_includedir}/%{name}/cuda_occupancy.h
+%{_includedir}/%{name}/cuda_profiler_api.h
+%{_includedir}/%{name}/cuda_surface_types.h
+%{_includedir}/%{name}/cuda_texture_types.h
+%{_includedir}/%{name}/cuda_vdpau_interop.h
+%{_includedir}/%{name}/cudalibxt.h
+%{_includedir}/%{name}/cuviddec.h
+%{_includedir}/%{name}/device_atomic_functions.h
+%{_includedir}/%{name}/device_atomic_functions.hpp
+%{_includedir}/%{name}/device_double_functions.h
+%{_includedir}/%{name}/device_double_functions.hpp
+%{_includedir}/%{name}/device_functions.h
+%{_includedir}/%{name}/device_functions.hpp
+%{_includedir}/%{name}/device_functions_decls.h
+%{_includedir}/%{name}/device_launch_parameters.h
+%{_includedir}/%{name}/device_types.h
+%{_includedir}/%{name}/driver_functions.h
+%{_includedir}/%{name}/driver_types.h
+%{_includedir}/%{name}/fatBinaryCtl.h
+%{_includedir}/%{name}/fatbinary.h
+%{_includedir}/%{name}/host_config.h
+%{_includedir}/%{name}/host_defines.h
+%{_includedir}/%{name}/library_types.h
+%{_includedir}/%{name}/math_constants.h
+%{_includedir}/%{name}/math_functions.h
+%{_includedir}/%{name}/math_functions.hpp
+%{_includedir}/%{name}/math_functions_dbl_ptx3.h
+%{_includedir}/%{name}/math_functions_dbl_ptx3.hpp
+%{_includedir}/%{name}/nppi_compression_functions.h
+%{_includedir}/%{name}/nppi_filtering_functions.h
+%{_includedir}/%{name}/nppi_statistics_functions.h
+%{_includedir}/%{name}/nppi_support_functions.h
+%{_includedir}/%{name}/npps_conversion_functions.h
+%{_includedir}/%{name}/npps_filtering_functions.h
+%{_includedir}/%{name}/npps_statistics_functions.h
+%{_includedir}/%{name}/npps_support_functions.h
+%{_includedir}/%{name}/nvToolsExt.h
+%{_includedir}/%{name}/nvToolsExtCuda.h
+%{_includedir}/%{name}/nvToolsExtMeta.h
+%{_includedir}/%{name}/nvToolsExtSync.h
+%{_includedir}/%{name}/nvcuvid.h
+%{_includedir}/%{name}/nvfunctional
+%{_includedir}/%{name}/sm_20_atomic_functions.h
+%{_includedir}/%{name}/sm_20_atomic_functions.hpp
+%{_includedir}/%{name}/sm_20_intrinsics.h
+%{_includedir}/%{name}/sm_20_intrinsics.hpp
+%{_includedir}/%{name}/sm_30_intrinsics.h
+%{_includedir}/%{name}/sm_30_intrinsics.hpp
+%{_includedir}/%{name}/sm_32_atomic_functions.h
+%{_includedir}/%{name}/sm_32_atomic_functions.hpp
+%{_includedir}/%{name}/sm_32_intrinsics.h
+%{_includedir}/%{name}/sm_32_intrinsics.hpp
+%{_includedir}/%{name}/sm_35_atomic_functions.h
+%{_includedir}/%{name}/sm_35_intrinsics.h
+%{_includedir}/%{name}/sm_60_atomic_functions.h
+%{_includedir}/%{name}/sm_60_atomic_functions.hpp
+%{_includedir}/%{name}/sm_61_intrinsics.h
+%{_includedir}/%{name}/sm_61_intrinsics.hpp
+%{_includedir}/%{name}/surface_functions.h
+%{_includedir}/%{name}/surface_functions.hpp
+%{_includedir}/%{name}/surface_indirect_functions.h
+%{_includedir}/%{name}/surface_indirect_functions.hpp
+%{_includedir}/%{name}/surface_types.h
+%{_includedir}/%{name}/texture_fetch_functions.h
+%{_includedir}/%{name}/texture_fetch_functions.hpp
+%{_includedir}/%{name}/texture_indirect_functions.h
+%{_includedir}/%{name}/texture_indirect_functions.hpp
+%{_includedir}/%{name}/texture_types.h
+%{_includedir}/%{name}/thrust
+%{_includedir}/%{name}/vector_functions.h
+%{_includedir}/%{name}/vector_functions.hpp
+%{_includedir}/%{name}/vector_types.h
 %{_libdir}/libcudadevrt.a
-%{_libdir}/libcublas_device.a
-%{_libdir}/*.so
-%{_libdir}/pkgconfig/*.pc
+%{_libdir}/libcudart_static.a
+%{_libdir}/libcudart.so
+%{_libdir}/libcuinj%{__isa_bits}.so
+%{_libdir}/libculibos.a
+%{_libdir}/libcupti.so
+%{_libdir}/libnvidia-ml.so
+%{_libdir}/libnvToolsExt.so
+%{_libdir}/libnvvm.so
 %{_mandir}/man3/*
 %{_mandir}/man7/*
-
-%files static
-%{_libdir}/libcublas_static.a
-%{_libdir}/libcudart_static.a
-%{_libdir}/libcufft_static.a
-%{_libdir}/libcufftw_static.a
-%{_libdir}/libculibos.a
-%{_libdir}/libcurand_static.a
-%{_libdir}/libcusolver_static.a
-%{_libdir}/libcusparse_static.a
-%{_libdir}/libnppc_static.a
-%{_libdir}/libnppi_static.a
-%{_libdir}/libnpps_static.a
-%{_libdir}/libnvgraph_static.a
+%{_libdir}/pkgconfig/cuda.pc
+%{_libdir}/pkgconfig/cudart.pc
+%{_libdir}/pkgconfig/cuinj64.pc
+%{_libdir}/pkgconfig/nvml.pc
+%{_libdir}/pkgconfig/nvToolsExt.pc
 
 %files docs
 %doc doc/pdf doc/html tools/*
@@ -499,6 +847,11 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/nvvp
 
 %changelog
+* Mon Oct 17 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-2
+- Add missing nvToolsExt.pc pkgconfig file.
+- Split libraries into subpackages for easier consumption by dependent packages
+  (i.e. FFMpeg). More similar to what Nvidia provides.
+
 * Sun Oct 02 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-1
 - Update to 8.0.44:
   * Add additional nvgraph library and gpu-library-advisor command.
