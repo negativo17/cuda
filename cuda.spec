@@ -105,10 +105,11 @@ Provides:       %{name}-license-%{major_package_version} = %{?epoch}:%{version}-
 Contains the CUDA run-time library required to run CUDA application natively.
 
 %package extra-libs
-Summary:        Compute Unified Device Architecture native libraries
+Summary:        All runtime NVIDIA CUDA libraries
 Requires(post): ldconfig
 Requires:       %{name}-cublas = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cufft = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-cupti = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-curand = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cusolver = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cusparse = %{?epoch}:%{version}-%{release}
@@ -119,7 +120,7 @@ Obsoletes:      %{name}-runtime-%{major_package_version} < %{?epoch}:%{version}-
 Provides:       %{name}-runtime-%{major_package_version} = %{?epoch}:%{version}-%{release}
 
 %description extra-libs
-Native CUDA platform libraries (CUBLAS, CUFFT, CURAND, CUSPARSE, Thrust).
+Metapackage that installs all runtime NVIDIA CUDA libraries.
 
 %package cublas
 Summary:        NVIDIA CUDA Basic Linear Algebra Subroutines (cuBLAS) libraries
@@ -163,6 +164,23 @@ Provides:       %{name}-cufft-dev-%{major_package_version} = %{?epoch}:%{version
 %description cufft-devel
 This package provides development files for the NVIDIA CUDA Fast Fourier
 Transform library (cuFFT) libraries.
+
+%package cupti
+Summary:        NVIDIA CUDA Profiling Tools Interface (CUPTI) library
+Requires(post): ldconfig
+
+%description cupti
+The NVIDIA CUDA Profiling Tools Interface (CUPTI) provides performance analysis
+tools with detailed information about how applications are using the GPUs in a
+system.
+
+%package cupti-devel
+Summary:        Development files for NVIDIA CUDA Profiling Tools Interface (CUPTI) library
+Requires:       %{name}-cupti%{_isa} = %{?epoch}:%{version}-%{release}
+
+%description cupti-devel
+This package provides development files for the NVIDIA CUDA Profiling Tools
+Interface (CUPTI) library.
 
 %package curand
 Summary:        NVIDIA CUDA Random Number Generation library (cuRAND)
@@ -303,9 +321,10 @@ library.
 Summary:        Development files for %{name}
 Requires:       %{name}%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-libs%{_isa} = %{?epoch}:%{version}-%{release}
-Requires:       %{name}-extra-libs%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-cupti-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cublas-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cufft-devel%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-cupti-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-curand-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cusolver-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cusparse-devel%{_isa} = %{?epoch}:%{version}-%{release}
@@ -519,6 +538,8 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 
 %post cufft -p /sbin/ldconfig
 
+%post cupti -p /sbin/ldconfig
+
 %post curand -p /sbin/ldconfig
 
 %post cusolver -p /sbin/ldconfig
@@ -540,6 +561,8 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %postun cublas -p /sbin/ldconfig
 
 %postun cufft -p /sbin/ldconfig
+
+%postun cupti -p /sbin/ldconfig
 
 %postun curand -p /sbin/ldconfig
 
@@ -609,9 +632,6 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/libnvToolsExt.so.*
 %{_libdir}/libnvvm.so.*
 
-%files extra-libs
-%{_libdir}/libcupti.so.*
-
 %files cublas
 %license EULA.txt
 %{_libdir}/libcublas.so.*
@@ -640,6 +660,15 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/cufft.pc
 %{_libdir}/pkgconfig/cufftw.pc
 
+%files cupti
+%license EULA.txt
+%{_libdir}/libcupti.so.*
+
+%files cupti-devel
+%doc extras/CUPTI/Readme-CUPTI.txt
+%{_includedir}/%{name}/CUPTI
+%{_libdir}/libcupti.so
+
 %files curand
 %license EULA.txt
 %{_libdir}/libcurand.so.*
@@ -648,7 +677,7 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/curand*
 %{_includedir}/%{name}/sobol_direction_vectors.h
 %{_libdir}/libcurand_static.a
-%{_libdir}/libcurand.so.*
+%{_libdir}/libcurand.so
 %{_libdir}/pkgconfig/curand.pc
 
 %files cusolver
@@ -658,7 +687,7 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %files cusolver-devel
 %{_includedir}/%{name}/cusolver*
 %{_libdir}/libcusolver_static.a
-%{_libdir}/libcusolver.so.*
+%{_libdir}/libcusolver.so
 %{_libdir}/pkgconfig/cusolver.pc
 
 %files cusparse
@@ -668,16 +697,16 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %files cusparse-devel
 %{_includedir}/%{name}/cusparse*
 %{_libdir}/libcusparse_static.a
-%{_libdir}/libcusparse.so.*
+%{_libdir}/libcusparse.so
 %{_libdir}/pkgconfig/cusparse.pc
 
 %files npp
 %license EULA.txt
-%{_libdir}/libnpp*_static.a
 %{_libdir}/libnpp*.so.*
 
 %files npp-devel
 %{_includedir}/%{name}/npp*
+%{_libdir}/libnpp*_static.a
 %{_libdir}/libnpp*.so
 %{_libdir}/pkgconfig/npp*.pc
 
@@ -693,7 +722,6 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 
 %files nvrtc
 %license EULA.txt
-%{_libdir}/libnvrtc_static.a
 %{_libdir}/libnvrtc-builtins.so.*
 %{_libdir}/libnvrtc.so.*
 
@@ -704,21 +732,18 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/nvrtc.pc
 
 %files devel
-%doc extras/CUPTI/Readme-CUPTI.txt
 %doc extras/Debugger/Readme-Debugger.txt
-### To remove
-%{_includedir}/%{name}/CUPTI
-%{_includedir}/%{name}/Debugger
+### cudart
 %{_includedir}/%{name}/crt
 %{_includedir}/%{name}/cuda_device_runtime_api.h
 %{_includedir}/%{name}/cuda_runtime.h
 %{_includedir}/%{name}/cuda_runtime_api.h
-%{_includedir}/%{name}/fortran  
 %{_includedir}/%{name}/nvToolsExtCudaRt.h
+### nvml
 %{_includedir}/%{name}/nvml.h
-%{_includedir}/%{name}/nvvm.h
 ###
 %{_includedir}/%{name}/CL
+%{_includedir}/%{name}/Debugger
 %{_includedir}/%{name}/builtin_types.h
 %{_includedir}/%{name}/channel_descriptor.h
 %{_includedir}/%{name}/common_functions.h
@@ -749,6 +774,7 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/driver_types.h
 %{_includedir}/%{name}/fatBinaryCtl.h
 %{_includedir}/%{name}/fatbinary.h
+%{_includedir}/%{name}/fortran  
 %{_includedir}/%{name}/host_config.h
 %{_includedir}/%{name}/host_defines.h
 %{_includedir}/%{name}/library_types.h
@@ -771,6 +797,7 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/nvToolsExtSync.h
 %{_includedir}/%{name}/nvcuvid.h
 %{_includedir}/%{name}/nvfunctional
+%{_includedir}/%{name}/nvvm.h
 %{_includedir}/%{name}/sm_20_atomic_functions.h
 %{_includedir}/%{name}/sm_20_atomic_functions.hpp
 %{_includedir}/%{name}/sm_20_intrinsics.h
