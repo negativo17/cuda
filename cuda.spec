@@ -7,7 +7,7 @@
 
 Name:           cuda
 Version:        %{cuda_version}.44
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -325,7 +325,8 @@ This package provides development files for the NVIDIA Graph Analytics library
 
 %package nvml-devel
 Summary:        Development files for NVIDIA Management library (nvML)
-Requires:       %{name}-nvml%{_isa} = %{?epoch}:%{version}-%{release}
+# Unversioned as it is provided by the driver's NVML library
+Requires:       %{name}-nvml%{_isa}
 Obsoletes:      %{name}-nvml-dev-%{major_package_version} < %{?epoch}:%{version}
 Provides:       %{name}-nvml-dev-%{major_package_version} = %{?epoch}:%{version}
 Obsoletes:      nvidia-driver-NVML-devel
@@ -921,6 +922,10 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/nvvp
 
 %changelog
+* Tue Oct 18 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-3
+- Make cuda-nvml-devel require an unversioned base package as it is provided by
+  the driver's NVML library.
+
 * Mon Oct 17 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-2
 - Add missing nvToolsExt.pc pkgconfig file.
 - Split libraries into subpackages for easier consumption by dependent packages
