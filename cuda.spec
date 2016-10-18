@@ -94,8 +94,6 @@ Summary:        Compute Unified Device Architecture native run-time library
 Requires(post): ldconfig
 Obsoletes:      %{name}-core-libs-%{major_package_version} < %{?epoch}:%{version}
 Provides:       %{name}-core-libs-%{major_package_version} = %{?epoch}:%{version}
-Obsoletes:      %{name}-cudart-%{major_package_version} < %{?epoch}:%{version}-%{release}
-Provides:       %{name}-cudart-%{major_package_version} = %{?epoch}:%{version}-%{release}
 Obsoletes:      %{name}-driver-dev-%{major_package_version} < %{?epoch}:%{version}-%{release}
 Provides:       %{name}-driver-dev-%{major_package_version} = %{?epoch}:%{version}-%{release}
 Obsoletes:      %{name}-license-%{major_package_version} < %{?epoch}:%{version}-%{release}
@@ -108,6 +106,7 @@ Contains the CUDA run-time library required to run CUDA application natively.
 Summary:        All runtime NVIDIA CUDA libraries
 Requires(post): ldconfig
 Requires:       %{name}-cublas = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-cudart = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cufft = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cupti = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-curand = %{?epoch}:%{version}-%{release}
@@ -142,6 +141,35 @@ Provides:       %{name}-cublas-dev-%{major_package_version} = %{?epoch}:%{versio
 %description cublas-devel
 This package provides development files for the NVIDIA CUDA Basic Linear
 Algebra Subroutines (cuBLAS) libraries.
+
+%package cudart
+Summary:        NVIDIA CUDA Runtime API library
+Requires(post): ldconfig
+Obsoletes:      %{name}-cudart-%{major_package_version} < %{?epoch}:%{version}-%{release}
+Provides:       %{name}-cudart-%{major_package_version} = %{?epoch}:%{version}-%{release}
+
+%description cudart
+The runtime API eases device code management by providing implicit initialization,
+context management, and module management. This leads to simpler code, but it
+also lacks the level of control that the driver API has.
+
+In comparison, the driver API offers more fine-grained control, especially over
+contexts and module loading. Kernel launches are much more complex to implement,
+as the execution configuration and kernel parameters must be specified with
+explicit function calls. However, unlike the runtime, where all the kernels are
+automatically loaded during initialization and stay loaded for as long as the
+program runs, with the driver API it is possible to only keep the modules that
+are currently needed loaded, or even dynamically reload modules. The driver API
+is also language-independent as it only deals with cubin objects.
+
+%package cudart-devel
+Summary:        Development files for NVIDIA CUDA Runtime API library
+Requires:       %{name}-cudart%{_isa} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-cudart-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-cudart-dev-%{major_package_version} = %{?epoch}:%{version}
+
+%description cudart-devel
+This package provides development files for the NVIDIA CUDA Runtime API library
 
 %package cufft
 Summary:        NVIDIA CUDA Fast Fourier Transform library (cuFFT) libraries
@@ -293,6 +321,20 @@ Provides:       %{name}-nvgraph-dev-%{major_package_version} = %{?epoch}:%{versi
 This package provides development files for the NVIDIA Graph Analytics library
 (nvGRAPH).
 
+# Actual libnvidia-ml library (cuda-nvml) is in the Nvidia driver
+
+%package nvml-devel
+Summary:        Development files for NVIDIA Management library (nvML)
+Requires:       %{name}-nvml%{_isa} = %{?epoch}:%{version}-%{release}
+Obsoletes:      %{name}-nvml-dev-%{major_package_version} < %{?epoch}:%{version}
+Provides:       %{name}-nvml-dev-%{major_package_version} = %{?epoch}:%{version}
+Obsoletes:      nvidia-driver-NVML-devel
+Provides:       nvidia-driver-NVML-devel = %{?epoch}:%{version}
+
+%description nvml-devel
+This package provides development files for the NVIDIA Management library
+(nvML).
+
 %package nvrtc
 Summary:        NVRTC runtime compilation library
 Requires(post): ldconfig
@@ -323,6 +365,7 @@ Requires:       %{name}%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-libs%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cupti-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cublas-devel%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-cudart-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cufft-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cupti-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-curand-devel%{_isa} = %{?epoch}:%{version}-%{release}
@@ -330,18 +373,13 @@ Requires:       %{name}-cusolver-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-cusparse-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-npp-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-nvgraph-devel%{_isa} = %{?epoch}:%{version}-%{release}
+Requires:       %{name}-nvml-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       %{name}-nvrtc-devel%{_isa} = %{?epoch}:%{version}-%{release}
 Requires:       nvidia-driver-NVML%{_isa}
-Obsoletes:      nvidia-driver-NVML-devel < %{?epoch}:%{version}
-Provides:       nvidia-driver-NVML-devel = %{?epoch}:%{version}
 Obsoletes:      %{name}-headers-%{major_package_version} < %{?epoch}:%{version}
 Provides:       %{name}-headers-%{major_package_version} = %{?epoch}:%{version}
-Obsoletes:      %{name}-cudart-dev-%{major_package_version} < %{?epoch}:%{version}
-Provides:       %{name}-cudart-dev-%{major_package_version} = %{?epoch}:%{version}
 Obsoletes:      %{name}-misc-headers-%{major_package_version} < %{?epoch}:%{version}
 Provides:       %{name}-misc-headers-%{major_package_version} = %{?epoch}:%{version}
-Obsoletes:      %{name}-nvml-dev-%{major_package_version} < %{?epoch}:%{version}
-Provides:       %{name}-nvml-dev-%{major_package_version} = %{?epoch}:%{version}
 Obsoletes:      %{name}-toolkit-%{major_package_version} < %{?epoch}:%{version}
 Provides:       %{name}-toolkit-%{major_package_version} = %{?epoch}:%{version}
 Obsoletes:      %{name}-static < %{?epoch}:%{version}
@@ -536,6 +574,8 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 
 %post cublas -p /sbin/ldconfig
 
+%post cudart -p /sbin/ldconfig
+
 %post cufft -p /sbin/ldconfig
 
 %post cupti -p /sbin/ldconfig
@@ -559,6 +599,8 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %postun extra-libs -p /sbin/ldconfig
 
 %postun cublas -p /sbin/ldconfig
+
+%postun cudart -p /sbin/ldconfig
 
 %postun cufft -p /sbin/ldconfig
 
@@ -646,6 +688,25 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/libnvblas.so
 %{_libdir}/pkgconfig/cublas.pc
 
+%files cudart
+%license EULA.txt
+%{_libdir}/libcudart.so.*
+%{_libdir}/libnvToolsExt.so.*
+
+%files cudart-devel
+%{_includedir}/%{name}/crt
+%{_includedir}/%{name}/cuda_device_runtime_api.h
+%{_includedir}/%{name}/cuda_runtime.h
+%{_includedir}/%{name}/cuda_runtime_api.h
+%{_includedir}/%{name}/nvToolsExtCudaRt.h
+%{_libdir}/libcudadevrt.a
+%{_libdir}/libcudart_static.a
+%{_libdir}/libcudart.so
+%{_libdir}/libculibos.a
+%{_libdir}/libnvToolsExt.so
+%{_libdir}/pkgconfig/cudart.pc
+%{_libdir}/pkgconfig/nvToolsExt.pc
+
 %files cufft
 %license EULA.txt
 %{_libdir}/libcufft.so.*
@@ -720,6 +781,11 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/libnvgraph.so
 %{_libdir}/pkgconfig/nvgraph.pc
 
+%files nvml-devel
+%{_includedir}/%{name}/nvml*
+%{_libdir}/libnvidia-ml.so
+%{_libdir}/pkgconfig/nvml.pc
+
 %files nvrtc
 %license EULA.txt
 %{_libdir}/libnvrtc-builtins.so.*
@@ -733,15 +799,6 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 
 %files devel
 %doc extras/Debugger/Readme-Debugger.txt
-### cudart
-%{_includedir}/%{name}/crt
-%{_includedir}/%{name}/cuda_device_runtime_api.h
-%{_includedir}/%{name}/cuda_runtime.h
-%{_includedir}/%{name}/cuda_runtime_api.h
-%{_includedir}/%{name}/nvToolsExtCudaRt.h
-### nvml
-%{_includedir}/%{name}/nvml.h
-###
 %{_includedir}/%{name}/CL
 %{_includedir}/%{name}/Debugger
 %{_includedir}/%{name}/builtin_types.h
@@ -828,22 +885,12 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/vector_functions.h
 %{_includedir}/%{name}/vector_functions.hpp
 %{_includedir}/%{name}/vector_types.h
-%{_libdir}/libcudadevrt.a
-%{_libdir}/libcudart_static.a
-%{_libdir}/libcudart.so
 %{_libdir}/libcuinj%{__isa_bits}.so
-%{_libdir}/libculibos.a
-%{_libdir}/libcupti.so
-%{_libdir}/libnvidia-ml.so
-%{_libdir}/libnvToolsExt.so
 %{_libdir}/libnvvm.so
 %{_mandir}/man3/*
 %{_mandir}/man7/*
 %{_libdir}/pkgconfig/cuda.pc
-%{_libdir}/pkgconfig/cudart.pc
 %{_libdir}/pkgconfig/cuinj64.pc
-%{_libdir}/pkgconfig/nvml.pc
-%{_libdir}/pkgconfig/nvToolsExt.pc
 
 %files docs
 %doc doc/pdf doc/html tools/*
