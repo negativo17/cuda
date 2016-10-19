@@ -571,8 +571,6 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 
 %post libs -p /sbin/ldconfig
 
-%post extra-libs -p /sbin/ldconfig
-
 %post cublas -p /sbin/ldconfig
 
 %post cudart -p /sbin/ldconfig
@@ -596,8 +594,6 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %postun -p /sbin/ldconfig
 
 %postun libs -p /sbin/ldconfig
-
-%postun extra-libs -p /sbin/ldconfig
 
 %postun cublas -p /sbin/ldconfig
 
@@ -798,6 +794,9 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/libnvrtc.so
 %{_libdir}/pkgconfig/nvrtc.pc
 
+%files extra-libs
+# Empty metapackage
+
 %files devel
 %doc extras/Debugger/Readme-Debugger.txt
 %{_includedir}/%{name}/CL
@@ -936,7 +935,7 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
   * Add additional nvgraph library and gpu-library-advisor command.
   * Obsoletes/Provides nvidia-driver-NVML-devel in devel subpackage.
 - Make major version conditional for most of the SPEC file.
-- Move samples under %{_datadir}.
+- Move samples under /usr/share.
 - Add base text license (EULA) to libs subpackage.
 - Make samples package architecture dependent as it contains pre-built binaries
   and objects. Make it obsolete the noarch one.
