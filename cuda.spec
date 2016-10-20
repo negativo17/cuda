@@ -12,7 +12,7 @@ Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
 URL:            https://developer.nvidia.com/cuda-zone
-ExclusiveArch:  %{ix86} x86_64
+ExclusiveArch:  x86_64
 
 # See Source1 for tarball generation - saves ~400Mb.
 Source0:        %{name}-%{version}-x86_64.tar.xz
