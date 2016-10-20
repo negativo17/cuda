@@ -7,7 +7,7 @@
 
 Name:           cuda
 Version:        %{cuda_version}.44
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -922,6 +922,9 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/nvvp
 
 %changelog
+* Thu Oct 20 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-4
+- SPEC file cleanups.
+
 * Tue Oct 18 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-3
 - Make cuda-nvml-devel require an unversioned base package as it is provided by
   the driver's NVML library.
