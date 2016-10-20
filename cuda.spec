@@ -329,7 +329,8 @@ Summary:        Development files for NVIDIA Management library (nvML)
 Requires:       %{name}-nvml%{_isa}
 Obsoletes:      %{name}-nvml-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Provides:       %{name}-nvml-dev-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
-Obsoletes:      nvidia-driver-NVML-devel
+# Latest standalone version released is 352.79
+Obsoletes:      nvidia-driver-NVML-devel < 2:352.80
 Provides:       nvidia-driver-NVML-devel = %{?epoch:%{epoch}:}%{version}
 
 %description nvml-devel
