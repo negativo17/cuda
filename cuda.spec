@@ -1,18 +1,23 @@
+# Todo:
+# - filter \*.so from Java programs
+# - build cuda-gdb from source
+# - build Java programs from source
+# - /usr/include/cuda is owned by the cuda main package but the devel
+#   subpackages use the directory
+
 %global         debug_package %{nil}
 #global         __strip /bin/true
 %global         cuda_version 8.0
 %global         major_package_version 8-0
 
-# Todo: filter libunixfile_1_0_0.so from cuda-nsight.
-
 Name:           cuda
 Version:        %{cuda_version}.44
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
 URL:            https://developer.nvidia.com/cuda-zone
-ExclusiveArch:  x86_64
+ExclusiveArch:  x86_64 %{ix86}
 
 # See Source1 for tarball generation - saves ~400Mb.
 Source0:        %{name}-%{version}-x86_64.tar.xz
@@ -443,6 +448,8 @@ delivers developers vital feedback for optimizing CUDA C/C++ applications.
 %prep
 %setup -q -n %{name}-%{version}-x86_64
 
+%ifarch x86_64
+
 # Remove execstack on binaries
 execstack -c nvvm/bin/cicc nvvm/%{_lib}/*
 
@@ -469,19 +476,23 @@ rm -f bin/uninstall_cuda_toolkit_%{cuda_version}.pl
 rm -f bin/cuda-install-samples-%{major_package_version}.sh
 rm -f bin/.uninstall_manifest_do_not_delete.txt
 
+%endif
+
 %build
 # Nothing to build
 
 %install
+%ifarch x86_64
+
 # Create empty tree
 mkdir -p %{buildroot}%{_bindir}/
 mkdir -p %{buildroot}%{_datadir}/applications/
-mkdir -p %{buildroot}%{_datadir}/cuda/
+mkdir -p %{buildroot}%{_datadir}/%{name}/
 mkdir -p %{buildroot}%{_datadir}/libnsight/
 mkdir -p %{buildroot}%{_datadir}/libnvvp/
 mkdir -p %{buildroot}%{_datadir}/pixmaps/
 mkdir -p %{buildroot}%{_includedir}/%{name}/
-mkdir -p %{buildroot}/%{_libdir}/pkgconfig
+mkdir -p %{buildroot}%{_libdir}/pkgconfig/
 mkdir -p %{buildroot}%{_libexecdir}/%{name}/
 mkdir -p %{buildroot}%{_mandir}/man{1,3,7}/
 mkdir -p %{buildroot}%{_sysconfdir}/profile.d/
@@ -494,7 +505,7 @@ install -pm 644 %{SOURCE3} %{SOURCE4} %{buildroot}%{_sysconfdir}/profile.d
 rm -f doc/man/man1/cuda-install-samples-*
 for man in doc/man/man{1,3,7}/*; do gzip -9 $man; done
 cp -fr doc/man/* %{buildroot}%{_mandir}
-# This man page conflicts *a lot* of other packages
+# This man page conflicts with *a lot* of other packages
 mv %{buildroot}%{_mandir}/man3/deprecated.3.gz \
     %{buildroot}%{_mandir}/man3/cuda_deprecated.3.gz
 
@@ -568,6 +579,18 @@ mkdir -p %{buildroot}%{_datadir}/appdata
 install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %endif
 
+%endif
+
+# For i686 just create the nvml-devel subpackage
+%ifarch %{ix86}
+mkdir -p %{buildroot}%{_includedir}/%{name}/
+mkdir -p %{buildroot}%{_libdir}/pkgconfig/
+ln -sf libnvidia-ml.so.1 %{buildroot}%{_libdir}/libnvidia-ml.so
+install -pm 644 %{SOURCE43} %{buildroot}/%{_libdir}/pkgconfig
+sed -i -e 's/CUDA_VERSION/%{cuda_version}/g' %{buildroot}/%{_libdir}/pkgconfig/*.pc
+install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
+%endif
+
 %post -p /sbin/ldconfig
 
 %post libs -p /sbin/ldconfig
@@ -628,11 +651,12 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %postun nvvp
 %{_bindir}/update-desktop-database &> /dev/null || :
 
+%ifarch x86_64
 
 %files
 %{_bindir}/bin2c
 %{_bindir}/cicc
-# FIXME, there should be no folder there, but binaries look for things here
+# There should be no folder there, but binaries look for things here
 %{_bindir}/crt/
 %{_bindir}/cudafe
 %{_bindir}/cudafe++
@@ -779,10 +803,14 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/libnvgraph.so
 %{_libdir}/pkgconfig/nvgraph.pc
 
+%endif
+
 %files nvml-devel
 %{_includedir}/%{name}/nvml*
 %{_libdir}/libnvidia-ml.so
 %{_libdir}/pkgconfig/nvml.pc
+
+%ifarch x86_64
 
 %files nvrtc
 %license EULA.txt
@@ -841,14 +869,6 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/math_functions.hpp
 %{_includedir}/%{name}/math_functions_dbl_ptx3.h
 %{_includedir}/%{name}/math_functions_dbl_ptx3.hpp
-%{_includedir}/%{name}/nppi_compression_functions.h
-%{_includedir}/%{name}/nppi_filtering_functions.h
-%{_includedir}/%{name}/nppi_statistics_functions.h
-%{_includedir}/%{name}/nppi_support_functions.h
-%{_includedir}/%{name}/npps_conversion_functions.h
-%{_includedir}/%{name}/npps_filtering_functions.h
-%{_includedir}/%{name}/npps_statistics_functions.h
-%{_includedir}/%{name}/npps_support_functions.h
 %{_includedir}/%{name}/nvToolsExt.h
 %{_includedir}/%{name}/nvToolsExtCuda.h
 %{_includedir}/%{name}/nvToolsExtMeta.h
@@ -921,7 +941,13 @@ install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
 %{_mandir}/man1/nvvp.*
 %{_libdir}/nvvp
 
+%endif
+
 %changelog
+* Sat Oct 22 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-5
+- Make the package not exclusive to x86_64 and let the nvml-devel subpackage
+  build on i386.
+
 * Thu Oct 20 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-4
 - SPEC file cleanups.
 
