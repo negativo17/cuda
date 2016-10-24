@@ -87,7 +87,6 @@ Summary:        Compute Unified Device Architecture command-line tools
 Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-devel = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       expat >= 1.95
-Requires:       gdb
 Obsoletes:      %{name}-command-line-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 Provides:       %{name}-command-line-tools-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
 
@@ -542,9 +541,6 @@ sed -i -e 's/CUDA_VERSION/%{cuda_version}/g' %{buildroot}/%{_libdir}/pkgconfig/*
 # Binaries
 cp -fr bin/* nvvm/bin/* %{buildroot}%{_bindir}/
 
-# GDB stuff
-cp -fr share/gdb %{buildroot}%{_datadir}/gdb
-
 # Additional samples
 cp -fr samples %{buildroot}%{_datadir}/%{name}/
 cp -fr extras/CUPTI/sample %{buildroot}%{_datadir}/%{name}/samples/CUPTI
@@ -682,7 +678,6 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_bindir}/cuda-memcheck
 %{_bindir}/nvdisasm
 %{_bindir}/nvprof
-%{_datadir}/gdb/*
 %{_mandir}/man1/cuda-gdb.*
 %{_mandir}/man1/cuda-gdbserver.*
 %{_mandir}/man1/cuda-memcheck.*
