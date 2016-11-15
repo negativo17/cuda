@@ -1,6 +1,6 @@
 cudaroot=/usr
 libdir=${cudaroot}/lib64
-includedir=${cudaroot}/include
+includedir=${cudaroot}/include/cuda
 
 Name: nppicc
 Description: NVIDIA Performance Primitives - Image Processing - Color Conversion

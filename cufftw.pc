@@ -1,6 +1,6 @@
 cudaroot=/usr
 libdir=${cudaroot}/lib64
-includedir=${cudaroot}/include
+includedir=${cudaroot}/include/cuda
 
 Name: cufftw
 Description: CUDA Fast Fourier Transform Wide
