@@ -12,7 +12,7 @@
 
 Name:           cuda
 Version:        %{cuda_version}.44
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -670,6 +670,8 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_mandir}/man1/nvcc.*
 %{_mandir}/man1/nvprune.*
 %{_datadir}/%{name}/
+%exclude %{_datadir}/%{name}/samples
+%exclude %{_datadir}/%{name}/demo_suite
 %config(noreplace) %{_sysconfdir}/profile.d/%{name}.*sh
 
 %files cli-tools
@@ -939,6 +941,9 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Tue Nov 15 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-6
+- Remove erroneusly placed samples from main package.
+
 * Sat Oct 22 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-5
 - Make the package not exclusive to x86_64 and let the nvml-devel subpackage
   build on i386.
