@@ -1,6 +1,5 @@
-cudaroot=/usr
-libdir=${cudaroot}/lib64
-includedir=${cudaroot}/include/cuda
+libdir=LIBDIR
+includedir=INCLUDE_DIR
 
 Name: nppidei
 Description: NVIDIA Performance Primitives - Image Processing - DEI

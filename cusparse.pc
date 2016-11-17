@@ -1,6 +1,5 @@
-cudaroot=/usr
-libdir=${cudaroot}/lib64
-includedir=${cudaroot}/include/cuda
+libdir=LIBDIR
+includedir=INCLUDE_DIR
 
 Name: cusparse
 Description: CUDA Sparse Matrix Library

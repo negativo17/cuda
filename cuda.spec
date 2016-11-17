@@ -536,7 +536,9 @@ install -pm 644 %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24} \
     %{SOURCE31} %{SOURCE32} %{SOURCE33} %{SOURCE34} %{SOURCE35} %{SOURCE36} \
     %{SOURCE37} %{SOURCE38} %{SOURCE39} %{SOURCE40} %{SOURCE41} %{SOURCE42} \
     %{SOURCE43} %{SOURCE44} %{SOURCE45} %{buildroot}/%{_libdir}/pkgconfig
-sed -i -e 's/CUDA_VERSION/%{cuda_version}/g' %{buildroot}/%{_libdir}/pkgconfig/*.pc
+sed -i -e 's|CUDA_VERSION|%{version}|g' \
+    -e 's|LIBDIR|%{_libdir}|g' -e 's|INCLUDE_DIR|%{_includedir}|g' \
+    %{buildroot}/%{_libdir}/pkgconfig/*.pc
 
 # Binaries
 cp -fr bin/* nvvm/bin/* %{buildroot}%{_bindir}/
