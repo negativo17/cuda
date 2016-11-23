@@ -12,7 +12,7 @@
 
 Name:           cuda
 Version:        %{cuda_version}.44
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -466,6 +466,10 @@ sed -i -e '/#error -- unsupported GNU version!/d' include/host_config.h
 
 # Remove double quotes in samples' Makefiles (cosmetical)
 find samples -name "Makefile" -exec sed -i -e 's|"/usr"|/usr|g' {} \;
+
+# Make samples build without specifying anything on the command line for the
+# include directories so people stop asking
+find samples -type f -exec sed -i -e 's|/bin/nvcc|/bin/nvcc --include-path /usr/include/cuda|g' {} \;
 
 # Remove unused stuff
 rm -f doc/man/man1/cuda-install-samples-%{major_package_version}.sh.1
@@ -943,6 +947,11 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Wed Nov 23 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-7
+- Simplify pkg-config files.
+- Make samples compile by default without users requiring to specify anything
+  on the command line for include directories.
+
 * Tue Nov 15 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-6
 - Remove erroneusly placed samples from main package.
 - Fix pkg-config files.
