@@ -11,15 +11,15 @@
 %global         major_package_version 8-0
 
 Name:           cuda
-Version:        %{cuda_version}.44
-Release:        7%{?dist}
+Version:        8.0.61
+Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
 URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64 %{ix86}
 
-# See Source1 for tarball generation - saves ~400Mb.
+# See Source1 for tarball generation - saves ~500MB.
 Source0:        %{name}-%{version}-x86_64.tar.xz
 Source1:        %{name}-generate-tarballs.sh
 Source2:        http://http.download.nvidia.com/cuda-toolkit/%{version}/cuda-gdb-%{version}.src.tar.gz
@@ -63,7 +63,7 @@ BuildRequires:  desktop-file-utils
 # For RUNPATH removal
 BuildRequires:  chrpath
 # For execstack removal
-%if 0%{?fedora} >= 23 || 0%{?rhel} > 7
+%if 0%{?fedora} || 0%{?rhel} > 7
 BuildRequires:  execstack
 %else
 BuildRequires:  prelink
@@ -449,9 +449,6 @@ delivers developers vital feedback for optimizing CUDA C/C++ applications.
 
 %ifarch x86_64
 
-# Remove execstack on binaries
-execstack -c nvvm/bin/cicc nvvm/%{_lib}/*
-
 # Remove RUNPATH on binaries
 chrpath -d nvvm/bin/cicc
 
@@ -466,10 +463,10 @@ sed -i -e '/#error -- unsupported GNU version!/d' include/host_config.h
 
 # Remove double quotes in samples' Makefiles (cosmetical)
 find samples -name "Makefile" -exec sed -i -e 's|"/usr"|/usr|g' {} \;
-
 # Make samples build without specifying anything on the command line for the
 # include directories so people stop asking
-find samples -type f -exec sed -i -e 's|/bin/nvcc|/bin/nvcc --include-path /usr/include/cuda|g' {} \;
+find samples -type f -exec sed -i -e 's|/bin/nvcc|/bin/nvcc --include-path %{_includedir}/cuda|g' {} \;
+find samples -name "Makefile" -exec sed -i -e 's|($CUDA_PATH)/include|%{_includedir}/cuda|g' {} \;
 
 # Remove unused stuff
 rm -f doc/man/man1/cuda-install-samples-%{major_package_version}.sh.1
@@ -947,6 +944,9 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Mon Apr 03 2017 Simone Caronni <negativo17@gmail.com> - 1:8.0.61-1
+- Update to 8.0.61.
+
 * Wed Nov 23 2016 Simone Caronni <negativo17@gmail.com> - 1:8.0.44-7
 - Simplify pkg-config files.
 - Make samples compile by default without users requiring to specify anything

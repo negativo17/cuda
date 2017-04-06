@@ -2,13 +2,11 @@
 set -e
 
 PKG=cuda
-VERSION=8.0.44
+VERSION=8.0.61
 TARBALL=${PKG}-${VERSION}-x86_64
 
-# Get installer & unpack it
-wget -O cuda_${VERSION}_linux.run \
-    -c https://developer.nvidia.com/compute/cuda/8.0/prod/local_installers/cuda_${VERSION}_linux-run
-sh ${PKG}_${VERSION}_linux.run -extract=`pwd`
+# Unpack installer
+sh ${PKG}_${VERSION}_*_linux-run -extract=`pwd`
 
 # Unpack bundled installers and delete makeself executables
 ./${PKG}-linux64-rel-${VERSION}-*.run -nosymlink -noprompt -prefix=`pwd`/${TARBALL}
