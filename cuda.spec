@@ -466,7 +466,7 @@ find samples -name "Makefile" -exec sed -i -e 's|"/usr"|/usr|g' {} \;
 # Make samples build without specifying anything on the command line for the
 # include directories so people stop asking
 find samples -type f -exec sed -i -e 's|/bin/nvcc|/bin/nvcc --include-path %{_includedir}/cuda|g' {} \;
-find samples -name "Makefile" -exec sed -i -e 's|($CUDA_PATH)/include|%{_includedir}/cuda|g' {} \;
+find samples -name "Makefile" -exec sed -i -e 's|$(CUDA_PATH)/include|%{_includedir}/cuda|g' {} \;
 
 # Remove unused stuff
 rm -f doc/man/man1/cuda-install-samples-%{major_package_version}.sh.1
