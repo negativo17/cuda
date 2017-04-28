@@ -12,7 +12,7 @@
 
 Name:           cuda
 Version:        8.0.61
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -412,7 +412,11 @@ Provides:       %{name}-samples-%{major_package_version} = %{?epoch:%{epoch}:}%{
 Obsoletes:      %{name}-samples < %{?epoch:%{epoch}:}%{version}
 Provides:       %{name}-samples = %{?epoch:%{epoch}:}%{version}
 Requires:       cuda-devel = %{?epoch:%{epoch}:}%{version}
+%if 0%{?fedora}
+Requires:       compat-gcc-53-c++
+%else
 Requires:       gcc
+%endif
 Requires:       freeglut-devel
 Requires:       make
 Requires:       mesa-libGLU-devel
@@ -458,7 +462,7 @@ find . -name "*.hpp" -exec chmod 644 {} \;
 find . -name "*.bat" -delete
 find . -size 0 -delete
 
-# Works also with GCC 4.9+ but only if C++11 is not enabled
+# Works also with GCC 5.4+ but only if C++11 is not enabled
 sed -i -e '/#error -- unsupported GNU version!/d' include/host_config.h
 
 # Remove double quotes in samples' Makefiles (cosmetical)
@@ -944,6 +948,10 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Fri Apr 28 2017 Simone Caronni <negativo17@gmail.com> - 1:8.0.61-2
+- Requre GCC 5.3 compatibility package for samples instead of default GCC for
+  Fedora.
+
 * Mon Apr 03 2017 Simone Caronni <negativo17@gmail.com> - 1:8.0.61-1
 - Update to 8.0.61.
 
