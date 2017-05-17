@@ -12,7 +12,7 @@
 
 Name:           cuda
 Version:        8.0.61
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -70,12 +70,9 @@ BuildRequires:  prelink
 %endif
 
 Requires:       %{name}-libs%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-core-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-core-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-minimal-build-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-minimal-build-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-core-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-minimal-build-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description
 CUDA is a parallel computing platform and programming model that enables
@@ -87,8 +84,7 @@ Summary:        Compute Unified Device Architecture command-line tools
 Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-devel = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       expat >= 1.95
-Obsoletes:      %{name}-command-line-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-command-line-tools-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-command-line-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cli-tools
 Contains the command line tools to debug and profile CUDA applications.
@@ -96,12 +92,9 @@ Contains the command line tools to debug and profile CUDA applications.
 %package libs
 Summary:        Compute Unified Device Architecture native run-time library
 Requires(post): ldconfig
-Obsoletes:      %{name}-core-libs-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-core-libs-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
-Obsoletes:      %{name}-driver-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-driver-dev-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-license-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-license-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-core-libs-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-driver-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-license-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description libs
 Contains the CUDA run-time library required to run CUDA application natively.
@@ -119,8 +112,7 @@ Requires:       %{name}-cusparse = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-npp = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvgraph = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvrtc = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-runtime-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-runtime-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-runtime-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description extra-libs
 Metapackage that installs all runtime NVIDIA CUDA libraries.
@@ -128,8 +120,7 @@ Metapackage that installs all runtime NVIDIA CUDA libraries.
 %package cublas
 Summary:        NVIDIA CUDA Basic Linear Algebra Subroutines (cuBLAS) libraries
 Requires(post): ldconfig
-Obsoletes:      %{name}-cublas-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-cublas-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-cublas-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cublas
 The NVIDIA CUDA Basic Linear Algebra Subroutines (cuBLAS) library is a
@@ -139,8 +130,7 @@ to 17x faster performance than the latest MKL BLAS.
 %package cublas-devel
 Summary:        Development files for NVIDIA CUDA Basic Linear Algebra Subroutines (cuBLAS)
 Requires:       %{name}-cublas%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-cublas-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-cublas-dev-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-cublas-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description cublas-devel
 This package provides development files for the NVIDIA CUDA Basic Linear
@@ -149,8 +139,7 @@ Algebra Subroutines (cuBLAS) libraries.
 %package cudart
 Summary:        NVIDIA CUDA Runtime API library
 Requires(post): ldconfig
-Obsoletes:      %{name}-cudart-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-cudart-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-cudart-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cudart
 The runtime API eases device code management by providing implicit initialization,
@@ -169,8 +158,7 @@ is also language-independent as it only deals with cubin objects.
 %package cudart-devel
 Summary:        Development files for NVIDIA CUDA Runtime API library
 Requires:       %{name}-cudart%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-cudart-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-cudart-dev-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-cudart-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description cudart-devel
 This package provides development files for the NVIDIA CUDA Runtime API library
@@ -178,8 +166,7 @@ This package provides development files for the NVIDIA CUDA Runtime API library
 %package cufft
 Summary:        NVIDIA CUDA Fast Fourier Transform library (cuFFT) libraries
 Requires(post): ldconfig
-Obsoletes:      %{name}-cufft-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-cufft-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-cufft-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cufft
 The NVIDIA CUDA Fast Fourier Transform libraries (cuFFT) provide a simple
@@ -190,8 +177,7 @@ GPU without having to develop your own custom GPU FFT implementation.
 %package cufft-devel
 Summary:        Development files for NVIDIA CUDA Fast Fourier Transform library (cuFFT)
 Requires:       %{name}-cufft%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-cufft-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-cufft-dev-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-cufft-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description cufft-devel
 This package provides development files for the NVIDIA CUDA Fast Fourier
@@ -217,8 +203,7 @@ Interface (CUPTI) library.
 %package curand
 Summary:        NVIDIA CUDA Random Number Generation library (cuRAND)
 Requires(post): ldconfig
-Obsoletes:      %{name}-curand-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-curand-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-curand-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description curand
 The NVIDIA CUDA Random Number Generation library (cuRAND) delivers high
@@ -229,8 +214,7 @@ cores available in NVIDIA GPUs.
 %package curand-devel
 Summary:        Development files for NVIDIA CUDA Random Number Generation library (cuRAND)
 Requires:       %{name}-curand%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-curand-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-curand-dev-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-curand-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description curand-devel
 This package provides development files for the NVIDIA CUDA Random Number
@@ -239,8 +223,7 @@ Generation library (cuRAND).
 %package cusolver
 Summary:        NVIDIA cuSOLVER library
 Requires(post): ldconfig
-Obsoletes:      %{name}-cusolver-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-cusolver-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-cusolver-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cusolver
 The NVIDIA cuSOLVER library provides a collection of dense and sparse direct
@@ -250,8 +233,7 @@ Computational Chemistry, and Linear Optimization applications.
 %package cusolver-devel
 Summary:        Development files for NVIDIA cuSOLVER library
 Requires:       %{name}-cusolver%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-cusolver-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-cusolver-dev-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-cusolver-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description cusolver-devel
 This package provides development files for the NVIDIA cuSOLVER library.
@@ -259,8 +241,7 @@ This package provides development files for the NVIDIA cuSOLVER library.
 %package cusparse
 Summary:        NVIDIA CUDA Sparse Matrix library (cuSPARSE) library
 Requires(post): ldconfig
-Obsoletes:      %{name}-cusparse-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-cusparse-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-cusparse-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cusparse
 The NVIDIA CUDA Sparse Matrix library (cuSPARSE) provides a collection of basic
@@ -272,8 +253,7 @@ solver.
 %package cusparse-devel
 Summary:        Development files for NVIDIA CUDA Sparse Matrix library (cuSPARSE) library
 Requires:       %{name}-cusparse%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-cusparse-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-cusparse-dev-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-cusparse-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description cusparse-devel
 This package provides development files for the NVIDIA CUDA Sparse Matrix
@@ -282,8 +262,7 @@ library (cuSPARSE) library.
 %package npp
 Summary:        NVIDIA Performance Primitives libraries
 Requires(post): ldconfig
-Obsoletes:      %{name}-npp-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-npp-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-npp-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description npp
 The NVIDIA Performance Primitives library (NPP) is a collection of
@@ -296,8 +275,7 @@ performance in a matter of hours.
 %package npp-devel
 Summary:        Development files for NVIDIA Performance Primitives
 Requires:       %{name}-npp%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-npp-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-npp-dev-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-npp-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description npp-devel
 This package provides development files for the NVIDIA Performance Primitives
@@ -306,8 +284,7 @@ libraries.
 %package nvgraph
 Summary:        NVIDIA Graph Analytics library (nvGRAPH)
 Requires(post): ldconfig
-Obsoletes:      %{name}-nvgraph-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-nvgraph-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-nvgraph-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description nvgraph
 The NVIDIA Graph Analytics library (nvGRAPH) comprises of parallel algorithms
@@ -318,8 +295,7 @@ applications.
 %package nvgraph-devel
 Summary:        Development files for NVIDIA Graph Analytics library (nvGRAPH)
 Requires:       %{name}-nvgraph%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-nvgraph-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-nvgraph-dev-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-nvgraph-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description nvgraph-devel
 This package provides development files for the NVIDIA Graph Analytics library
@@ -331,8 +307,7 @@ This package provides development files for the NVIDIA Graph Analytics library
 Summary:        Development files for NVIDIA Management library (nvML)
 # Unversioned as it is provided by the driver's NVML library
 Requires:       %{name}-nvml%{_isa}
-Obsoletes:      %{name}-nvml-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-nvml-dev-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-nvml-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 # Latest standalone version released is 352.79
 Obsoletes:      nvidia-driver-NVML-devel < 2:352.80
 Provides:       nvidia-driver-NVML-devel = %{?epoch:%{epoch}:}%{version}
@@ -344,8 +319,7 @@ This package provides development files for the NVIDIA Management library
 %package nvrtc
 Summary:        NVRTC runtime compilation library
 Requires(post): ldconfig
-Obsoletes:      %{name}-nvrtc-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-nvrtc-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-nvrtc-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description nvrtc
 NVRTC is a runtime compilation library for CUDA C++. It accepts CUDA C++ source
@@ -358,8 +332,7 @@ possible in a purely offline static compilation.
 %package nvrtc-devel
 Summary:        Development files for the NVRTC runtime compilation library
 Requires:       %{name}-nvrtc%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-nvrtc-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-nvrtc-dev-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-nvrtc-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description nvrtc-devel
 This package provides development files for the NVRTC runtime compilation
@@ -382,12 +355,9 @@ Requires:       %{name}-nvgraph-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{r
 Requires:       %{name}-nvml-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvrtc-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       nvidia-driver-NVML%{_isa}
-Obsoletes:      %{name}-headers-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-headers-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
-Obsoletes:      %{name}-misc-headers-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-misc-headers-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
-Obsoletes:      %{name}-toolkit-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-toolkit-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-headers-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-misc-headers-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-toolkit-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Obsoletes:      %{name}-static < %{?epoch:%{epoch}:}%{version}
 Provides:       %{name}-static = %{?epoch:%{epoch}:}%{version}
 
@@ -397,18 +367,15 @@ This package provides the development files of the %{name} package.
 %package docs
 Summary:        Compute Unified Device Architecture toolkit documentation
 BuildArch:      noarch
-Obsoletes:      %{name}-documentation-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-documentation-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-documentation-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description docs
 Contains all guides and library documentation for CUDA.
 
 %package samples
 Summary:        Compute Unified Device Architecture toolkit samples
-Obsoletes:      %{name}-demo-suite-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-demo-suite-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
-Obsoletes:      %{name}-samples-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-samples-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-demo-suite-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-samples-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Obsoletes:      %{name}-samples < %{?epoch:%{epoch}:}%{version}
 Provides:       %{name}-samples = %{?epoch:%{epoch}:}%{version}
 Requires:       cuda-devel = %{?epoch:%{epoch}:}%{version}
@@ -430,8 +397,7 @@ Contains an extensive set of example CUDA programs.
 %package nsight
 Summary:        NVIDIA Nsight Eclipse Edition
 Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:      %{name}-visual-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:       %{name}-visual-tools-%{major_package_version} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-visual-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description nsight
 NVIDIA Nsight Eclipse Edition is a full-featured IDE powered by the Eclipse
@@ -948,6 +914,10 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Wed May 17 2017 Simone Caronni <negativo17@gmail.com> - 1:8.0.61-3
+- Do not obsolete/provide Nvidia CUDA repository packages, instead conflict with
+  them.
+
 * Fri Apr 28 2017 Simone Caronni <negativo17@gmail.com> - 1:8.0.61-2
 - Requre GCC 5.3 compatibility package for samples instead of default GCC for
   Fedora.
