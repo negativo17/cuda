@@ -12,7 +12,7 @@
 
 Name:           cuda
 Version:        8.0.61
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -95,6 +95,8 @@ Requires(post): ldconfig
 Conflicts:      %{name}-core-libs-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-driver-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-license-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+# Explicitly declare the dependency or libcuda.so.1()(64bit) will pull in xorg-x11-drv-cuda-libs
+Requires:       nvidia-driver-cuda-libs%{_isa}
 
 %description libs
 Contains the CUDA run-time library required to run CUDA application natively.
@@ -301,8 +303,6 @@ Conflicts:      %{name}-nvgraph-dev-%{major_package_version} < %{?epoch:%{epoch}
 This package provides development files for the NVIDIA Graph Analytics library
 (nvGRAPH).
 
-# Actual libnvidia-ml library (cuda-nvml) is in the Nvidia driver
-
 %package nvml-devel
 Summary:        Development files for NVIDIA Management library (nvML)
 # Unversioned as it is provided by the driver's NVML library
@@ -354,7 +354,6 @@ Requires:       %{name}-npp-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{relea
 Requires:       %{name}-nvgraph-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvml-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvrtc-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:       nvidia-driver-NVML%{_isa}
 Conflicts:      %{name}-headers-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-misc-headers-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-toolkit-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
@@ -914,6 +913,9 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Tue May 30 2017 Simone Caronni <negativo17@gmail.com> - 1:8.0.61-4
+- Explicitly declare nvidia-driver-cuda-libs dependency for libs subpackage.
+
 * Wed May 17 2017 Simone Caronni <negativo17@gmail.com> - 1:8.0.61-3
 - Do not obsolete/provide Nvidia CUDA repository packages, instead conflict with
   them.
