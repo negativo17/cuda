@@ -12,24 +12,32 @@
 
 Name:           cuda
 Version:        8.0.61
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
 URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64 %{ix86}
 
-# See Source1 for tarball generation - saves ~500MB.
-Source0:        %{name}-%{version}-x86_64.tar.xz
-Source1:        %{name}-generate-tarballs.sh
-Source2:        http://http.download.nvidia.com/cuda-toolkit/%{version}/cuda-gdb-%{version}.src.tar.gz
+# Makefiles inside the main makefile:
+# sh cuda_8.0.61_375.26_linux-run -extract=`pwd`
+#
+#  cuda-linux64-rel-8.0.61-21551265.run
+#  cuda-samples-linux-8.0.61-21551265.run
+#  NVIDIA-Linux-x86_64-375.26.run
 
-Source3:        %{name}.sh
-Source4:        %{name}.csh
-Source5:        nsight.desktop
-Source6:        nsight.appdata.xml
-Source7:        nvvp.desktop
-Source8:        nvvp.appdata.xml
+Source0:        %{name}-linux64-rel-%{version}-21551265.run
+Source1:        %{name}-samples-linux-%{version}-21551265.run
+# Patch to 8.0.61.2
+Source2:        %{name}_%{version}.2_linux-run
+Source3:        http://http.download.nvidia.com/cuda-toolkit/%{version}/cuda-gdb-%{version}.src.tar.gz
+
+Source10:        %{name}.sh
+Source11:        %{name}.csh
+Source12:        nsight.desktop
+Source13:        nsight.appdata.xml
+Source14:        nvvp.desktop
+Source15:        nvvp.appdata.xml
 
 Source20:       cublas.pc
 Source21:       cuda.pc
@@ -414,7 +422,21 @@ delivers developers vital feedback for optimizing CUDA C/C++ applications.
 
 
 %prep
-%setup -q -n %{name}-%{version}-x86_64
+%setup -q -n %{name}-%{version} -c -T
+
+# Unpack installers
+sh %{SOURCE0} -nosymlink -noprompt -prefix=`pwd`
+sh %{SOURCE1} -noprompt -cudaprefix=/usr -prefix=`pwd`/samples
+
+# cuBLAS patch
+sh %{SOURCE2} --installdir=`pwd` --accept-eula --silent
+rm -f lib64/lib{nv,cu}blas.so.%{version}
+
+# Remove bundled Java Runtime
+rm -fr jre
+
+# Remove stubs
+rm -fr lib64/stubs
 
 %ifarch x86_64
 
@@ -468,7 +490,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/profile.d/
 
 # Environment settings
 rm -f bin/nvcc.profile
-install -pm 644 %{SOURCE3} %{SOURCE4} %{buildroot}%{_sysconfdir}/profile.d
+install -pm 644 %{SOURCE10} %{SOURCE11} %{buildroot}%{_sysconfdir}/profile.d
 
 # Man pages
 rm -f doc/man/man1/cuda-install-samples-*
@@ -534,7 +556,7 @@ cp -fr libnsight %{buildroot}%{_libdir}/nsight
 cp -fr libnvvp %{buildroot}%{_libdir}/nvvp
 ln -sf %{_libdir}/nsight/nsight %{buildroot}%{_bindir}/
 ln -sf %{_libdir}/nvvp/nvvp %{buildroot}%{_bindir}/
-desktop-file-install --dir %{buildroot}%{_datadir}/applications/ %{SOURCE5} %{SOURCE7}
+desktop-file-install --dir %{buildroot}%{_datadir}/applications/ %{SOURCE12} %{SOURCE14}
 
 # Only Fedora and RHEL 7+ desktop-file-validate binaries can check multiple
 # desktop files at the same time
@@ -544,7 +566,7 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/nvvp.desktop
 %if 0%{?fedora} >= 25
 # install AppData and add modalias provides
 mkdir -p %{buildroot}%{_datadir}/appdata
-install -p -m 0644 %{SOURCE6} %{SOURCE8} %{buildroot}%{_datadir}/appdata/
+install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %endif
 
 %endif
@@ -913,6 +935,10 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Tue Jul 25 2017 Simone Caronni <negativo17@gmail.com> - 1:8.0.61-5
+- Add cuBLAS patch.
+- Switch to makeself based source entries.
+
 * Tue May 30 2017 Simone Caronni <negativo17@gmail.com> - 1:8.0.61-4
 - Explicitly declare nvidia-driver-cuda-libs dependency for libs subpackage.
 
