@@ -73,6 +73,7 @@ BuildRequires:  chrpath
 # For execstack removal
 %if 0%{?fedora} || 0%{?rhel} > 7
 BuildRequires:  execstack
+BuildRequires:  perl(Getopt::Long)
 %else
 BuildRequires:  prelink
 %endif
