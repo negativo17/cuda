@@ -564,7 +564,7 @@ desktop-file-install --dir %{buildroot}%{_datadir}/applications/ %{SOURCE12} %{S
 desktop-file-validate %{buildroot}%{_datadir}/applications/nsight.desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/nvvp.desktop
 
-%if 0%{?fedora} >= 25
+%if 0%{?fedora}
 # install AppData and add modalias provides
 mkdir -p %{buildroot}%{_datadir}/appdata
 install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
@@ -914,7 +914,7 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 
 %files nsight
 %{_bindir}/nsight
-%if 0%{?fedora} >= 25
+%if 0%{?fedora}
 %{_datadir}/appdata/nsight.appdata.xml
 %endif
 %{_datadir}/applications/nsight.desktop
@@ -925,7 +925,7 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %files nvvp
 %{_bindir}/computeprof
 %{_bindir}/nvvp
-%if 0%{?fedora} >= 25
+%if 0%{?fedora}
 %{_datadir}/appdata/nvvp.appdata.xml
 %endif
 %{_datadir}/applications/nvvp.desktop
