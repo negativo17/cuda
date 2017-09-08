@@ -12,7 +12,7 @@
 
 Name:           cuda
 Version:        8.0.61
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -530,7 +530,7 @@ install -pm 644 %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24} \
     %{SOURCE37} %{SOURCE38} %{SOURCE39} %{SOURCE40} %{SOURCE41} %{SOURCE42} \
     %{SOURCE43} %{SOURCE44} %{SOURCE45} %{buildroot}/%{_libdir}/pkgconfig
 sed -i -e 's|CUDA_VERSION|%{version}|g' \
-    -e 's|LIBDIR|%{_libdir}|g' -e 's|INCLUDE_DIR|%{_includedir}|g' \
+    -e 's|LIBDIR|%{_libdir}|g' -e 's|INCLUDE_DIR|%{_includedir}/cuda|g' \
     %{buildroot}/%{_libdir}/pkgconfig/*.pc
 
 # Binaries
@@ -936,6 +936,10 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Fri Sep 08 2017 Simone Caronni <negativo17@gmail.com> - 1:8.0.61-6
+- Fix include path in pkg-config files:
+  https://github.com/negativo17/cuda/issues/4
+
 * Tue Jul 25 2017 Simone Caronni <negativo17@gmail.com> - 1:8.0.61-5
 - Add cuBLAS patch.
 - Switch to makeself based source entries.
