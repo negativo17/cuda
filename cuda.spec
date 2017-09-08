@@ -12,7 +12,7 @@
 
 Name:           cuda
 Version:        9.0.103
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -530,7 +530,7 @@ install -pm 644 \
     %{SOURCE43} %{SOURCE44} %{SOURCE45} \
     %{buildroot}/%{_libdir}/pkgconfig
 sed -i -e 's|CUDA_VERSION|%{version}|g' \
-    -e 's|LIBDIR|%{_libdir}|g' -e 's|INCLUDE_DIR|%{_includedir}|g' \
+    -e 's|LIBDIR|%{_libdir}|g' -e 's|INCLUDE_DIR|%{_includedir}/cuda|g' \
     %{buildroot}/%{_libdir}/pkgconfig/*.pc
 
 # Binaries
@@ -950,6 +950,10 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Fri Sep 08 2017 Simone Caronni <negativo17@gmail.com> - 1:9.0.103-3
+- Fix include path in pkg-config files:
+  https://github.com/negativo17/cuda/issues/4
+
 * Tue Aug 29 2017 Simone Caronni <negativo17@gmail.com> - 1:9.0.103-2
 - Update to 9.0.103 Release Candidate.
 
