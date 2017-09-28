@@ -9,10 +9,11 @@
 #global         __strip /bin/true
 %global         cuda_version 9.0
 %global         major_package_version 9-0
+%global         internal_build 22781540
 
 Name:           cuda
-Version:        9.0.103
-Release:        3%{?dist}
+Version:        9.0.176
+Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -20,22 +21,22 @@ URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64 %{ix86}
 
 # Makefiles inside the main makefile:
-# sh cuda_9.0.103_384.59_linux.run -extract=`pwd`
+# sh cuda_9.0.176_384.81_linux-run -extract=`pwd`
 #
-#  cuda-linux.9.0.103-22377686.run
-#  cuda-samples.9.0.103-22377686-linux.run
-#  NVIDIA-Linux-x86_64-384.59.run
+# cuda-linux.9.0.176-22781540.run
+# cuda-samples.9.0.176-22781540-linux.run
+# NVIDIA-Linux-x86_64-384.81.run
 
-Source0:        %{name}-linux.%{version}-22377686.run
-Source1:        %{name}-samples.%{version}-22377686-linux.run
-Source3:        http://http.download.nvidia.com/cuda-toolkit/%{version}/cuda-gdb-%{version}.src.tar.gz
+Source0:        %{name}-linux.%{version}-%{internal_build}.run
+Source1:        %{name}-samples.%{version}-%{internal_build}-linux.run
+#Source3:        http://http.download.nvidia.com/cuda-toolkit/%{version}/cuda-gdb-%{version}.src.tar.gz
 
-Source10:        %{name}.sh
-Source11:        %{name}.csh
-Source12:        nsight.desktop
-Source13:        nsight.appdata.xml
-Source14:        nvvp.desktop
-Source15:        nvvp.appdata.xml
+Source10:       %{name}.sh
+Source11:       %{name}.csh
+Source12:       nsight.desktop
+Source13:       nsight.appdata.xml
+Source14:       nvvp.desktop
+Source15:       nvvp.appdata.xml
 
 Source19:       accinj%{__isa_bits}.pc
 Source20:       cublas.pc
@@ -834,6 +835,7 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_includedir}/%{name}/cooperative_groups_helpers.h
 %{_includedir}/%{name}/cuComplex.h
 %{_includedir}/%{name}/cuda.h
+%{_includedir}/%{name}/cudaEGL.h
 %{_includedir}/%{name}/cudaGL.h
 %{_includedir}/%{name}/cudaProfiler.h
 %{_includedir}/%{name}/cudaVDPAU.h
@@ -950,6 +952,9 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Thu Sep 28 2017 Simone Caronni <negativo17@gmail.com> - 1:9.0.176-1
+- Update to final release of CUDA 9.
+
 * Fri Sep 08 2017 Simone Caronni <negativo17@gmail.com> - 1:9.0.103-3
 - Fix include path in pkg-config files:
   https://github.com/negativo17/cuda/issues/4
