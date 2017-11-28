@@ -13,7 +13,7 @@
 
 Name:           cuda
 Version:        9.0.176
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -388,7 +388,7 @@ Obsoletes:      %{name}-samples < %{?epoch:%{epoch}:}%{version}
 Provides:       %{name}-samples = %{?epoch:%{epoch}:}%{version}
 Requires:       cuda-devel = %{?epoch:%{epoch}:}%{version}
 %if 0%{?fedora}
-Requires:       compat-gcc-53-c++
+Requires:       compat-gcc-64-c++
 %else
 Requires:       gcc
 %endif
@@ -450,7 +450,11 @@ find . -size 0 -delete
 sed -i -e 's|`dirname $0`/..|%{_libdir}/nsight|g' bin/nsight_ee_plugins_manage.sh
 
 # Works also with GCC 5.4+ but only if C++11 is not enabled
-sed -i -e '/#error -- unsupported GNU version!/d' include/host_config.h
+sed -i -e '/#error -- unsupported GNU version!/d' include/crt/host_config.h
+
+# Hack for glibc 2.26
+# https://git.archlinux.org/svntogit/community.git/tree/trunk/PKGBUILD?h=packages/cuda#n59
+sed -i "1 i#define _BITS_FLOATN_H" include/host_defines.h
 
 # Remove double quotes in samples' Makefiles (cosmetical)
 find samples -name "Makefile" -exec sed -i -e 's|"/usr"|/usr|g' {} \;
@@ -952,6 +956,10 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Fri Nov 28 2017 Simone Caronni <negativo17@gmail.com> - 1:9.0.176-2
+- Require GCC 6.4 for samples.
+- Add hack for glibc 2.26+.
+
 * Thu Sep 28 2017 Simone Caronni <negativo17@gmail.com> - 1:9.0.176-1
 - Update to final release of CUDA 9.
 
