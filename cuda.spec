@@ -13,7 +13,7 @@
 
 Name:           cuda
 Version:        9.0.176
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -234,6 +234,7 @@ Generation library (cuRAND).
 %package cusolver
 Summary:        NVIDIA cuSOLVER library
 Requires(post): ldconfig
+Requires:       libgomp%{_isa}
 Conflicts:      %{name}-cusolver-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cusolver
@@ -956,7 +957,10 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
-* Fri Nov 28 2017 Simone Caronni <negativo17@gmail.com> - 1:9.0.176-2
+* Mon Dec 11 2017 Simone Caronni <negativo17@gmail.com> - 1:9.0.176-3
+- Library libcusolver requires libgomp.
+
+* Tue Nov 28 2017 Simone Caronni <negativo17@gmail.com> - 1:9.0.176-2
 - Require GCC 6.4 for samples.
 - Add hack for glibc 2.26+.
 
