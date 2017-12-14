@@ -7,13 +7,13 @@
 
 %global         debug_package %{nil}
 #global         __strip /bin/true
-%global         cuda_version 9.0
-%global         major_package_version 9-0
-%global         internal_build 22781540
+%global         cuda_version 9.1
+%global         major_package_version 9-1
+%global         internal_build 23083092
 
 Name:           cuda
-Version:        9.0.176
-Release:        3%{?dist}
+Version:        9.1.85
+Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -21,15 +21,14 @@ URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64 %{ix86}
 
 # Makefiles inside the main makefile:
-# sh cuda_9.0.176_384.81_linux-run -extract=`pwd`
+# sh cuda_9.1.85_387.26_linux.run -extract=`pwd`
 #
-# cuda-linux.9.0.176-22781540.run
-# cuda-samples.9.0.176-22781540-linux.run
-# NVIDIA-Linux-x86_64-384.81.run
+# cuda-linux.9.1.85-23083092.run
+# cuda-samples.9.1.85-23083092-linux.run
+# NVIDIA-Linux-x86_64-387.26.run
 
 Source0:        %{name}-linux.%{version}-%{internal_build}.run
 Source1:        %{name}-samples.%{version}-%{internal_build}-linux.run
-#Source3:        http://http.download.nvidia.com/cuda-toolkit/%{version}/cuda-gdb-%{version}.src.tar.gz
 
 Source10:       %{name}.sh
 Source11:       %{name}.csh
@@ -844,6 +843,7 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_includedir}/%{name}/cudaGL.h
 %{_includedir}/%{name}/cudaProfiler.h
 %{_includedir}/%{name}/cudaVDPAU.h
+%{_includedir}/%{name}/cuda_egl_interop.h
 %{_includedir}/%{name}/cuda_fp16.h
 %{_includedir}/%{name}/cuda_fp16.hpp
 %{_includedir}/%{name}/cuda_gl_interop.h
@@ -856,10 +856,7 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_includedir}/%{name}/device_atomic_functions.h
 %{_includedir}/%{name}/device_atomic_functions.hpp
 %{_includedir}/%{name}/device_double_functions.h
-%{_includedir}/%{name}/device_double_functions.hpp
 %{_includedir}/%{name}/device_functions.h
-%{_includedir}/%{name}/device_functions.hpp
-%{_includedir}/%{name}/device_functions_decls.h
 %{_includedir}/%{name}/device_launch_parameters.h
 %{_includedir}/%{name}/device_types.h
 %{_includedir}/%{name}/driver_functions.h
@@ -876,9 +873,6 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_includedir}/%{name}/library_types.h
 %{_includedir}/%{name}/math_constants.h
 %{_includedir}/%{name}/math_functions.h
-%{_includedir}/%{name}/math_functions.hpp
-%{_includedir}/%{name}/math_functions_dbl_ptx3.h
-%{_includedir}/%{name}/math_functions_dbl_ptx3.hpp
 %{_includedir}/%{name}/mma.h
 %{_includedir}/%{name}/nvToolsExt.h
 %{_includedir}/%{name}/nvToolsExtCuda.h
@@ -957,6 +951,9 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Wed Dec 13 2017 Simone Caronni <negativo17@gmail.com> - 1:9.1.85-1
+- Update to 9.1.85.
+
 * Mon Dec 11 2017 Simone Caronni <negativo17@gmail.com> - 1:9.0.176-3
 - Library libcusolver requires libgomp.
 
