@@ -5,4 +5,4 @@ Name: nvml
 Description: NVML
 Version: CUDA_VERSION
 Libs: -L${libdir} -lnvml
-Cflags: -I${includedir} 
+Cflags: -I${includedir}

@@ -5,4 +5,4 @@ Name: nvgraph
 Description: NVIDIA Accelerated Graph Analytics
 Version: CUDA_VERSION
 Libs: -L${libdir} -lnvgraph
-Cflags: -I${includedir} 
+Cflags: -I${includedir}

@@ -5,4 +5,4 @@ Name: cufftw
 Description: CUDA Fast Fourier Transform Wide
 Version: CUDA_VERSION
 Libs: -L${libdir} -lcufftw
-Cflags: -I${includedir} 
+Cflags: -I${includedir}

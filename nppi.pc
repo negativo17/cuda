@@ -5,4 +5,4 @@ Name: nppi
 Description: NVIDIA Performance Primitives - Image Processing
 Version: CUDA_VERSION
 Libs: -L${libdir} -lnppi
-Cflags: -I${includedir} 
+Cflags: -I${includedir}

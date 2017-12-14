@@ -5,4 +5,4 @@ Name: nvrtc
 Description: A runtime compilation library for CUDA C++
 Version: CUDA_VERSION
 Libs: -L${libdir} -lnvrtc
-Cflags: -I${includedir} 
+Cflags: -I${includedir}

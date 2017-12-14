@@ -5,4 +5,4 @@ Name: cuinj64
 Description: CUDA 64-bit Injection Library
 Version: CUDA_VERSION
 Libs: -L${libdir} -lcuinj64
-Cflags: -I${includedir} 
+Cflags: -I${includedir}
