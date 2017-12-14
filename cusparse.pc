@@ -5,4 +5,4 @@ Name: cusparse
 Description: CUDA Sparse Matrix Library
 Version: CUDA_VERSION
 Libs: -L${libdir} -lcusparse
-Cflags: -I${includedir} 
+Cflags: -I${includedir}

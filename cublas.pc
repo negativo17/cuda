@@ -5,4 +5,4 @@ Name: cublas
 Description: CUDA Basic Linear Algebra Subprograms
 Version: CUDA_VERSION
 Libs: -L${libdir} -lcublas
-Cflags: -I${includedir} 
+Cflags: -I${includedir}

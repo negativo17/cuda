@@ -5,4 +5,4 @@ Name: npps
 Description: NVIDIA Performance Primitives - Signal Processing
 Version: CUDA_VERSION
 Libs: -L${libdir} -lnpps
-Cflags: -I${includedir} 
+Cflags: -I${includedir}
