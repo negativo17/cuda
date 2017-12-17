@@ -13,7 +13,7 @@
 
 Name:           cuda
 Version:        9.1.85
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -388,7 +388,7 @@ Obsoletes:      %{name}-samples < %{?epoch:%{epoch}:}%{version}
 Provides:       %{name}-samples = %{?epoch:%{epoch}:}%{version}
 Requires:       cuda-devel = %{?epoch:%{epoch}:}%{version}
 %if 0%{?fedora}
-Requires:       compat-gcc-64-c++
+Requires:       cuda-gcc-c++
 %else
 Requires:       gcc
 %endif
@@ -951,6 +951,9 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Sun Dec 17 2017 Simone Caronni <negativo17@gmail.com> - 1:9.1.85-2
+- Replace compat-gcc-64-c++ with cuda-gcc-c++.
+
 * Wed Dec 13 2017 Simone Caronni <negativo17@gmail.com> - 1:9.1.85-1
 - Update to 9.1.85.
 
