@@ -7,12 +7,13 @@
 
 %global         debug_package %{nil}
 #global         __strip /bin/true
-%global         cuda_version 8.0
-%global         major_package_version 8-0
+%global         cuda_version 9.1
+%global         major_package_version 9-1
+%global         internal_build 23083092
 
 Name:           cuda
-Version:        8.0.61
-Release:        7%{?dist}
+Version:        9.1.85
+Release:        2%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -20,31 +21,29 @@ URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64 %{ix86}
 
 # Makefiles inside the main makefile:
-# sh cuda_8.0.61_375.26_linux-run -extract=`pwd`
+# sh cuda_9.1.85_387.26_linux.run -extract=`pwd`
 #
-#  cuda-linux64-rel-8.0.61-21551265.run
-#  cuda-samples-linux-8.0.61-21551265.run
-#  NVIDIA-Linux-x86_64-375.26.run
+# cuda-linux.9.1.85-23083092.run
+# cuda-samples.9.1.85-23083092-linux.run
+# NVIDIA-Linux-x86_64-387.26.run
 
-Source0:        %{name}-linux64-rel-%{version}-21551265.run
-Source1:        %{name}-samples-linux-%{version}-21551265.run
-# Patch to 8.0.61.2
-Source2:        %{name}_%{version}.2_linux-run
-Source3:        http://http.download.nvidia.com/cuda-toolkit/%{version}/cuda-gdb-%{version}.src.tar.gz
+Source0:        %{name}-linux.%{version}-%{internal_build}.run
+Source1:        %{name}-samples.%{version}-%{internal_build}-linux.run
 
-Source10:        %{name}.sh
-Source11:        %{name}.csh
-Source12:        nsight.desktop
-Source13:        nsight.appdata.xml
-Source14:        nvvp.desktop
-Source15:        nvvp.appdata.xml
+Source10:       %{name}.sh
+Source11:       %{name}.csh
+Source12:       nsight.desktop
+Source13:       nsight.appdata.xml
+Source14:       nvvp.desktop
+Source15:       nvvp.appdata.xml
 
+Source19:       accinj%{__isa_bits}.pc
 Source20:       cublas.pc
 Source21:       cuda.pc
 Source22:       cudart.pc
 Source23:       cufft.pc
 Source24:       cufftw.pc
-Source25:       cuinj64.pc
+Source25:       cuinj%{__isa_bits}.pc
 Source26:       curand.pc
 Source27:       cusolver.pc
 Source28:       cusparse.pc
@@ -389,7 +388,7 @@ Obsoletes:      %{name}-samples < %{?epoch:%{epoch}:}%{version}
 Provides:       %{name}-samples = %{?epoch:%{epoch}:}%{version}
 Requires:       cuda-devel = %{?epoch:%{epoch}:}%{version}
 %if 0%{?fedora}
-Requires:       compat-gcc-53-c++
+Requires:       cuda-gcc-c++
 %else
 Requires:       gcc
 %endif
@@ -430,10 +429,6 @@ delivers developers vital feedback for optimizing CUDA C/C++ applications.
 sh %{SOURCE0} -nosymlink -noprompt -prefix=`pwd`
 sh %{SOURCE1} -noprompt -cudaprefix=/usr -prefix=`pwd`/samples
 
-# cuBLAS patch
-sh %{SOURCE2} --installdir=`pwd` --accept-eula --silent
-rm -f lib64/lib{nv,cu}blas.so.%{version}
-
 # Remove bundled Java Runtime
 rm -fr jre
 
@@ -451,8 +446,15 @@ find . -name "*.hpp" -exec chmod 644 {} \;
 find . -name "*.bat" -delete
 find . -size 0 -delete
 
+# Adjust path for NSight plugin
+sed -i -e 's|`dirname $0`/..|%{_libdir}/nsight|g' bin/nsight_ee_plugins_manage.sh
+
 # Works also with GCC 5.4+ but only if C++11 is not enabled
-sed -i -e '/#error -- unsupported GNU version!/d' include/host_config.h
+sed -i -e '/#error -- unsupported GNU version!/d' include/crt/host_config.h
+
+# Hack for glibc 2.26
+# https://git.archlinux.org/svntogit/community.git/tree/trunk/PKGBUILD?h=packages/cuda#n59
+sed -i "1 i#define _BITS_FLOATN_H" include/host_defines.h
 
 # Remove double quotes in samples' Makefiles (cosmetical)
 find samples -name "Makefile" -exec sed -i -e 's|"/usr"|/usr|g' {} \;
@@ -525,11 +527,13 @@ rm -f %{buildroot}%{_libdir}/libOpenCL.so*
 ln -sf libnvidia-ml.so.1 %{buildroot}%{_libdir}/libnvidia-ml.so
 
 # pkg-config files
-install -pm 644 %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24} \
+install -pm 644 \
+    %{SOURCE19} %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24} \
     %{SOURCE25} %{SOURCE26} %{SOURCE27} %{SOURCE28} %{SOURCE29} %{SOURCE30} \
     %{SOURCE31} %{SOURCE32} %{SOURCE33} %{SOURCE34} %{SOURCE35} %{SOURCE36} \
     %{SOURCE37} %{SOURCE38} %{SOURCE39} %{SOURCE40} %{SOURCE41} %{SOURCE42} \
-    %{SOURCE43} %{SOURCE44} %{SOURCE45} %{buildroot}/%{_libdir}/pkgconfig
+    %{SOURCE43} %{SOURCE44} %{SOURCE45} \
+    %{buildroot}/%{_libdir}/pkgconfig
 sed -i -e 's|CUDA_VERSION|%{version}|g' \
     -e 's|LIBDIR|%{_libdir}|g' -e 's|INCLUDE_DIR|%{_includedir}/cuda|g' \
     %{buildroot}/%{_libdir}/pkgconfig/*.pc
@@ -558,6 +562,7 @@ cp -fr libnsight %{buildroot}%{_libdir}/nsight
 cp -fr libnvvp %{buildroot}%{_libdir}/nvvp
 ln -sf %{_libdir}/nsight/nsight %{buildroot}%{_bindir}/
 ln -sf %{_libdir}/nvvp/nvvp %{buildroot}%{_bindir}/
+cp -fr nsightee_plugins %{buildroot}%{_libdir}/nsight/
 desktop-file-install --dir %{buildroot}%{_datadir}/applications/ %{SOURCE12} %{SOURCE14}
 
 # Only Fedora and RHEL 7+ desktop-file-validate binaries can check multiple
@@ -585,6 +590,8 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 
 %post -p /sbin/ldconfig
 
+%post cli-tools -p /sbin/ldconfig
+
 %post libs -p /sbin/ldconfig
 
 %post cublas -p /sbin/ldconfig
@@ -608,6 +615,8 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %post nvrtc -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
+
+%postun cli-tools -p /sbin/ldconfig
 
 %postun libs -p /sbin/ldconfig
 
@@ -684,9 +693,9 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 
 %files libs
 %license EULA.txt
+%{_libdir}/libaccinj%{__isa_bits}.so.*
 %{_libdir}/libcudart.so.*
 %{_libdir}/libcuinj%{__isa_bits}.so.*
-%{_libdir}/libnvToolsExt.so.*
 %{_libdir}/libnvvm.so.*
 
 %files cublas
@@ -826,12 +835,17 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_includedir}/%{name}/builtin_types.h
 %{_includedir}/%{name}/channel_descriptor.h
 %{_includedir}/%{name}/common_functions.h
+%{_includedir}/%{name}/cooperative_groups.h
+%{_includedir}/%{name}/cooperative_groups_helpers.h
 %{_includedir}/%{name}/cuComplex.h
 %{_includedir}/%{name}/cuda.h
+%{_includedir}/%{name}/cudaEGL.h
 %{_includedir}/%{name}/cudaGL.h
 %{_includedir}/%{name}/cudaProfiler.h
 %{_includedir}/%{name}/cudaVDPAU.h
+%{_includedir}/%{name}/cuda_egl_interop.h
 %{_includedir}/%{name}/cuda_fp16.h
+%{_includedir}/%{name}/cuda_fp16.hpp
 %{_includedir}/%{name}/cuda_gl_interop.h
 %{_includedir}/%{name}/cuda_occupancy.h
 %{_includedir}/%{name}/cuda_profiler_api.h
@@ -839,18 +853,18 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_includedir}/%{name}/cuda_texture_types.h
 %{_includedir}/%{name}/cuda_vdpau_interop.h
 %{_includedir}/%{name}/cudalibxt.h
-%{_includedir}/%{name}/cuviddec.h
 %{_includedir}/%{name}/device_atomic_functions.h
 %{_includedir}/%{name}/device_atomic_functions.hpp
 %{_includedir}/%{name}/device_double_functions.h
-%{_includedir}/%{name}/device_double_functions.hpp
 %{_includedir}/%{name}/device_functions.h
-%{_includedir}/%{name}/device_functions.hpp
-%{_includedir}/%{name}/device_functions_decls.h
 %{_includedir}/%{name}/device_launch_parameters.h
 %{_includedir}/%{name}/device_types.h
 %{_includedir}/%{name}/driver_functions.h
 %{_includedir}/%{name}/driver_types.h
+%{_includedir}/%{name}/dynlink_cuda.h
+%{_includedir}/%{name}/dynlink_cuda_cuda.h
+%{_includedir}/%{name}/dynlink_cuviddec.h
+%{_includedir}/%{name}/dynlink_nvcuvid.h
 %{_includedir}/%{name}/fatBinaryCtl.h
 %{_includedir}/%{name}/fatbinary.h
 %{_includedir}/%{name}/fortran  
@@ -859,14 +873,11 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_includedir}/%{name}/library_types.h
 %{_includedir}/%{name}/math_constants.h
 %{_includedir}/%{name}/math_functions.h
-%{_includedir}/%{name}/math_functions.hpp
-%{_includedir}/%{name}/math_functions_dbl_ptx3.h
-%{_includedir}/%{name}/math_functions_dbl_ptx3.hpp
+%{_includedir}/%{name}/mma.h
 %{_includedir}/%{name}/nvToolsExt.h
 %{_includedir}/%{name}/nvToolsExtCuda.h
 %{_includedir}/%{name}/nvToolsExtMeta.h
 %{_includedir}/%{name}/nvToolsExtSync.h
-%{_includedir}/%{name}/nvcuvid.h
 %{_includedir}/%{name}/nvfunctional
 %{_includedir}/%{name}/nvvm.h
 %{_includedir}/%{name}/sm_20_atomic_functions.h
@@ -899,10 +910,12 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_includedir}/%{name}/vector_functions.h
 %{_includedir}/%{name}/vector_functions.hpp
 %{_includedir}/%{name}/vector_types.h
+%{_libdir}/libaccinj%{__isa_bits}.so
 %{_libdir}/libcuinj%{__isa_bits}.so
 %{_libdir}/libnvvm.so
 %{_mandir}/man3/*
 %{_mandir}/man7/*
+%{_libdir}/pkgconfig/accinj64.pc
 %{_libdir}/pkgconfig/cuda.pc
 %{_libdir}/pkgconfig/cuinj64.pc
 
@@ -915,6 +928,7 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 
 %files nsight
 %{_bindir}/nsight
+%{_bindir}/nsight_ee_plugins_manage.sh
 %if 0%{?fedora}
 %{_datadir}/appdata/nsight.appdata.xml
 %endif
@@ -937,6 +951,12 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Sun Dec 17 2017 Simone Caronni <negativo17@gmail.com> - 1:9.1.85-2
+- Replace compat-gcc-53 with cuda-gcc.
+- Update to 9.1.85.
+- Require GCC 6.4 for samples.
+- Add hack for glibc 2.26+.
+
 * Thu Dec 14 2017 Simone Caronni <negativo17@gmail.com> - 1:8.0.61-7
 - Library libcusolver requires libgomp.
 
