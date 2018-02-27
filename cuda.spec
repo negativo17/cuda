@@ -317,9 +317,6 @@ Summary:        Development files for NVIDIA Management library (nvML)
 # Unversioned as it is provided by the driver's NVML library
 Requires:       %{name}-nvml%{_isa}
 Conflicts:      %{name}-nvml-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-# Latest standalone version released is 352.79
-Obsoletes:      nvidia-driver-NVML-devel < 2:352.80
-Provides:       nvidia-driver-NVML-devel = %{?epoch:%{epoch}:}%{version}
 
 %description nvml-devel
 This package provides development files for the NVIDIA Management library
