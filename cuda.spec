@@ -13,7 +13,7 @@
 
 Name:           cuda
 Version:        9.1.85
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -36,6 +36,7 @@ Source12:       nsight.desktop
 Source13:       nsight.appdata.xml
 Source14:       nvvp.desktop
 Source15:       nvvp.appdata.xml
+Source16:       nvcc.profile
 
 Source19:       accinj%{__isa_bits}.pc
 Source20:       cublas.pc
@@ -490,7 +491,6 @@ mkdir -p %{buildroot}%{_mandir}/man{1,3,7}/
 mkdir -p %{buildroot}%{_sysconfdir}/profile.d/
 
 # Environment settings
-rm -f bin/nvcc.profile
 install -pm 644 %{SOURCE10} %{SOURCE11} %{buildroot}%{_sysconfdir}/profile.d
 
 # Man pages
@@ -531,9 +531,14 @@ install -pm 644 \
     %{SOURCE37} %{SOURCE38} %{SOURCE39} %{SOURCE40} %{SOURCE41} %{SOURCE42} \
     %{SOURCE43} %{SOURCE44} %{SOURCE45} \
     %{buildroot}/%{_libdir}/pkgconfig
+
+# nvcc settings
+install -pm 644 %{SOURCE16} %{buildroot}%{_bindir}/
+
+# Set proper variables
 sed -i -e 's|CUDA_VERSION|%{version}|g' \
     -e 's|LIBDIR|%{_libdir}|g' -e 's|INCLUDE_DIR|%{_includedir}/cuda|g' \
-    %{buildroot}/%{_libdir}/pkgconfig/*.pc
+    %{buildroot}/%{_libdir}/pkgconfig/*.pc %{buildroot}/%{_bindir}/nvcc.profile
 
 # Binaries
 cp -fr bin/* nvvm/bin/* %{buildroot}%{_bindir}/
@@ -662,6 +667,7 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_bindir}/gpu-library-advisor
 %{_bindir}/fatbinary
 %{_bindir}/nvcc
+%{_bindir}/nvcc.profile
 %{_bindir}/nvlink
 %{_bindir}/nvprune
 %{_bindir}/ptxas
@@ -948,6 +954,10 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Thu Mar 01 2018 Simone Caronni <negativo17@gmail.com> - 1:9.1.85-3
+- Re-add nvcc.profile in place of some environment variables. Used by CMake
+  programs to find variables through nvcc verbose mode.
+
 * Sun Dec 17 2017 Simone Caronni <negativo17@gmail.com> - 1:9.1.85-2
 - Replace compat-gcc-53 with cuda-gcc.
 - Update to 9.1.85.
