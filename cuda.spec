@@ -82,6 +82,9 @@ Requires:       %{name}-libs%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-core-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-minimal-build-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-gpu-library-advisor-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-nvcc-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-nvprune-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description
 CUDA is a parallel computing platform and programming model that enables
@@ -94,6 +97,10 @@ Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-devel = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       expat >= 1.95
 Conflicts:      %{name}-command-line-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-gdb-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-memcheck-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-nvdisasm-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-nvprof-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cli-tools
 Contains the command line tools to debug and profile CUDA applications.
@@ -104,6 +111,7 @@ Requires(post): ldconfig
 Conflicts:      %{name}-core-libs-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-driver-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-license-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-libraries-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 # Explicitly declare the dependency or libcuda.so.1()(64bit) will pull in xorg-x11-drv-cuda-libs
 Requires:       nvidia-driver-cuda-libs%{_isa}
 
@@ -123,6 +131,7 @@ Requires:       %{name}-cusparse = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-npp = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvgraph = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvrtc = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:       %{name}-nvtx = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-runtime-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description extra-libs
@@ -197,6 +206,7 @@ Transform library (cuFFT) libraries.
 %package cupti
 Summary:        NVIDIA CUDA Profiling Tools Interface (CUPTI) library
 Requires(post): ldconfig
+Conflicts:      %{name}-cupti-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cupti
 The NVIDIA CUDA Profiling Tools Interface (CUPTI) provides performance analysis
@@ -206,6 +216,7 @@ system.
 %package cupti-devel
 Summary:        Development files for NVIDIA CUDA Profiling Tools Interface (CUPTI) library
 Requires:       %{name}-cupti%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-cupti-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cupti-devel
 This package provides development files for the NVIDIA CUDA Profiling Tools
@@ -345,6 +356,24 @@ Conflicts:      %{name}-nvrtc-dev-%{major_package_version} < %{?epoch:%{epoch}:}
 This package provides development files for the NVRTC runtime compilation
 library.
 
+%package nvtx
+Summary:        NVIDIA Tools Extension
+Requires(post): ldconfig
+Conflicts:      %{name}-nvtx-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description nvtx
+A C-based API for annotating events, code ranges, and resources in your
+applications. Applications which integrate NVTX can use the Visual Profiler to
+capture and visualize these events and ranges.
+
+%package nvtx-devel
+Summary:        Development files for NVIDIA Tools Extension
+Requires:       %{name}-nvtx%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-nvtx-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
+
+%description nvtx-devel
+This package provides development files for the NVIDIA Tools Extension.
+
 %package devel
 Summary:        Development files for %{name}
 Requires:       %{name}%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -361,7 +390,9 @@ Requires:       %{name}-npp-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{relea
 Requires:       %{name}-nvgraph-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvml-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvrtc-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:       %{name}-nvtx-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-headers-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
+Conflicts:      %{name}-libraries-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-misc-headers-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-toolkit-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Obsoletes:      %{name}-static < %{?epoch:%{epoch}:}%{version}
@@ -414,6 +445,7 @@ set of commercial and free plugins.
 %package nvvp
 Summary:        NVIDIA Visual Profiler
 Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-nvvp-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description nvvp
 The NVIDIA Visual Profiler is a cross-platform performance profiling tool that
@@ -718,20 +750,29 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %files cudart
 %license EULA.txt
 %{_libdir}/libcudart.so.*
-%{_libdir}/libnvToolsExt.so.*
 
 %files cudart-devel
 %{_includedir}/%{name}/crt
 %{_includedir}/%{name}/cuda_device_runtime_api.h
 %{_includedir}/%{name}/cuda_runtime.h
 %{_includedir}/%{name}/cuda_runtime_api.h
-%{_includedir}/%{name}/nvToolsExtCudaRt.h
 %{_libdir}/libcudadevrt.a
 %{_libdir}/libcudart_static.a
 %{_libdir}/libcudart.so
 %{_libdir}/libculibos.a
-%{_libdir}/libnvToolsExt.so
 %{_libdir}/pkgconfig/cudart.pc
+
+%files nvtx
+%license EULA.txt
+%{_libdir}/libnvToolsExt.so.*
+
+%files nvtx-devel
+%{_includedir}/%{name}/nvToolsExt.h
+%{_includedir}/%{name}/nvToolsExtCuda.h
+%{_includedir}/%{name}/nvToolsExtCudaRt.h
+%{_includedir}/%{name}/nvToolsExtMeta.h
+%{_includedir}/%{name}/nvToolsExtSync.h
+%{_libdir}/libnvToolsExt.so
 %{_libdir}/pkgconfig/nvToolsExt.pc
 
 %files cufft
@@ -877,10 +918,6 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_includedir}/%{name}/math_constants.h
 %{_includedir}/%{name}/math_functions.h
 %{_includedir}/%{name}/mma.h
-%{_includedir}/%{name}/nvToolsExt.h
-%{_includedir}/%{name}/nvToolsExtCuda.h
-%{_includedir}/%{name}/nvToolsExtMeta.h
-%{_includedir}/%{name}/nvToolsExtSync.h
 %{_includedir}/%{name}/nvfunctional
 %{_includedir}/%{name}/nvvm.h
 %{_includedir}/%{name}/sm_20_atomic_functions.h
@@ -957,6 +994,9 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 * Thu Mar 01 2018 Simone Caronni <negativo17@gmail.com> - 1:9.1.85-3
 - Re-add nvcc.profile in place of some environment variables. Used by CMake
   programs to find variables through nvcc verbose mode.
+- Split Tools Extension out of CUDA runtime in its own package like upstream
+  packages.
+- Conflict also with the new upstream subpackages introduced in CUDA 9.1.
 
 * Sun Dec 17 2017 Simone Caronni <negativo17@gmail.com> - 1:9.1.85-2
 - Replace compat-gcc-64-c++ with cuda-gcc-c++.
