@@ -38,13 +38,15 @@ Source14:       nvvp.desktop
 Source15:       nvvp.appdata.xml
 Source16:       nvcc.profile
 
-Source19:       accinj%{__isa_bits}.pc
+#Source19:       accinj%{__isa_bits}.pc
+Source19:       accinj64.pc
 Source20:       cublas.pc
 Source21:       cuda.pc
 Source22:       cudart.pc
 Source23:       cufft.pc
 Source24:       cufftw.pc
-Source25:       cuinj%{__isa_bits}.pc
+#Source25:       cuinj%{__isa_bits}.pc
+Source25:       cuinj64.pc
 Source26:       curand.pc
 Source27:       cusolver.pc
 Source28:       cusparse.pc
@@ -648,6 +650,8 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 
 %post nvrtc -p /sbin/ldconfig
 
+%post nvtx -p /sbin/ldconfig
+
 %postun -p /sbin/ldconfig
 
 %postun cli-tools -p /sbin/ldconfig
@@ -673,6 +677,8 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %postun nvgraph -p /sbin/ldconfig
 
 %postun nvrtc -p /sbin/ldconfig
+
+%postun nvtx -p /sbin/ldconfig
 
 %post nsight
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
