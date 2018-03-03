@@ -13,7 +13,7 @@
 
 Name:           cuda
 Version:        9.1.85
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -471,6 +471,9 @@ rm -fr lib64/stubs
 
 # Remove RUNPATH on binaries
 chrpath -d nvvm/bin/cicc
+
+# Replaced later
+rm -f bin/nvcc.profile
 
 # RPMlint issues
 find . -name "*.h" -exec chmod 644 {} \;
@@ -997,6 +1000,9 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Sat Mar 03 2018 Simone Caronni <negativo17@gmail.com> - 1:9.1.85-4
+- Fix nvcc.profile being replaced by default one.
+
 * Thu Mar 01 2018 Simone Caronni <negativo17@gmail.com> - 1:9.1.85-3
 - Re-add nvcc.profile in place of some environment variables. Used by CMake
   programs to find variables through nvcc verbose mode.
