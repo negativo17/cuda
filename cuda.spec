@@ -36,6 +36,9 @@ Source1:        %{name}-samples.%{version}-%{internal_build}-linux.run
 Source2:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/patches/1/%{name}_%{cuda_version_ga}.1_linux
 Source3:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/patches/2/%{name}_%{cuda_version_ga}.2_linux
 Source4:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/patches/3/%{name}_%{cuda_version_ga}.3_linux
+# Updated to the latest patches:
+# https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html
+Source5:        https://docs.nvidia.com/%{name}/pdf/CUDA_Toolkit_Release_Notes.pdf
 
 Source10:       %{name}.sh
 Source11:       %{name}.csh
@@ -470,6 +473,9 @@ sh %{SOURCE1} -noprompt -cudaprefix=/usr -prefix=`pwd`/samples
 sh %{SOURCE2} --silent --accept-eula --installdir=`pwd`
 sh %{SOURCE3} --silent --accept-eula --installdir=`pwd`
 sh %{SOURCE4} --silent --accept-eula --installdir=`pwd`
+
+# Updated release notes
+cp -f %{SOURCE5} doc/pdf/
 
 # Remove bundled Java Runtime
 rm -fr jre
@@ -1011,7 +1017,7 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 
 %changelog
 * Wed Mar 07 2018 Simone Caronni <negativo17@gmail.com> - 1:9.1.85.3-5
-- Add CUDA 9.1 patches.
+- Add CUDA 9.1 patches and updated release notes.
 
 * Sat Mar 03 2018 Simone Caronni <negativo17@gmail.com> - 1:9.1.85-4
 - Fix nvcc.profile being replaced by default one.
