@@ -7,19 +7,23 @@
 
 %global         debug_package %{nil}
 #global         __strip /bin/true
+
+# Versions
 %global         cuda_version 9.1
+%global         cuda_version_ga %{cuda_version}.85
 %global         major_package_version 9-1
 %global         internal_build 23083092
 
 Name:           cuda
-Version:        9.1.85
-Release:        4%{?dist}
+Version:        9.1.85.3
+Release:        5%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
 URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64 %{ix86}
 
+# Source0:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/local_installers/cuda_${cuda_version_ga}_387.26_linux
 # Makefiles inside the main makefile:
 # sh cuda_9.1.85_387.26_linux.run -extract=`pwd`
 #
@@ -29,6 +33,9 @@ ExclusiveArch:  x86_64 %{ix86}
 
 Source0:        %{name}-linux.%{version}-%{internal_build}.run
 Source1:        %{name}-samples.%{version}-%{internal_build}-linux.run
+Source2:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/patches/1/%{name}_%{cuda_version_ga}.1_linux
+Source3:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/patches/2/%{name}_%{cuda_version_ga}.2_linux
+Source4:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/patches/3/%{name}_%{cuda_version_ga}.3_linux
 
 Source10:       %{name}.sh
 Source11:       %{name}.csh
@@ -460,6 +467,9 @@ delivers developers vital feedback for optimizing CUDA C/C++ applications.
 # Unpack installers
 sh %{SOURCE0} -nosymlink -noprompt -prefix=`pwd`
 sh %{SOURCE1} -noprompt -cudaprefix=/usr -prefix=`pwd`/samples
+sh %{SOURCE2} --silent --accept-eula --installdir=`pwd`
+sh %{SOURCE3} --silent --accept-eula --installdir=`pwd`
+sh %{SOURCE4} --silent --accept-eula --installdir=`pwd`
 
 # Remove bundled Java Runtime
 rm -fr jre
@@ -500,9 +510,9 @@ find samples -name "Makefile" -exec sed -i -e 's|$(CUDA_PATH)/include|%{_include
 
 # Remove unused stuff
 rm -f doc/man/man1/cuda-install-samples-%{major_package_version}.sh.1
-rm -f samples/uninstall_cuda_samples_%{cuda_version}.pl
+rm -f samples/uninstall_cuda_samples_%{cuda_version_ga}.pl
 rm -f samples/.uninstall_manifest_do_not_delete.txt
-rm -f bin/uninstall_cuda_toolkit_%{cuda_version}.pl
+rm -f bin/uninstall_cuda_toolkit_%{cuda_version_ga}.pl
 rm -f bin/cuda-install-samples-%{major_package_version}.sh
 rm -f bin/.uninstall_manifest_do_not_delete.txt
 
@@ -623,7 +633,7 @@ mkdir -p %{buildroot}%{_includedir}/%{name}/
 mkdir -p %{buildroot}%{_libdir}/pkgconfig/
 ln -sf libnvidia-ml.so.1 %{buildroot}%{_libdir}/libnvidia-ml.so
 install -pm 644 %{SOURCE43} %{buildroot}/%{_libdir}/pkgconfig
-sed -i -e 's/CUDA_VERSION/%{cuda_version}/g' %{buildroot}/%{_libdir}/pkgconfig/*.pc
+sed -i -e 's/CUDA_VERSION/%{version}/g' %{buildroot}/%{_libdir}/pkgconfig/*.pc
 install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
@@ -1000,6 +1010,9 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Wed Mar 07 2018 Simone Caronni <negativo17@gmail.com> - 1:9.1.85.3-5
+- Add CUDA 9.1 patches.
+
 * Sat Mar 03 2018 Simone Caronni <negativo17@gmail.com> - 1:9.1.85-4
 - Fix nvcc.profile being replaced by default one.
 
