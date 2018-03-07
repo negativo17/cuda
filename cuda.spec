@@ -6,7 +6,7 @@
 #   subpackages use the directory
 
 %global         debug_package %{nil}
-#global         __strip /bin/true
+%global         __strip /bin/true
 
 # Versions
 %global         cuda_version 9.1
