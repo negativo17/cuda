@@ -31,8 +31,8 @@ ExclusiveArch:  x86_64 %{ix86}
 # cuda-samples.9.1.85-23083092-linux.run
 # NVIDIA-Linux-x86_64-387.26.run
 
-Source0:        %{name}-linux.%{version}-%{internal_build}.run
-Source1:        %{name}-samples.%{version}-%{internal_build}-linux.run
+Source0:        %{name}-linux.%{cuda_version_ga}-%{internal_build}.run
+Source1:        %{name}-samples.%{cuda_version_ga}-%{internal_build}-linux.run
 Source2:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/patches/1/%{name}_%{cuda_version_ga}.1_linux
 Source3:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/patches/2/%{name}_%{cuda_version_ga}.2_linux
 Source4:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/patches/3/%{name}_%{cuda_version_ga}.3_linux
