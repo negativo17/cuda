@@ -7,12 +7,7 @@
 
 %global         debug_package %{nil}
 %global         __strip /bin/true
-
-# Versions
-%global         cuda_version 9.1
-%global         cuda_version_ga %{cuda_version}.85
 %global         major_package_version 9-1
-%global         internal_build 23083092
 
 Name:           cuda
 Version:        9.1.85.3
@@ -23,22 +18,9 @@ License:        NVIDIA License
 URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64 %{ix86}
 
-# Source0:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/local_installers/cuda_${cuda_version_ga}_387.26_linux
-# Makefiles inside the main makefile:
-# sh cuda_9.1.85_387.26_linux.run -extract=`pwd`
-#
-# cuda-linux.9.1.85-23083092.run
-# cuda-samples.9.1.85-23083092-linux.run
-# NVIDIA-Linux-x86_64-387.26.run
-
-Source0:        %{name}-linux.%{cuda_version_ga}-%{internal_build}.run
-Source1:        %{name}-samples.%{cuda_version_ga}-%{internal_build}-linux.run
-Source2:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/patches/1/%{name}_%{cuda_version_ga}.1_linux
-Source3:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/patches/2/%{name}_%{cuda_version_ga}.2_linux
-Source4:        https://developer.nvidia.com/compute/%{name}/%{cuda_version}/Prod/patches/3/%{name}_%{cuda_version_ga}.3_linux
-# Updated to the latest patches:
-# https://docs.nvidia.com/cuda/cuda-toolkit-release-notes/index.html
-Source5:        https://docs.nvidia.com/%{name}/pdf/CUDA_Toolkit_Release_Notes.pdf
+Source0:        %{name}-%{version}-x86_64.tar.xz
+Source1:        %{name}-gdb-9.1.85.src.tar.gz
+Source2:        %{name}-generate-tarball.sh
 
 Source10:       %{name}.sh
 Source11:       %{name}.csh
@@ -48,14 +30,12 @@ Source14:       nvvp.desktop
 Source15:       nvvp.appdata.xml
 Source16:       nvcc.profile
 
-#Source19:       accinj%{__isa_bits}.pc
 Source19:       accinj64.pc
 Source20:       cublas.pc
 Source21:       cuda.pc
 Source22:       cudart.pc
 Source23:       cufft.pc
 Source24:       cufftw.pc
-#Source25:       cuinj%{__isa_bits}.pc
 Source25:       cuinj64.pc
 Source26:       curand.pc
 Source27:       cusolver.pc
@@ -465,23 +445,7 @@ delivers developers vital feedback for optimizing CUDA C/C++ applications.
 
 
 %prep
-%setup -q -n %{name}-%{version} -c -T
-
-# Unpack installers
-sh %{SOURCE0} -nosymlink -noprompt -prefix=`pwd`
-sh %{SOURCE1} -noprompt -cudaprefix=/usr -prefix=`pwd`/samples
-sh %{SOURCE2} --silent --accept-eula --installdir=`pwd`
-sh %{SOURCE3} --silent --accept-eula --installdir=`pwd`
-sh %{SOURCE4} --silent --accept-eula --installdir=`pwd`
-
-# Updated release notes
-cp -f %{SOURCE5} doc/pdf/
-
-# Remove bundled Java Runtime
-rm -fr jre
-
-# Remove stubs
-rm -fr lib64/stubs
+%setup -q -n %{name}-%{version}-x86_64
 
 %ifarch x86_64
 
@@ -513,14 +477,6 @@ find samples -name "Makefile" -exec sed -i -e 's|"/usr"|/usr|g' {} \;
 # include directories so people stop asking
 find samples -type f -exec sed -i -e 's|/bin/nvcc|/bin/nvcc --include-path %{_includedir}/cuda|g' {} \;
 find samples -name "Makefile" -exec sed -i -e 's|$(CUDA_PATH)/include|%{_includedir}/cuda|g' {} \;
-
-# Remove unused stuff
-rm -f doc/man/man1/cuda-install-samples-%{major_package_version}.sh.1
-rm -f samples/uninstall_cuda_samples_%{cuda_version_ga}.pl
-rm -f samples/.uninstall_manifest_do_not_delete.txt
-rm -f bin/uninstall_cuda_toolkit_%{cuda_version_ga}.pl
-rm -f bin/cuda-install-samples-%{major_package_version}.sh
-rm -f bin/.uninstall_manifest_do_not_delete.txt
 
 %endif
 
