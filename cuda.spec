@@ -529,7 +529,6 @@ cp -fr extras/CUPTI/%{_lib}/* %{buildroot}%{_libdir}/
 cp -fr nvvm/libdevice/* %{buildroot}%{_datadir}/%{name}/
 
 # Libraries in the driver package
-rm -f %{buildroot}%{_libdir}/libOpenCL.so*
 ln -sf libnvidia-ml.so.1 %{buildroot}%{_libdir}/libnvidia-ml.so
 
 # pkg-config files
