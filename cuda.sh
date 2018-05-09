@@ -8,4 +8,5 @@ fi
 
 if [ -d /usr/include/cuda ]; then
   export CUDA_INCLUDE_DIRS=/usr/include/cuda
+  export CUDA_INC_PATH=/usr/include/cuda
 fi
