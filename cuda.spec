@@ -11,7 +11,7 @@
 
 Name:           cuda
 Version:        9.1.85.3
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -971,6 +971,9 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %endif
 
 %changelog
+* Wed May 09 2018 Simone Caronni <negativo17@gmail.com> - 1:9.1.85.3-6
+- Add back CUDA_INC_PATH to environment.
+
 * Wed Mar 07 2018 Simone Caronni <negativo17@gmail.com> - 1:9.1.85.3-5
 - Add CUDA 9.1 patches and updated release notes.
 

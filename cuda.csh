@@ -8,4 +8,5 @@ endif
 
 if ( -d /usr/include/cuda ) then
   setenv CUDA_INCLUDE_DIRS /usr/include/cuda
+  setenv CUDA_INC_PATH /usr/include/cuda
 endif
