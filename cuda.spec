@@ -11,12 +11,12 @@
 
 Name:           cuda
 Version:        9.1.85.3
-Release:        6%{?dist}
+Release:        7%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
 URL:            https://developer.nvidia.com/cuda-zone
-ExclusiveArch:  x86_64 %{ix86}
+ExclusiveArch:  x86_64
 
 Source0:        %{name}-%{version}-x86_64.tar.xz
 Source1:        %{name}-gdb-9.1.85.src.tar.gz
@@ -447,8 +447,6 @@ delivers developers vital feedback for optimizing CUDA C/C++ applications.
 %prep
 %setup -q -n %{name}-%{version}-x86_64
 
-%ifarch x86_64
-
 # Remove RUNPATH on binaries
 chrpath -d nvvm/bin/cicc
 
@@ -478,14 +476,10 @@ find samples -name "Makefile" -exec sed -i -e 's|"/usr"|/usr|g' {} \;
 find samples -type f -exec sed -i -e 's|/bin/nvcc|/bin/nvcc --include-path %{_includedir}/cuda|g' {} \;
 find samples -name "Makefile" -exec sed -i -e 's|$(CUDA_PATH)/include|%{_includedir}/cuda|g' {} \;
 
-%endif
-
 %build
 # Nothing to build
 
 %install
-%ifarch x86_64
-
 # Create empty tree
 mkdir -p %{buildroot}%{_bindir}/
 mkdir -p %{buildroot}%{_datadir}/applications/
@@ -586,18 +580,6 @@ mkdir -p %{buildroot}%{_datadir}/appdata
 install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %endif
 
-%endif
-
-# For i686 just create the nvml-devel subpackage
-%ifarch %{ix86}
-mkdir -p %{buildroot}%{_includedir}/%{name}/
-mkdir -p %{buildroot}%{_libdir}/pkgconfig/
-ln -sf libnvidia-ml.so.1 %{buildroot}%{_libdir}/libnvidia-ml.so
-install -pm 644 %{SOURCE43} %{buildroot}/%{_libdir}/pkgconfig
-sed -i -e 's/CUDA_VERSION/%{version}/g' %{buildroot}/%{_libdir}/pkgconfig/*.pc
-install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
-%endif
-
 %post -p /sbin/ldconfig
 
 %post cli-tools -p /sbin/ldconfig
@@ -665,8 +647,6 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 
 %postun nvvp
 %{_bindir}/update-desktop-database &> /dev/null || :
-
-%ifarch x86_64
 
 %files
 %{_bindir}/bin2c
@@ -829,14 +809,10 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_libdir}/libnvgraph.so
 %{_libdir}/pkgconfig/nvgraph.pc
 
-%endif
-
 %files nvml-devel
 %{_includedir}/%{name}/nvml*
 %{_libdir}/libnvidia-ml.so
 %{_libdir}/pkgconfig/nvml.pc
-
-%ifarch x86_64
 
 %files nvrtc
 %license EULA.txt
@@ -968,9 +944,10 @@ install -pm 644 include/nvml.h %{buildroot}%{_includedir}/%{name}/
 %{_mandir}/man1/nvvp.*
 %{_libdir}/nvvp
 
-%endif
-
 %changelog
+* Fri Jun 01 2018 Simone Caronni <negativo17@gmail.com> - 1:9.1.85.3-7
+- Remove cuda-nvml-devel package for i686, make the package x86_64 only.
+
 * Wed May 09 2018 Simone Caronni <negativo17@gmail.com> - 1:9.1.85.3-6
 - Add back CUDA_INC_PATH to environment.
 
