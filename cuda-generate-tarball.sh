@@ -2,44 +2,35 @@
 set -e
 
 PKG=cuda
-MAJOR_VERSION=${MAJOR_VERSION:-9.1}
-VERSION=${VERSION:-9.1.85}
-PATCH_VERSION=${VERSION}.${PATCH_VERSION:-3}
-DL_SITE=${DL_SITE:-https://developer.nvidia.com/compute/cuda/$MAJOR_VERSION/Prod/}
+MAJOR_VERSION=${MAJOR_VERSION:-9.2}
+VERSION=${VERSION:-9.2.148}
+PATCH_VERSION=${VERSION}.${PATCH_VERSION:-1}
 TARBALL=${PKG}-${PATCH_VERSION}-x86_64
 
 get_run_file() {
-    RUN_FILE=$(basename $REMOTE_RUN_FILE)
     printf "Downloading ${RUN_FILE}... "
-    [[ -f $RUN_FILE ]] || wget -c -q ${DL_SITE}/${PLATFORM}/${VERSION}/$RUN_FILE
+    [[ -f $RUN_FILE ]] || wget -c -q ${DL_SITE}/$RUN_FILE
     printf "OK\n"
 }
 
 run_patch() {
-    RUN_FILE=$(basename $REMOTE_RUN_FILE)
     sh $RUN_FILE --silent --accept-eula --installdir=`pwd`/${TARBALL}
 }
 
 # Main installer
-REMOTE_RUN_FILE=local_installers/cuda_${VERSION}_387.26_linux.run
+DL_SITE=https://developer.nvidia.com/compute/cuda/$MAJOR_VERSION/Prod2/local_installers
+RUN_FILE=cuda_${VERSION}_396.37_linux
 get_run_file
 
 # Unpack installer
-sh ${PKG}_${VERSION}_*_linux.run -extract=`pwd`
+sh $RUN_FILE -extract=`pwd`
 # Unpack bundled installers
 sh ${PKG}-linux.${VERSION}-*.run -nosymlink -noprompt -prefix=`pwd`/${TARBALL}
 sh ${PKG}-samples.${VERSION}-*.run -noprompt -cudaprefix=/usr -prefix=`pwd`/${TARBALL}/samples
 
 # Patches
-REMOTE_RUN_FILE=patches/1/cuda_${VERSION}.1_linux
-get_run_file
-run_patch
-
-REMOTE_RUN_FILE=patches/1/cuda_${VERSION}.2_linux
-get_run_file
-run_patch
-
-REMOTE_RUN_FILE=patches/1/cuda_${VERSION}.3_linux
+DL_SITE=https://developer.nvidia.com/compute/cuda/$MAJOR_VERSION/Prod2/patches/1
+RUN_FILE=cuda_${VERSION}.1_linux
 get_run_file
 run_patch
 
