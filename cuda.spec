@@ -10,8 +10,8 @@
 %global         major_package_version 9-1
 
 Name:           cuda
-Version:        9.1.85.3
-Release:        7%{?dist}
+Version:        9.2.148.1
+Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -459,11 +459,10 @@ find . -name "*.hpp" -exec chmod 644 {} \;
 find . -name "*.bat" -delete
 find . -size 0 -delete
 
+sed -i -e 's/env python/python2/g' samples/6_Advanced/matrixMulDynlinkJIT/extras/ptx2c.py
+
 # Adjust path for NSight plugin
 sed -i -e 's|`dirname $0`/..|%{_libdir}/nsight|g' bin/nsight_ee_plugins_manage.sh
-
-# Works also with GCC 5.4+ but only if C++11 is not enabled
-sed -i -e '/#error -- unsupported GNU version!/d' include/crt/host_config.h
 
 # Hack for glibc 2.26
 # https://git.archlinux.org/svntogit/community.git/tree/trunk/PKGBUILD?h=packages/cuda#n59
@@ -653,7 +652,6 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_bindir}/cicc
 # There should be no folder there, but binaries look for things here
 %{_bindir}/crt/
-%{_bindir}/cudafe
 %{_bindir}/cudafe++
 %{_bindir}/cuobjdump
 %{_bindir}/gpu-library-advisor
@@ -743,6 +741,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %files cufft-devel
 %{_includedir}/%{name}/cufft*
 %{_libdir}/libcufft_static.a
+%{_libdir}/libcufft_static_nocallback.a
 %{_libdir}/libcufft.so
 %{_libdir}/libcufftw_static.a
 %{_libdir}/libcufftw.so
@@ -945,6 +944,9 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/nvvp
 
 %changelog
+* Mon Aug 27 2018 Simone Caronni <negativo17@gmail.com> - 1:9.2.148.1-1
+- Update to 9.2.148.1.
+
 * Fri Jun 01 2018 Simone Caronni <negativo17@gmail.com> - 1:9.1.85.3-7
 - Remove cuda-nvml-devel package for i686, make the package x86_64 only.
 
