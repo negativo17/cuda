@@ -11,7 +11,7 @@
 
 Name:           cuda
 Version:        9.2.148.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -408,7 +408,7 @@ Conflicts:      %{name}-samples-%{major_package_version} < %{?epoch:%{epoch}:}%{
 Obsoletes:      %{name}-samples < %{?epoch:%{epoch}:}%{version}
 Provides:       %{name}-samples = %{?epoch:%{epoch}:}%{version}
 Requires:       cuda-devel = %{?epoch:%{epoch}:}%{version}
-%if 0%{?fedora}
+%if 0%{?fedora} >= 28
 Requires:       cuda-gcc-c++
 %else
 Requires:       gcc
@@ -944,6 +944,9 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/nvvp
 
 %changelog
+* Tue Aug 28 2018 Simone Caronni <negativo17@gmail.com> - 1:9.2.148.1-2
+- Require GCC < 8 only on Fedora 28+.
+
 * Mon Aug 27 2018 Simone Caronni <negativo17@gmail.com> - 1:9.2.148.1-1
 - Update to 9.2.148.1.
 
