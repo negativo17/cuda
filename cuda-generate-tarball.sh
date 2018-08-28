@@ -48,7 +48,7 @@ rm -fr ${TARBALL}/jre
 rm -f ${TARBALL}/lib64/libOpenCL.so*
 
 # Remove left overs from updates
-rm -f ${TARBALL}/lib64/lib??blas.so.9.1.{85,128}
+rm -f ${TARBALL}/lib64/lib{cublas,cuinj64,nvblas}.so.9.2.148
 
 # Remove stubs
 rm -fr ${TARBALL}/lib64/stubs
