@@ -19,7 +19,7 @@ URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64
 
 Source0:        %{name}-%{version}-x86_64.tar.xz
-Source1:        %{name}-gdb-9.1.85.src.tar.gz
+Source1:        %{name}-gdb-9.2.148.src.tar.gz
 Source2:        %{name}-generate-tarball.sh
 
 Source10:       %{name}.sh
