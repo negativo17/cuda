@@ -7,11 +7,11 @@
 
 %global         debug_package %{nil}
 %global         __strip /bin/true
-%global         major_package_version 9-1
+%global         major_package_version 10-0
 
 Name:           cuda
-Version:        9.2.148.1
-Release:        2%{?dist}
+Version:        10.0.130
+Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -19,7 +19,7 @@ URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64
 
 Source0:        %{name}-%{version}-x86_64.tar.xz
-Source1:        %{name}-gdb-9.2.148.src.tar.gz
+Source1:        %{name}-10.0.130.src.tar.gz
 Source2:        %{name}-generate-tarball.sh
 
 Source10:       %{name}.sh
