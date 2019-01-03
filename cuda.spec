@@ -526,6 +526,8 @@ cp -fr doc/man/* %{buildroot}%{_mandir}
 # This man page conflicts with *a lot* of other packages
 mv %{buildroot}%{_mandir}/man3/deprecated.3.gz \
     %{buildroot}%{_mandir}/man3/cuda_deprecated.3.gz
+# Man page conflicts on properties
+rm -f %{buildroot}%{_mandir}/man3/uuid.*
 
 # Docs
 mv extras/CUPTI/Readme.txt extras/CUPTI/Readme-CUPTI.txt
