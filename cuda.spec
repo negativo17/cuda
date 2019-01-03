@@ -7,11 +7,12 @@
 
 %global         debug_package %{nil}
 %global         __strip /bin/true
-%global         major_package_version 9-1
+%global         _missing_build_ids_terminate_build 0
+%global         major_package_version 10-0
 
 Name:           cuda
-Version:        9.2.148.1
-Release:        2%{?dist}
+Version:        10.0.130
+Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -19,7 +20,7 @@ URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64
 
 Source0:        %{name}-%{version}-x86_64.tar.xz
-Source1:        %{name}-gdb-9.2.148.src.tar.gz
+Source1:        %{name}-gdb-%{version}.src.tar.gz
 Source2:        %{name}-generate-tarball.sh
 
 Source10:       %{name}.sh
@@ -57,6 +58,7 @@ Source42:       nvgraph.pc
 Source43:       nvml.pc
 Source44:       nvrtc.pc
 Source45:       nvToolsExt.pc
+Source46:       nvjpeg.pc
 
 BuildRequires:  ImageMagick
 BuildRequires:  desktop-file-utils
@@ -150,6 +152,7 @@ Algebra Subroutines (cuBLAS) libraries.
 
 %package cudart
 Summary:        NVIDIA CUDA Runtime API library
+#Requires:       ocl-icd
 Requires(post): ldconfig
 Conflicts:      %{name}-cudart-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
@@ -316,6 +319,26 @@ Conflicts:      %{name}-nvgraph-dev-%{major_package_version} < %{?epoch:%{epoch}
 This package provides development files for the NVIDIA Graph Analytics library
 (nvGRAPH).
 
+%package nvjpeg
+Summary:        NVIDIA JPEG decoder (nvJPEG)
+Requires(post): ldconfig
+Conflicts:      %{name}-nvjpeg-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description nvjpeg
+nvJPEG is a high-performance GPU-accelerated library for JPEG decoding. nvJPEG
+supports decoding of single and batched images, color space conversion, multiple
+phase decoding, and hybrid decoding using both CPU and GPU. Applications that
+rely on nvJPEG for decoding deliver higher throughput and lower latency JPEG
+decode compared CPU-only decoding.
+
+%package nvjpeg-devel
+Summary:        Development files for NVIDIA JPEG decoder (nvJPEG)
+Requires:       %{name}-nvjpeg%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-nvjpeg-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
+
+%description nvjpeg-devel
+This package provides development files for the NVIDIA JPEG decoder (nvJPEG).
+
 %package nvml-devel
 Summary:        Development files for NVIDIA Management library (nvML)
 # Unversioned as it is provided by the driver's NVML library
@@ -380,6 +403,7 @@ Requires:       %{name}-cusolver-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{
 Requires:       %{name}-cusparse-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-npp-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvgraph-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:       %{name}-nvjpeg-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvml-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvrtc-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvtx-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -530,7 +554,7 @@ install -pm 644 \
     %{SOURCE25} %{SOURCE26} %{SOURCE27} %{SOURCE28} %{SOURCE29} %{SOURCE30} \
     %{SOURCE31} %{SOURCE32} %{SOURCE33} %{SOURCE34} %{SOURCE35} %{SOURCE36} \
     %{SOURCE37} %{SOURCE38} %{SOURCE39} %{SOURCE40} %{SOURCE41} %{SOURCE42} \
-    %{SOURCE43} %{SOURCE44} %{SOURCE45} \
+    %{SOURCE43} %{SOURCE44} %{SOURCE45} %{SOURCE46} \
     %{buildroot}/%{_libdir}/pkgconfig
 
 # nvcc settings
@@ -602,6 +626,8 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %post npp -p /sbin/ldconfig
 
 %post nvgraph -p /sbin/ldconfig
+
+%post nvjpeg -p /sbin/ldconfig
 
 %post nvrtc -p /sbin/ldconfig
 
@@ -699,7 +725,6 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %files cublas-devel
 %{_includedir}/%{name}/cublas*
 %{_includedir}/%{name}/nvblas*
-%{_libdir}/libcublas_device.a
 %{_libdir}/libcublas_static.a
 %{_libdir}/libcublas.so
 %{_libdir}/libnvblas.so
@@ -714,6 +739,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/cuda_device_runtime_api.h
 %{_includedir}/%{name}/cuda_runtime.h
 %{_includedir}/%{name}/cuda_runtime_api.h
+%{_includedir}/%{name}/cudart_platform.h
 %{_libdir}/libcudadevrt.a
 %{_libdir}/libcudart_static.a
 %{_libdir}/libcudart.so
@@ -730,6 +756,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/nvToolsExtCudaRt.h
 %{_includedir}/%{name}/nvToolsExtMeta.h
 %{_includedir}/%{name}/nvToolsExtSync.h
+%{_includedir}/%{name}/nvtx3
 %{_libdir}/libnvToolsExt.so
 %{_libdir}/pkgconfig/nvToolsExt.pc
 
@@ -776,6 +803,8 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/cusolver*
 %{_libdir}/libcusolver_static.a
 %{_libdir}/libcusolver.so
+%{_libdir}/liblapack_static.a
+%{_libdir}/libmetis_static.a
 %{_libdir}/pkgconfig/cusolver.pc
 
 %files cusparse
@@ -807,6 +836,16 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/nvgraph*
 %{_libdir}/libnvgraph.so
 %{_libdir}/pkgconfig/nvgraph.pc
+
+%files nvjpeg
+%license EULA.txt
+%{_libdir}/libnvjpeg_static.a
+%{_libdir}/libnvjpeg.so.*
+
+%files nvjpeg-devel
+%{_includedir}/%{name}/nvjpeg.h
+%{_libdir}/libnvjpeg.so
+%{_libdir}/pkgconfig/nvjpeg.pc
 
 %files nvml-devel
 %{_includedir}/%{name}/nvml*
@@ -860,10 +899,6 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/device_types.h
 %{_includedir}/%{name}/driver_functions.h
 %{_includedir}/%{name}/driver_types.h
-%{_includedir}/%{name}/dynlink_cuda.h
-%{_includedir}/%{name}/dynlink_cuda_cuda.h
-%{_includedir}/%{name}/dynlink_cuviddec.h
-%{_includedir}/%{name}/dynlink_nvcuvid.h
 %{_includedir}/%{name}/fatBinaryCtl.h
 %{_includedir}/%{name}/fatbinary.h
 %{_includedir}/%{name}/fortran  
@@ -944,6 +979,9 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/nvvp
 
 %changelog
+* Thu Jan 03 2019 Simone Caronni <negativo17@gmail.com> - 1:10.0.130-1
+- Update to 10.0.130.
+
 * Tue Aug 28 2018 Simone Caronni <negativo17@gmail.com> - 1:9.2.148.1-2
 - Require GCC < 8 only on Fedora 28+.
 
