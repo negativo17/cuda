@@ -12,7 +12,7 @@
 
 Name:           cuda
 Version:        10.0.130
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -605,63 +605,37 @@ mkdir -p %{buildroot}%{_datadir}/appdata
 install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %endif
 
-%post -p /sbin/ldconfig
+%if 0%{?rhel}
 
-%post cli-tools -p /sbin/ldconfig
+%ldconfig_scriptlets
 
-%post libs -p /sbin/ldconfig
+%ldconfig_scriptlets cli-tools
 
-%post cublas -p /sbin/ldconfig
+%ldconfig_scriptlets libs
 
-%post cudart -p /sbin/ldconfig
+%ldconfig_scriptlets cublas
 
-%post cufft -p /sbin/ldconfig
+%ldconfig_scriptlets cudart
 
-%post cupti -p /sbin/ldconfig
+%ldconfig_scriptlets cufft
 
-%post curand -p /sbin/ldconfig
+%ldconfig_scriptlets cupti
 
-%post cusolver -p /sbin/ldconfig
+%ldconfig_scriptlets curand
 
-%post cusparse -p /sbin/ldconfig
+%ldconfig_scriptlets cusolver
 
-%post npp -p /sbin/ldconfig
+%ldconfig_scriptlets cusparse
 
-%post nvgraph -p /sbin/ldconfig
+%ldconfig_scriptlets npp
 
-%post nvjpeg -p /sbin/ldconfig
+%ldconfig_scriptlets nvgraph
 
-%post nvrtc -p /sbin/ldconfig
+%ldconfig_scriptlets nvjpeg
 
-%post nvtx -p /sbin/ldconfig
+%ldconfig_scriptlets nvrtc
 
-%postun -p /sbin/ldconfig
-
-%postun cli-tools -p /sbin/ldconfig
-
-%postun libs -p /sbin/ldconfig
-
-%postun cublas -p /sbin/ldconfig
-
-%postun cudart -p /sbin/ldconfig
-
-%postun cufft -p /sbin/ldconfig
-
-%postun cupti -p /sbin/ldconfig
-
-%postun curand -p /sbin/ldconfig
-
-%postun cusolver -p /sbin/ldconfig
-
-%postun cusparse -p /sbin/ldconfig
-
-%postun npp -p /sbin/ldconfig
-
-%postun nvgraph -p /sbin/ldconfig
-
-%postun nvrtc -p /sbin/ldconfig
-
-%postun nvtx -p /sbin/ldconfig
+%ldconfig_scriptlets nvtx
 
 %post nsight
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -674,6 +648,8 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 
 %postun nvvp
 %{_bindir}/update-desktop-database &> /dev/null || :
+
+%endif
 
 %files
 %{_bindir}/bin2c
@@ -981,6 +957,9 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/nvvp
 
 %changelog
+* Sat Jan 12 2019 Simone Caronni <negativo17@gmail.com> - 1:10.0.130-2
+- Update SPEC file.
+
 * Thu Jan 03 2019 Simone Caronni <negativo17@gmail.com> - 1:10.0.130-1
 - Update to 10.0.130.
 
