@@ -1,7 +1,6 @@
 # Todo:
 # - filter \*.so from Java programs
 # - build cuda-gdb from source
-# - build Java programs from source
 # - /usr/include/cuda is owned by the cuda main package but the devel
 #   subpackages use the directory
 
@@ -11,8 +10,8 @@
 %global         major_package_version 10-0
 
 Name:           cuda
-Version:        10.0.130
-Release:        2%{?dist}
+Version:        10.1.105
+Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -33,32 +32,33 @@ Source16:       nvcc.profile
 
 Source19:       accinj64.pc
 Source20:       cublas.pc
-Source21:       cuda.pc
-Source22:       cudart.pc
-Source23:       cufft.pc
-Source24:       cufftw.pc
-Source25:       cuinj64.pc
-Source26:       curand.pc
-Source27:       cusolver.pc
-Source28:       cusparse.pc
-Source29:       nppc.pc
-Source30:       nppial.pc
-Source31:       nppicc.pc
-Source32:       nppicom.pc
-Source33:       nppidei.pc
-Source34:       nppif.pc
-Source35:       nppig.pc
-Source36:       nppim.pc
-Source37:       nppi.pc
-Source38:       nppist.pc
-Source39:       nppisu.pc
-Source40:       nppitc.pc
-Source41:       npps.pc
-Source42:       nvgraph.pc
-Source43:       nvml.pc
-Source44:       nvrtc.pc
-Source45:       nvToolsExt.pc
-Source46:       nvjpeg.pc
+Source21:       cublasLt.pc
+Source22:       cuda.pc
+Source23:       cudart.pc
+Source24:       cufft.pc
+Source25:       cufftw.pc
+Source26:       cuinj64.pc
+Source27:       curand.pc
+Source28:       cusolver.pc
+Source29:       cusparse.pc
+Source30:       nppc.pc
+Source31:       nppial.pc
+Source32:       nppicc.pc
+Source33:       nppicom.pc
+Source34:       nppidei.pc
+Source35:       nppif.pc
+Source36:       nppig.pc
+Source37:       nppim.pc
+Source38:       nppi.pc
+Source39:       nppist.pc
+Source40:       nppisu.pc
+Source41:       nppitc.pc
+Source42:       npps.pc
+Source43:       nvgraph.pc
+Source44:       nvml.pc
+Source45:       nvrtc.pc
+Source46:       nvToolsExt.pc
+Source47:       nvjpeg.pc
 
 BuildRequires:  ImageMagick
 BuildRequires:  desktop-file-utils
@@ -432,7 +432,7 @@ Conflicts:      %{name}-samples-%{major_package_version} < %{?epoch:%{epoch}:}%{
 Obsoletes:      %{name}-samples < %{?epoch:%{epoch}:}%{version}
 Provides:       %{name}-samples = %{?epoch:%{epoch}:}%{version}
 Requires:       cuda-devel = %{?epoch:%{epoch}:}%{version}
-%if 0%{?fedora} >= 28
+%if 0%{?fedora} >= 30
 Requires:       cuda-gcc-c++
 %else
 Requires:       gcc
@@ -472,10 +472,10 @@ delivers developers vital feedback for optimizing CUDA C/C++ applications.
 %setup -q -n %{name}-%{version}-x86_64
 
 # Remove RUNPATH on binaries
-chrpath -d nvvm/bin/cicc
+chrpath -d cuda-toolkit/nvvm/bin/cicc
 
 # Replaced later
-rm -f bin/nvcc.profile
+rm -f cuda-toolkit/bin/nvcc.profile
 
 # RPMlint issues
 find . -name "*.h" -exec chmod 644 {} \;
@@ -483,21 +483,17 @@ find . -name "*.hpp" -exec chmod 644 {} \;
 find . -name "*.bat" -delete
 find . -size 0 -delete
 
-sed -i -e 's/env python/python2/g' samples/6_Advanced/matrixMulDynlinkJIT/extras/ptx2c.py
+sed -i -e 's/env python/python2/g' cuda-samples/6_Advanced/matrixMulDynlinkJIT/extras/ptx2c.py
 
 # Adjust path for NSight plugin
-sed -i -e 's|`dirname $0`/..|%{_libdir}/nsight|g' bin/nsight_ee_plugins_manage.sh
-
-# Hack for glibc 2.26
-# https://git.archlinux.org/svntogit/community.git/tree/trunk/PKGBUILD?h=packages/cuda#n59
-sed -i "1 i#define _BITS_FLOATN_H" include/host_defines.h
+sed -i -e 's|`dirname $0`/..|%{_libdir}/nsight|g' cuda-toolkit/bin/nsight_ee_plugins_manage.sh
 
 # Remove double quotes in samples' Makefiles (cosmetical)
-find samples -name "Makefile" -exec sed -i -e 's|"/usr"|/usr|g' {} \;
+find cuda-samples -name "Makefile" -exec sed -i -e 's|"/usr"|/usr|g' {} \;
 # Make samples build without specifying anything on the command line for the
 # include directories so people stop asking
-find samples -type f -exec sed -i -e 's|/bin/nvcc|/bin/nvcc --include-path %{_includedir}/cuda|g' {} \;
-find samples -name "Makefile" -exec sed -i -e 's|$(CUDA_PATH)/include|%{_includedir}/cuda|g' {} \;
+find cuda-samples -type f -exec sed -i -e 's|/bin/nvcc|/bin/nvcc --include-path %{_includedir}/cuda|g' {} \;
+find cuda-samples -name "Makefile" -exec sed -i -e 's|$(CUDA_PATH)/include|%{_includedir}/cuda|g' {} \;
 
 %build
 # Nothing to build
@@ -520,9 +516,9 @@ mkdir -p %{buildroot}%{_sysconfdir}/profile.d/
 install -pm 644 %{SOURCE10} %{SOURCE11} %{buildroot}%{_sysconfdir}/profile.d
 
 # Man pages
-rm -f doc/man/man1/cuda-install-samples-*
-for man in doc/man/man{1,3,7}/*; do gzip -9 $man; done
-cp -fr doc/man/* %{buildroot}%{_mandir}
+rm -f cuda-toolkit/doc/man/man1/cuda-install-samples-*
+for man in cuda-toolkit/doc/man/man{1,3,7}/*; do gzip -9 $man; done
+cp -fr cuda-toolkit/doc/man/* %{buildroot}%{_mandir}
 # This man page conflicts with *a lot* of other packages
 mv %{buildroot}%{_mandir}/man3/deprecated.3.gz \
     %{buildroot}%{_mandir}/man3/cuda_deprecated.3.gz
@@ -530,22 +526,18 @@ mv %{buildroot}%{_mandir}/man3/deprecated.3.gz \
 rm -f %{buildroot}%{_mandir}/man3/uuid.*
 
 # Docs
-mv extras/CUPTI/Readme.txt extras/CUPTI/Readme-CUPTI.txt
-mv extras/Debugger/Readme.txt extras/Debugger/Readme-Debugger.txt
-
-# Base license file
-mv samples/EULA.txt .
+mv cuda-toolkit/extras/Debugger/Readme.txt cuda-toolkit/extras/Debugger/Readme-Debugger.txt
 
 # Headers
-cp -fr src %{buildroot}%{_includedir}/%{name}/fortran/
-cp -fr include/* nvvm/include/* %{buildroot}%{_includedir}/%{name}/
-cp -fr extras/CUPTI/include %{buildroot}%{_includedir}/%{name}/CUPTI/
-cp -fr extras/Debugger/include %{buildroot}%{_includedir}/%{name}/Debugger/
+cp -fr cuda-toolkit/src %{buildroot}%{_includedir}/%{name}/fortran/
+cp -fr cuda-toolkit/include/* cuda-toolkit/nvvm/include/* %{buildroot}%{_includedir}/%{name}/
+cp -fr cuda-toolkit/extras/CUPTI/include %{buildroot}%{_includedir}/%{name}/CUPTI/
+cp -fr cuda-toolkit/extras/Debugger/include %{buildroot}%{_includedir}/%{name}/Debugger/
 
 # Libraries
-cp -fr %{_lib}/* nvvm/%{_lib}/* %{buildroot}%{_libdir}/
-cp -fr extras/CUPTI/%{_lib}/* %{buildroot}%{_libdir}/
-cp -fr nvvm/libdevice/* %{buildroot}%{_datadir}/%{name}/
+cp -fr cuda-toolkit/%{_lib}/* cuda-toolkit/nvvm/%{_lib}/* %{buildroot}%{_libdir}/
+cp -fr cuda-toolkit/extras/CUPTI/%{_lib}/* %{buildroot}%{_libdir}/
+cp -fr cuda-toolkit/nvvm/libdevice/* %{buildroot}%{_datadir}/%{name}/
 
 # Libraries in the driver package
 ln -sf libnvidia-ml.so.1 %{buildroot}%{_libdir}/libnvidia-ml.so
@@ -556,42 +548,44 @@ install -pm 644 \
     %{SOURCE25} %{SOURCE26} %{SOURCE27} %{SOURCE28} %{SOURCE29} %{SOURCE30} \
     %{SOURCE31} %{SOURCE32} %{SOURCE33} %{SOURCE34} %{SOURCE35} %{SOURCE36} \
     %{SOURCE37} %{SOURCE38} %{SOURCE39} %{SOURCE40} %{SOURCE41} %{SOURCE42} \
-    %{SOURCE43} %{SOURCE44} %{SOURCE45} %{SOURCE46} \
+    %{SOURCE43} %{SOURCE44} %{SOURCE45} %{SOURCE46} %{SOURCE47} \
     %{buildroot}/%{_libdir}/pkgconfig
 
 # nvcc settings
 install -pm 644 %{SOURCE16} %{buildroot}%{_bindir}/
 
 # Set proper variables
-sed -i -e 's|CUDA_VERSION|%{version}|g' \
-    -e 's|LIBDIR|%{_libdir}|g' -e 's|INCLUDE_DIR|%{_includedir}/cuda|g' \
+sed -i \
+    -e 's|CUDA_VERSION|%{version}|g' \
+    -e 's|LIBDIR|%{_libdir}|g' \
+    -e 's|INCLUDE_DIR|%{_includedir}/cuda|g' \
     %{buildroot}/%{_libdir}/pkgconfig/*.pc %{buildroot}/%{_bindir}/nvcc.profile
 
 # Binaries
-cp -fr bin/* nvvm/bin/* %{buildroot}%{_bindir}/
+cp -fr cuda-toolkit/bin/* cuda-toolkit/nvvm/bin/* %{buildroot}%{_bindir}/
 
 # Additional samples
-cp -fr samples %{buildroot}%{_datadir}/%{name}/
-cp -fr extras/CUPTI/sample %{buildroot}%{_datadir}/%{name}/samples/CUPTI
-mv nvml/example %{buildroot}%{_datadir}/%{name}/samples/nvml
-mv nvvm/libnvvm-samples %{buildroot}%{_datadir}/%{name}/samples/nvvm
-mv extras/demo_suite %{buildroot}%{_datadir}/%{name}/
+cp -fr cuda-samples %{buildroot}%{_datadir}/%{name}/samples
+cp -fr cuda-toolkit/extras/CUPTI/samples %{buildroot}%{_datadir}/%{name}/samples/CUPTI
+cp -fr cuda-toolkit/nvml/example %{buildroot}%{_datadir}/%{name}/samples/nvml
+cp -fr cuda-toolkit/nvvm/libnvvm-samples %{buildroot}%{_datadir}/%{name}/samples/nvvm
+cp -fr cuda-toolkit/extras/demo_suite %{buildroot}%{_datadir}/%{name}/
 
 # Java stuff
-sed -i -e '/^-vm/d' -e '/jre\/bin\/java/d' libnsight/nsight.ini libnvvp/nvvp.ini
+sed -i -e '/^-vm/d' -e '/jre\/bin\/java/d' cuda-toolkit/libnsight/nsight.ini cuda-toolkit/libnvvp/nvvp.ini
 
 # Convert icons for appstream
-convert libnsight/icon.xpm nsight.png
-convert libnvvp/icon.xpm nvvp.png
+convert cuda-toolkit/libnsight/icon.xpm nsight.png
+convert cuda-toolkit/libnvvp/icon.xpm nvvp.png
 
 # Install Java GUI programs
 install -m 644 -p nsight.png %{buildroot}%{_datadir}/pixmaps/nsight.png
 install -m 644 -p nvvp.png %{buildroot}%{_datadir}/pixmaps/nvvp.png
-cp -fr libnsight %{buildroot}%{_libdir}/nsight
-cp -fr libnvvp %{buildroot}%{_libdir}/nvvp
+cp -fr cuda-toolkit/libnsight %{buildroot}%{_libdir}/nsight
+cp -fr cuda-toolkit/libnvvp %{buildroot}%{_libdir}/nvvp
 ln -sf %{_libdir}/nsight/nsight %{buildroot}%{_bindir}/
 ln -sf %{_libdir}/nvvp/nvvp %{buildroot}%{_bindir}/
-cp -fr nsightee_plugins %{buildroot}%{_libdir}/nsight/
+cp -fr cuda-toolkit/nsightee_plugins %{buildroot}%{_libdir}/nsight/
 desktop-file-install --dir %{buildroot}%{_datadir}/applications/ %{SOURCE12} %{SOURCE14}
 
 # Only Fedora and RHEL 7+ desktop-file-validate binaries can check multiple
@@ -689,15 +683,16 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_mandir}/man1/nvprof.*
 
 %files libs
-%license EULA.txt
+%license cuda-toolkit/EULA.txt
 %{_libdir}/libaccinj%{__isa_bits}.so.*
 %{_libdir}/libcudart.so.*
 %{_libdir}/libcuinj%{__isa_bits}.so.*
 %{_libdir}/libnvvm.so.*
 
 %files cublas
-%license EULA.txt
+%license cuda-toolkit/EULA.txt
 %{_libdir}/libcublas.so.*
+%{_libdir}/libcublasLt.so.*
 %{_libdir}/libnvblas.so.*
 
 %files cublas-devel
@@ -705,11 +700,14 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/nvblas*
 %{_libdir}/libcublas_static.a
 %{_libdir}/libcublas.so
+%{_libdir}/libcublasLt_static.a
+%{_libdir}/libcublasLt.so
 %{_libdir}/libnvblas.so
 %{_libdir}/pkgconfig/cublas.pc
+%{_libdir}/pkgconfig/cublasLt.pc
 
 %files cudart
-%license EULA.txt
+%license cuda-toolkit/EULA.txt
 %{_libdir}/libcudart.so.*
 
 %files cudart-devel
@@ -725,7 +723,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/cudart.pc
 
 %files nvtx
-%license EULA.txt
+%license cuda-toolkit/EULA.txt
 %{_libdir}/libnvToolsExt.so.*
 
 %files nvtx-devel
@@ -739,7 +737,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/nvToolsExt.pc
 
 %files cufft
-%license EULA.txt
+%license cuda-toolkit/EULA.txt
 %{_libdir}/libcufft.so.*
 %{_libdir}/libcufftw.so.*
 
@@ -754,16 +752,20 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/cufftw.pc
 
 %files cupti
-%license EULA.txt
+%license cuda-toolkit/EULA.txt
 %{_libdir}/libcupti.so.*
 
 %files cupti-devel
-%doc extras/CUPTI/Readme-CUPTI.txt
+%doc cuda-toolkit/extras/CUPTI/doc/*
 %{_includedir}/%{name}/CUPTI
+%{_libdir}/libcupti_static.a
 %{_libdir}/libcupti.so
+%{_libdir}/libnvperf_host.so
+%{_libdir}/libnvperf_host_static.a
+%{_libdir}/libnvperf_target.so
 
 %files curand
-%license EULA.txt
+%license cuda-toolkit/EULA.txt
 %{_libdir}/libcurand.so.*
 
 %files curand-devel
@@ -774,7 +776,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/curand.pc
 
 %files cusolver
-%license EULA.txt
+%license cuda-toolkit/EULA.txt
 %{_libdir}/libcusolver.so.*
 
 %files cusolver-devel
@@ -786,7 +788,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/cusolver.pc
 
 %files cusparse
-%license EULA.txt
+%license cuda-toolkit/EULA.txt
 %{_libdir}/libcusparse.so.*
 
 %files cusparse-devel
@@ -796,7 +798,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/cusparse.pc
 
 %files npp
-%license EULA.txt
+%license cuda-toolkit/EULA.txt
 %{_libdir}/libnpp*.so.*
 
 %files npp-devel
@@ -806,7 +808,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/npp*.pc
 
 %files nvgraph
-%license EULA.txt
+%license cuda-toolkit/EULA.txt
 %{_libdir}/libnvgraph_static.a
 %{_libdir}/libnvgraph.so.*
 
@@ -816,7 +818,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/nvgraph.pc
 
 %files nvjpeg
-%license EULA.txt
+%license cuda-toolkit/EULA.txt
 %{_libdir}/libnvjpeg_static.a
 %{_libdir}/libnvjpeg.so.*
 
@@ -831,7 +833,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/nvml.pc
 
 %files nvrtc
-%license EULA.txt
+%license cuda-toolkit/EULA.txt
 %{_libdir}/libnvrtc-builtins.so.*
 %{_libdir}/libnvrtc.so.*
 
@@ -845,7 +847,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 # Empty metapackage
 
 %files devel
-%doc extras/Debugger/Readme-Debugger.txt
+%doc cuda-toolkit/extras/Debugger/Readme-Debugger.txt
 %{_includedir}/%{name}/CL
 %{_includedir}/%{name}/Debugger
 %{_includedir}/%{name}/builtin_types.h
@@ -879,6 +881,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/driver_types.h
 %{_includedir}/%{name}/fatBinaryCtl.h
 %{_includedir}/%{name}/fatbinary.h
+%{_includedir}/%{name}/fatbinary_section.h
 %{_includedir}/%{name}/fortran  
 %{_includedir}/%{name}/host_config.h
 %{_includedir}/%{name}/host_defines.h
@@ -928,7 +931,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/cuinj64.pc
 
 %files docs
-%doc doc/pdf doc/html tools/*
+%doc cuda-toolkit/doc/pdf cuda-toolkit/doc/html cuda-toolkit/tools/*
 
 %files samples
 %{_datadir}/%{name}/samples
@@ -957,6 +960,11 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/nvvp
 
 %changelog
+* Sat Mar 23 2019 Simone Caronni <negativo17@gmail.com> - 1:10.1.105-1
+- Update to 10.1.105.
+- Trim changelog.
+- Require cuda-gcc only on Fedora 30+ (GCC 9).
+
 * Sat Jan 12 2019 Simone Caronni <negativo17@gmail.com> - 1:10.0.130-2
 - Update SPEC file.
 

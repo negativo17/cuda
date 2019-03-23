@@ -38,6 +38,8 @@ rm -fr cuda-toolkit/bin/cuda-uninstaller \
 mv cuda-toolkit/extras/${PKG}-gdb-${VERSION}.src.tar.gz .
 
 # Create tarball
-tar --remove-files -cJf ${TARBALL}.tar.xz cuda-toolkit cuda-samples
+mkdir ${TARBALL}
+mv cuda-toolkit cuda-samples ${TARBALL}
+tar --remove-files -cJf ${TARBALL}.tar.xz ${TARBALL}
 
 printf "OK\n"
