@@ -1,0 +1,3 @@
+#!/usr/bin/sh
+
+exec /usr/lib64/NsightSystems/host/Host-x86_64/nsight-sys "$@"

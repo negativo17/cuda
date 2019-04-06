@@ -7,7 +7,9 @@
 %global         debug_package %{nil}
 %global         __strip /bin/true
 %global         _missing_build_ids_terminate_build 0
-%global         major_package_version 10-0
+%global         major_package_version 10-1
+%global         __requires_exclude ^(libQt5.*\\.so.*|libicu.*\\.so.*)$
+%global         __requires_exclude ^(libQt5.*\\.so.*|libicu.*\\.so.*)$
 
 Name:           cuda
 Version:        10.1.105
@@ -21,14 +23,18 @@ ExclusiveArch:  x86_64
 Source0:        %{name}-%{version}-x86_64.tar.xz
 Source1:        %{name}-gdb-%{version}.src.tar.gz
 Source2:        %{name}-generate-tarball.sh
+Source3:        %{name}.sh
+Source4:        %{name}.csh
+Source5:        nvcc.profile
 
-Source10:       %{name}.sh
-Source11:       %{name}.csh
-Source12:       nsight.desktop
-Source13:       nsight.appdata.xml
-Source14:       nvvp.desktop
-Source15:       nvvp.appdata.xml
-Source16:       nvcc.profile
+Source10:       nsight.desktop
+Source11:       nsight.appdata.xml
+Source12:       nvvp.desktop
+Source13:       nvvp.appdata.xml
+Source14:       nv-nsight-cu.desktop
+Source15:       nv-nsight-cu.wrapper
+Source16:       nsight-sys.desktop
+Source17:       nsight-sys.wrapper
 
 Source19:       accinj64.pc
 Source20:       cublas.pc
@@ -124,6 +130,7 @@ Requires:       %{name}-cusolver = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-cusparse = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-npp = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvgraph = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:       %{name}-nvjpeg = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvrtc = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvtx = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-runtime-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
@@ -435,7 +442,7 @@ Requires:       cuda-devel = %{?epoch:%{epoch}:}%{version}
 %if 0%{?fedora} >= 30
 Requires:       cuda-gcc-c++
 %else
-Requires:       gcc
+Requires:       gcc-c++
 %endif
 Requires:       freeglut-devel
 Requires:       make
@@ -450,6 +457,7 @@ Contains an extensive set of example CUDA programs.
 %package nsight
 Summary:        NVIDIA Nsight Eclipse Edition
 Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-nsight-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-visual-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description nsight
@@ -467,12 +475,34 @@ Conflicts:      %{name}-nvvp-%{major_package_version} < %{?epoch:%{epoch}:}%{ver
 The NVIDIA Visual Profiler is a cross-platform performance profiling tool that
 delivers developers vital feedback for optimizing CUDA C/C++ applications.
 
+%package nsight-compute
+Summary:        NVIDIA Nsight Compute
+Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-nsight-compute-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description nsight-compute
+NVIDIA Nsight Compute is an interactive kernel profiler for CUDA applications on
+x86_64 platforms. It provides detailed performance metrics and API debugging via
+a user interface and command line tool.
+
+%package nsight-systems
+Summary:        NVIDIA Nsight Systems
+Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-nsight-systems-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description nsight-systems
+NVIDIA Nsight Systems is a system-wide performance analysis tool designed to
+visualize an application's algorithms, help you identify the largest
+opportunities to optimize, and tune to scale efficiently across any quantity or
+size of CPUs and GPUs; from large servers to the smallest SoC.
 
 %prep
 %setup -q -n %{name}-%{version}-x86_64
 
 # Remove RUNPATH on binaries
 chrpath -d cuda-toolkit/nvvm/bin/cicc
+chrpath -d cuda-toolkit/NsightCompute-*/host/linux-desktop-glibc_*-x64/libicu*.so.*
+chrpath -d cuda-toolkit/NsightSystems-*/Host-x86_64/QdstrmImporter
 
 # Replaced later
 rm -f cuda-toolkit/bin/nvcc.profile
@@ -513,7 +543,7 @@ mkdir -p %{buildroot}%{_mandir}/man{1,3,7}/
 mkdir -p %{buildroot}%{_sysconfdir}/profile.d/
 
 # Environment settings
-install -pm 644 %{SOURCE10} %{SOURCE11} %{buildroot}%{_sysconfdir}/profile.d
+install -pm 644 %{SOURCE3} %{SOURCE4} %{buildroot}%{_sysconfdir}/profile.d
 
 # Man pages
 rm -f cuda-toolkit/doc/man/man1/cuda-install-samples-*
@@ -552,7 +582,7 @@ install -pm 644 \
     %{buildroot}/%{_libdir}/pkgconfig
 
 # nvcc settings
-install -pm 644 %{SOURCE16} %{buildroot}%{_bindir}/
+install -pm 644 %{SOURCE5} %{buildroot}%{_bindir}/
 
 # Set proper variables
 sed -i \
@@ -572,13 +602,10 @@ cp -fr cuda-toolkit/nvvm/libnvvm-samples %{buildroot}%{_datadir}/%{name}/samples
 cp -fr cuda-toolkit/extras/demo_suite %{buildroot}%{_datadir}/%{name}/
 
 # Java stuff
-sed -i -e '/^-vm/d' -e '/jre\/bin\/java/d' cuda-toolkit/libnsight/nsight.ini cuda-toolkit/libnvvp/nvvp.ini
-
-# Convert icons for appstream
+sed -i -e '/^-vm/d' -e '/jre\/bin\/java/d' \
+    cuda-toolkit/libnsight/nsight.ini cuda-toolkit/libnvvp/nvvp.ini
 convert cuda-toolkit/libnsight/icon.xpm nsight.png
 convert cuda-toolkit/libnvvp/icon.xpm nvvp.png
-
-# Install Java GUI programs
 install -m 644 -p nsight.png %{buildroot}%{_datadir}/pixmaps/nsight.png
 install -m 644 -p nvvp.png %{buildroot}%{_datadir}/pixmaps/nvvp.png
 cp -fr cuda-toolkit/libnsight %{buildroot}%{_libdir}/nsight
@@ -586,20 +613,34 @@ cp -fr cuda-toolkit/libnvvp %{buildroot}%{_libdir}/nvvp
 ln -sf %{_libdir}/nsight/nsight %{buildroot}%{_bindir}/
 ln -sf %{_libdir}/nvvp/nvvp %{buildroot}%{_bindir}/
 cp -fr cuda-toolkit/nsightee_plugins %{buildroot}%{_libdir}/nsight/
-desktop-file-install --dir %{buildroot}%{_datadir}/applications/ %{SOURCE12} %{SOURCE14}
 
+# QT programs
+cp -fr cuda-toolkit/NsightCompute-* %{buildroot}%{_libdir}/NsightCompute
+cp -fr cuda-toolkit/NsightSystems-* %{buildroot}%{_libdir}/NsightSystems
+ln -sf %{_libdir}/NsightCompute/host/linux-desktop-glibc_2_11_3-x64/nv-nsight-cu.png \
+    %{buildroot}%{_datadir}/pixmaps/nv-nsight-cu.png
+ln -sf %{_libdir}/NsightSystems/host/Host-x86_64/nsight-sys.png \
+    %{buildroot}%{_datadir}/pixmaps/nsight-sys.png
+install -m 755 %{SOURCE15} %{buildroot}%{_bindir}/nv-nsight-cu
+install -m 755 %{SOURCE15} %{buildroot}%{_bindir}/nsight-sys
+
+# Desktop files
+desktop-file-install --dir %{buildroot}%{_datadir}/applications/ \
+    %{SOURCE10} %{SOURCE12} %{SOURCE14} %{SOURCE16}
 # Only Fedora and RHEL 7+ desktop-file-validate binaries can check multiple
 # desktop files at the same time
 desktop-file-validate %{buildroot}%{_datadir}/applications/nsight.desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/nvvp.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/nv-nsight-cu.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/nsight-sys.desktop
 
 %if 0%{?fedora}
 # install AppData and add modalias provides
 mkdir -p %{buildroot}%{_datadir}/appdata
-install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
+install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %endif
 
-%if 0%{?rhel}
+%if 0%{?rhel} == 6 || 0%{?rhel} == 7
 
 %ldconfig_scriptlets
 
@@ -635,13 +676,53 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
 
 %postun nsight
-%{_bindir}/update-desktop-database &> /dev/null || :
+if [ $1 -eq 0 ] ; then
+    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    %{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+    %{_bindir}/update-desktop-database &> /dev/null || :
+fi
+
+%posttrans nsight
+%{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 %post nvvp
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
 
 %postun nvvp
-%{_bindir}/update-desktop-database &> /dev/null || :
+if [ $1 -eq 0 ] ; then
+    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    %{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+    %{_bindir}/update-desktop-database &> /dev/null || :
+fi
+
+%posttrans nvvp
+%{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+
+%post nsight-compute
+/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+
+%postun nsight-compute
+if [ $1 -eq 0 ] ; then
+    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    %{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+    %{_bindir}/update-desktop-database &> /dev/null || :
+fi
+
+%posttrans nsight-compute
+%{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+
+%post nsight-systems
+/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+
+%postun nsight-systems
+if [ $1 -eq 0 ] ; then
+    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    %{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+    %{_bindir}/update-desktop-database &> /dev/null || :
+fi
+
+%posttrans nsight-systems
+%{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 %endif
 
@@ -959,8 +1040,26 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{buildroot}%{_datadir}/appdata/
 %{_mandir}/man1/nvvp.*
 %{_libdir}/nvvp
 
+%files nsight-compute
+%{_bindir}/nv-nsight-cu
+#%if 0%{?fedora}
+#%{_datadir}/appdata/nsight-compute.appdata.xml
+#%endif
+%{_datadir}/applications/nv-nsight-cu.desktop
+%{_datadir}/pixmaps/nv-nsight-cu.png
+%{_libdir}/NsightCompute
+
+%files nsight-systems
+%{_bindir}/nsight-sys
+#%if 0%{?fedora}
+#%{_datadir}/appdata/nsight-systems.appdata.xml
+#%endif
+%{_datadir}/applications/nsight-sys.desktop
+%{_datadir}/pixmaps/nsight-sys.png
+%{_libdir}/NsightSystems
+
 %changelog
-* Sat Mar 23 2019 Simone Caronni <negativo17@gmail.com> - 1:10.1.105-1
+* Sat Apr 06 2019 Simone Caronni <negativo17@gmail.com> - 1:10.1.105-1
 - Update to 10.1.105.
 - Trim changelog.
 - Require cuda-gcc only on Fedora 30+ (GCC 9).
