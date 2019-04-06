@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=NVIDIA Nsight Systems
+GenericName=NVIDIA Nsight Systems
+Icon=nsight-sys
+Exec=nsight-sys
+Keywords=cuda;gpu;nvidia;nsight;
+X-AppInstall-Keywords=cuda;gpu;nvidia;nsight;
+X-GNOME-Keywords=cuda;gpu;nvidia;nsight;
+Terminal=false
+Categories=Development;Profiling;ParallelComputing
