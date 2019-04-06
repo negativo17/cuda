@@ -8,8 +8,12 @@
 %global         __strip /bin/true
 %global         _missing_build_ids_terminate_build 0
 %global         major_package_version 10-1
-%global         __requires_exclude ^(libQt5.*\\.so.*|libicu.*\\.so.*)$
-%global         __requires_exclude ^(libQt5.*\\.so.*|libicu.*\\.so.*)$
+
+%global         libs_excluded_qt5 libQt5.*\\.so.*libq.*\\.so
+%global         libs_excluded_other libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc++\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*
+
+%global         __provides_exclude ^(%{libs_excluded_qt5}|%{libs_excluded_other})$
+%global         __requires_exclude ^(%{libs_excluded_qt5}|%{libs_excluded_other})$
 
 Name:           cuda
 Version:        10.1.105
