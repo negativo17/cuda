@@ -1,19 +1,16 @@
 # Todo:
-# - filter \*.so from Java programs
 # - build cuda-gdb from source
 # - /usr/include/cuda is owned by the cuda main package but the devel
 #   subpackages use the directory
+# - AppData for nsight-compute/systems
 
 %global         debug_package %{nil}
 %global         __strip /bin/true
 %global         _missing_build_ids_terminate_build 0
 %global         major_package_version 10-1
 
-%global         libs_excluded_qt5 libQt5.*\\.so.*libq.*\\.so
-%global         libs_excluded_other libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc++\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*
-
-%global         __provides_exclude ^(%{libs_excluded_qt5}|%{libs_excluded_other})$
-%global         __requires_exclude ^(%{libs_excluded_qt5}|%{libs_excluded_other})$
+%global         __provides_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
+%global         __requires_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
 
 Name:           cuda
 Version:        10.1.105
