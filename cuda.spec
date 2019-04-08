@@ -9,8 +9,16 @@
 %global         _missing_build_ids_terminate_build 0
 %global         major_package_version 10-1
 
+%if 0%{?rhel} == 6
+%{?filter_setup:
+%filter_from_provides /libQt5.*\\.so.*/d; /libq.*\\.so.*/d; /libicu.*\\.so.*/d; /libssl\\.so.*/d; /libcrypto\\.so.*/d; /libstdc\\+\\+\\.so.*/d; /libprotobuf\\.so.*/d; /libcupti\\.so.*/d; /libboost_.*\\.so.*/d
+%filter_from_requires /libQt5.*\\.so.*/d; /libq.*\\.so.*/d; /libicu.*\\.so.*/d; /libssl\\.so.*/d; /libcrypto\\.so.*/d; /libstdc\\+\\+\\.so.*/d; /libprotobuf\\.so.*/d; /libcupti\\.so.*/d; /libboost_.*\\.so.*/d
+%filter_setup
+}
+%else
 %global         __provides_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
 %global         __requires_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
+%endif
 
 Name:           cuda
 Version:        10.1.105
