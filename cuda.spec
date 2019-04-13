@@ -11,8 +11,8 @@
 
 %if 0%{?rhel} == 6
 %{?filter_setup:
-%filter_from_provides /libQt5.*\\.so.*/d; /libq.*\\.so.*/d; /libicu.*\\.so.*/d; /libssl\\.so.*/d; /libcrypto\\.so.*/d; /libstdc\\+\\+\\.so.*/d; /libprotobuf\\.so.*/d; /libcupti\\.so.*/d; /libboost_.*\\.so.*/d
-%filter_from_requires /libQt5.*\\.so.*/d; /libq.*\\.so.*/d; /libicu.*\\.so.*/d; /libssl\\.so.*/d; /libcrypto\\.so.*/d; /libstdc\\+\\+\\.so.*/d; /libprotobuf\\.so.*/d; /libcupti\\.so.*/d; /libboost_.*\\.so.*/d
+%filter_from_provides /libQt5.*\.so.*/d; /libq.*\.so.*/d; /libicu.*\.so.*/d; /libssl\.so.*/d; /libcrypto\.so.*/d; /libstdc++\.so.*/d; /libprotobuf\.so.*/d; /libcupti\.so.*/d; /libboost_.*\.so.*/d
+%filter_from_requires /libQt5.*\.so.*/d; /libq.*\.so.*/d; /libicu.*\.so.*/d; /libssl\.so.*/d; /libcrypto\.so.*/d; /libstdc++\.so.*/d; /libprotobuf\.so.*/d; /libcupti\.so.*/d; /libboost_.*\.so.*/d
 %filter_setup
 }
 %else
