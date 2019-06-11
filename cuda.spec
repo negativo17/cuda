@@ -21,7 +21,7 @@
 %endif
 
 Name:           cuda
-Version:        10.1.105
+Version:        10.1.168
 Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
@@ -511,6 +511,7 @@ size of CPUs and GPUs; from large servers to the smallest SoC.
 # Remove RUNPATH on binaries
 chrpath -d cuda-toolkit/nvvm/bin/cicc
 chrpath -d cuda-toolkit/NsightCompute-*/host/linux-desktop-glibc_*-x64/libicu*.so.*
+chrpath -d cuda-toolkit/NsightSystems-*/Host-x86_64/libicu*.so.*
 chrpath -d cuda-toolkit/NsightSystems-*/Host-x86_64/QdstrmImporter
 
 # Replaced later
@@ -649,8 +650,6 @@ mkdir -p %{buildroot}%{_datadir}/appdata
 install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %endif
 
-%if 0%{?rhel} == 6 || 0%{?rhel} == 7
-
 %ldconfig_scriptlets
 
 %ldconfig_scriptlets cli-tools
@@ -680,60 +679,6 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %ldconfig_scriptlets nvrtc
 
 %ldconfig_scriptlets nvtx
-
-%post nsight
-/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-
-%postun nsight
-if [ $1 -eq 0 ] ; then
-    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    %{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-    %{_bindir}/update-desktop-database &> /dev/null || :
-fi
-
-%posttrans nsight
-%{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-
-%post nvvp
-/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-
-%postun nvvp
-if [ $1 -eq 0 ] ; then
-    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    %{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-    %{_bindir}/update-desktop-database &> /dev/null || :
-fi
-
-%posttrans nvvp
-%{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-
-%post nsight-compute
-/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-
-%postun nsight-compute
-if [ $1 -eq 0 ] ; then
-    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    %{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-    %{_bindir}/update-desktop-database &> /dev/null || :
-fi
-
-%posttrans nsight-compute
-%{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-
-%post nsight-systems
-/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
-
-%postun nsight-systems
-if [ $1 -eq 0 ] ; then
-    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
-    %{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-    %{_bindir}/update-desktop-database &> /dev/null || :
-fi
-
-%posttrans nsight-systems
-%{_bindir}/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
-
-%endif
 
 %files
 %{_bindir}/bin2c
@@ -1068,6 +1013,10 @@ fi
 %{_libdir}/NsightSystems
 
 %changelog
+* Mon Jun 10 2019 Simone Caronni <negativo17@gmail.com> - 1:10.1.168-1
+- Update to 10.1.168.
+- Remove post* scriptlets.
+
 * Sat Apr 06 2019 Simone Caronni <negativo17@gmail.com> - 1:10.1.105-1
 - Update to 10.1.105.
 - Trim changelog.
