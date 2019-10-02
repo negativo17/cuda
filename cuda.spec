@@ -21,7 +21,7 @@
 %endif
 
 Name:           cuda
-Version:        10.1.168
+Version:        10.1.243
 Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
@@ -510,9 +510,8 @@ size of CPUs and GPUs; from large servers to the smallest SoC.
 
 # Remove RUNPATH on binaries
 chrpath -d cuda-toolkit/nvvm/bin/cicc
-chrpath -d cuda-toolkit/NsightCompute-*/host/linux-desktop-glibc_*-x64/libicu*.so.*
-chrpath -d cuda-toolkit/NsightSystems-*/Host-x86_64/libicu*.so.*
-chrpath -d cuda-toolkit/NsightSystems-*/Host-x86_64/QdstrmImporter
+chrpath -d cuda-toolkit/nsight-compute-*/host/linux-desktop-glibc_*-x64/libicu*.so.*
+chrpath -d cuda-toolkit/nsight-systems-*/Host-x86_64/libicu*.so.*
 
 # Replaced later
 rm -f cuda-toolkit/bin/nvcc.profile
@@ -625,11 +624,11 @@ ln -sf %{_libdir}/nvvp/nvvp %{buildroot}%{_bindir}/
 cp -fr cuda-toolkit/nsightee_plugins %{buildroot}%{_libdir}/nsight/
 
 # QT programs
-cp -fr cuda-toolkit/NsightCompute-* %{buildroot}%{_libdir}/NsightCompute
-cp -fr cuda-toolkit/NsightSystems-* %{buildroot}%{_libdir}/NsightSystems
-ln -sf %{_libdir}/NsightCompute/host/linux-desktop-glibc_2_11_3-x64/nv-nsight-cu.png \
+cp -fr cuda-toolkit/nsight-compute-* %{buildroot}%{_libdir}/nsight-compute
+cp -fr cuda-toolkit/nsight-systems-* %{buildroot}%{_libdir}/nsight-systems
+ln -sf %{_libdir}/nsight-compute/host/linux-desktop-glibc_2_11_3-x64/nv-nsight-cu.png \
     %{buildroot}%{_datadir}/pixmaps/nv-nsight-cu.png
-ln -sf %{_libdir}/NsightSystems/host/Host-x86_64/nsight-sys.png \
+ln -sf %{_libdir}/nsight-systems/host/Host-x86_64/nsight-sys.png \
     %{buildroot}%{_datadir}/pixmaps/nsight-sys.png
 install -m 755 %{SOURCE15} %{buildroot}%{_bindir}/nv-nsight-cu
 install -m 755 %{SOURCE15} %{buildroot}%{_bindir}/nsight-sys
@@ -813,11 +812,13 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %files cusolver
 %license cuda-toolkit/EULA.txt
 %{_libdir}/libcusolver.so.*
+%{_libdir}/libcusolverMg.so.*
 
 %files cusolver-devel
 %{_includedir}/%{name}/cusolver*
 %{_libdir}/libcusolver_static.a
 %{_libdir}/libcusolver.so
+%{_libdir}/libcusolverMg.so
 %{_libdir}/liblapack_static.a
 %{_libdir}/libmetis_static.a
 %{_libdir}/pkgconfig/cusolver.pc
@@ -1001,7 +1002,7 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 #%endif
 %{_datadir}/applications/nv-nsight-cu.desktop
 %{_datadir}/pixmaps/nv-nsight-cu.png
-%{_libdir}/NsightCompute
+%{_libdir}/nsight-compute
 
 %files nsight-systems
 %{_bindir}/nsight-sys
@@ -1010,9 +1011,12 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 #%endif
 %{_datadir}/applications/nsight-sys.desktop
 %{_datadir}/pixmaps/nsight-sys.png
-%{_libdir}/NsightSystems
+%{_libdir}/nsight-systems
 
 %changelog
+* Wed Oct 02 2019 Simone Caronni <negativo17@gmail.com> - 1:10.1.243-1
+- Update to CUDA 10.1 update 2.
+
 * Mon Jun 10 2019 Simone Caronni <negativo17@gmail.com> - 1:10.1.168-1
 - Update to 10.1.168.
 - Remove post* scriptlets.
