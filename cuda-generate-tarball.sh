@@ -2,8 +2,8 @@
 set -e
 
 PKG=cuda
-MAJOR_VERSION=${MAJOR_VERSION:-10.1}
-VERSION=${VERSION:-10.1.243}
+MAJOR_VERSION=${MAJOR_VERSION:-10.2}
+VERSION=${VERSION:-10.2.89}
 TARBALL=${PKG}-${VERSION}-x86_64
 
 get_run_file() {
@@ -14,7 +14,7 @@ get_run_file() {
 
 # Main installer
 DL_SITE=http://developer.download.nvidia.com/compute/cuda/$MAJOR_VERSION/Prod/local_installers
-RUN_FILE=cuda_${VERSION}_418.87.00_linux.run
+RUN_FILE=cuda_${VERSION}_440.33.01_linux.run
 get_run_file
 
 # Unpack installer
