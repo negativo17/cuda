@@ -21,7 +21,7 @@
 %endif
 
 Name:           cuda
-Version:        10.1.243
+Version:        10.2.89
 Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
@@ -511,7 +511,7 @@ size of CPUs and GPUs; from large servers to the smallest SoC.
 # Remove RUNPATH on binaries
 chrpath -d cuda-toolkit/nvvm/bin/cicc
 chrpath -d cuda-toolkit/nsight-compute-*/host/linux-desktop-glibc_*-x64/libicu*.so.*
-chrpath -d cuda-toolkit/nsight-systems-*/Host-x86_64/libicu*.so.*
+chrpath -d cuda-toolkit/nsight-systems-*/host-linux-x64/libicu*.so.*
 
 # Replaced later
 rm -f cuda-toolkit/bin/nvcc.profile
@@ -572,6 +572,8 @@ cp -fr cuda-toolkit/src %{buildroot}%{_includedir}/%{name}/fortran/
 cp -fr cuda-toolkit/include/* cuda-toolkit/nvvm/include/* %{buildroot}%{_includedir}/%{name}/
 cp -fr cuda-toolkit/extras/CUPTI/include %{buildroot}%{_includedir}/%{name}/CUPTI/
 cp -fr cuda-toolkit/extras/Debugger/include %{buildroot}%{_includedir}/%{name}/Debugger/
+mv -f %{buildroot}%{_includedir}/%{name}/%{name}/* %{buildroot}%{_includedir}/%{name}/
+rm -fr %{buildroot}%{_includedir}/%{name}/%{name}
 
 # Libraries
 cp -fr cuda-toolkit/%{_lib}/* cuda-toolkit/nvvm/%{_lib}/* %{buildroot}%{_libdir}/
@@ -686,7 +688,7 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_bindir}/crt/
 %{_bindir}/cudafe++
 %{_bindir}/cuobjdump
-%{_bindir}/gpu-library-advisor
+#%{_bindir}/gpu-library-advisor
 %{_bindir}/fatbinary
 %{_bindir}/nvcc
 %{_bindir}/nvcc.profile
@@ -804,7 +806,6 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 
 %files curand-devel
 %{_includedir}/%{name}/curand*
-%{_includedir}/%{name}/sobol_direction_vectors.h
 %{_libdir}/libcurand_static.a
 %{_libdir}/libcurand.so
 %{_libdir}/pkgconfig/curand.pc
@@ -884,6 +885,7 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 
 %files devel
 %doc cuda-toolkit/extras/Debugger/Readme-Debugger.txt
+%{_includedir}/%{name}/atomic
 %{_includedir}/%{name}/CL
 %{_includedir}/%{name}/Debugger
 %{_includedir}/%{name}/builtin_types.h
@@ -943,6 +945,7 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/sm_60_atomic_functions.hpp
 %{_includedir}/%{name}/sm_61_intrinsics.h
 %{_includedir}/%{name}/sm_61_intrinsics.hpp
+%{_includedir}/%{name}/std
 %{_includedir}/%{name}/surface_functions.h
 %{_includedir}/%{name}/surface_functions.hpp
 %{_includedir}/%{name}/surface_indirect_functions.h
@@ -1014,6 +1017,9 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/nsight-systems
 
 %changelog
+* Sun Feb 02 2020 Simone Caronni <negativo17@gmail.com> - 1:10.2.89-1
+- Update to 10.2.89.
+
 * Wed Oct 02 2019 Simone Caronni <negativo17@gmail.com> - 1:10.1.243-1
 - Update to CUDA 10.1 update 2.
 
