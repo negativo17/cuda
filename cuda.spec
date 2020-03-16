@@ -22,7 +22,7 @@
 
 Name:           cuda
 Version:        10.2.89
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -572,8 +572,6 @@ cp -fr cuda-toolkit/src %{buildroot}%{_includedir}/%{name}/fortran/
 cp -fr cuda-toolkit/include/* cuda-toolkit/nvvm/include/* %{buildroot}%{_includedir}/%{name}/
 cp -fr cuda-toolkit/extras/CUPTI/include %{buildroot}%{_includedir}/%{name}/CUPTI/
 cp -fr cuda-toolkit/extras/Debugger/include %{buildroot}%{_includedir}/%{name}/Debugger/
-mv -f %{buildroot}%{_includedir}/%{name}/%{name}/* %{buildroot}%{_includedir}/%{name}/
-rm -fr %{buildroot}%{_includedir}/%{name}/%{name}
 
 # Libraries
 cp -fr cuda-toolkit/%{_lib}/* cuda-toolkit/nvvm/%{_lib}/* %{buildroot}%{_libdir}/
@@ -885,7 +883,6 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 
 %files devel
 %doc cuda-toolkit/extras/Debugger/Readme-Debugger.txt
-%{_includedir}/%{name}/atomic
 %{_includedir}/%{name}/CL
 %{_includedir}/%{name}/Debugger
 %{_includedir}/%{name}/builtin_types.h
@@ -945,7 +942,6 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/sm_60_atomic_functions.hpp
 %{_includedir}/%{name}/sm_61_intrinsics.h
 %{_includedir}/%{name}/sm_61_intrinsics.hpp
-%{_includedir}/%{name}/std
 %{_includedir}/%{name}/surface_functions.h
 %{_includedir}/%{name}/surface_functions.hpp
 %{_includedir}/%{name}/surface_indirect_functions.h
@@ -960,6 +956,8 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/vector_functions.h
 %{_includedir}/%{name}/vector_functions.hpp
 %{_includedir}/%{name}/vector_types.h
+# libcu++ headers:
+%{_includedir}/%{name}/cuda/
 %{_libdir}/libaccinj%{__isa_bits}.so
 %{_libdir}/libcuinj%{__isa_bits}.so
 %{_libdir}/libnvvm.so
@@ -1017,6 +1015,9 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/nsight-systems
 
 %changelog
+* Mon Mar 16 2020 Simone Caronni <negativo17@gmail.com> - 1:10.2.89-2
+- Do not merge the CUDA C++ standard library headers with the rest.
+
 * Sun Feb 02 2020 Simone Caronni <negativo17@gmail.com> - 1:10.2.89-1
 - Update to 10.2.89.
 
