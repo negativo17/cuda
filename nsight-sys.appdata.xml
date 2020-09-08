@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>nsight-sys.desktop</id>
+  <name>NVIDIA Nsight Systems</name>
+  <summary>Application performance analysis tool</summary>
+  <description>
+    <p>
+      NVIDIA® Nsight™ Systems is a system-wide performance analysis tool designed to
+      visualize an application’s algorithms, help you identify the largest
+      opportunities to optimize, and tune to scale efficiently across any quantity or
+      size of CPUs and GPUs; from large server to our smallest SoC.
+    </p>
+  </description>
+  <translation/>
+  <keywords>
+    <keyword>NVIDIA</keyword>
+    <keyword>CUDA</keyword>
+    <keyword>IDE</keyword>
+  </keywords>
+  <url type="homepage">http://www.nvidia.com/</url>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>LicenseRef-proprietary:NVIDIA</project_license>
+  <developer_name>NVIDIA Corporation</developer_name>
+  <update_contact>negativo17@gmail.com</update_contact>
+</component>
