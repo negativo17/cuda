@@ -7,22 +7,26 @@
 %global         debug_package %{nil}
 %global         __strip /bin/true
 %global         _missing_build_ids_terminate_build 0
-%global         major_package_version 10-1
+%global         major_package_version 11-0
 
 %if 0%{?rhel} == 6
 %{?filter_setup:
 %filter_from_provides /libQt5.*\.so.*/d; /libq.*\.so.*/d; /libicu.*\.so.*/d; /libssl\.so.*/d; /libcrypto\.so.*/d; /libstdc++\.so.*/d; /libprotobuf\.so.*/d; /libcupti\.so.*/d; /libboost_.*\.so.*/d
 %filter_from_requires /libQt5.*\.so.*/d; /libq.*\.so.*/d; /libicu.*\.so.*/d; /libssl\.so.*/d; /libcrypto\.so.*/d; /libstdc++\.so.*/d; /libprotobuf\.so.*/d; /libcupti\.so.*/d; /libboost_.*\.so.*/d
+%filter_provides_in %{_libdir}/nsight-systems/target.*; %{_libdir}/nsight-systems/host-linux-x64/Mesa; %{_libdir}/nsight-compute/target/.*
+%filter_requires_in %{_libdir}/nsight-systems/target.*; %{_libdir}/nsight-systems/host-linux-x64/Mesa; %{_libdir}/nsight-compute/target/.*
 %filter_setup
 }
 %else
 %global         __provides_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
 %global         __requires_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
+%global         __requires_exclude_from ^%{_libdir}/nsight-systems/target.*|^%{_libdir}/nsight-systems/host-linux-x64/Mesa|^%{_libdir}/nsight-compute/target/.*
+%global         __provides_exclude_from ^%{_libdir}/nsight-systems/target.*|^%{_libdir}/nsight-systems/host-linux-x64/Mesa|^%{_libdir}/nsight-compute/target/.*
 %endif
 
 Name:           cuda
-Version:        10.2.89
-Release:        2%{?dist}
+Version:        11.0.3
+Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -30,20 +34,18 @@ URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64
 
 Source0:        %{name}-%{version}-x86_64.tar.xz
-Source1:        %{name}-gdb-%{version}.src.tar.gz
+Source1:        %{name}-gdb-11.0.221.src.tar.gz
 Source2:        %{name}-generate-tarball.sh
 Source3:        %{name}.sh
 Source4:        %{name}.csh
 Source5:        nvcc.profile
 
-Source10:       nsight.desktop
-Source11:       nsight.appdata.xml
 Source12:       nvvp.desktop
 Source13:       nvvp.appdata.xml
-Source14:       nv-nsight-cu.desktop
-Source15:       nv-nsight-cu.wrapper
+Source14:       ncu-ui.desktop
+Source15:       ncu-ui.appdata.xml
 Source16:       nsight-sys.desktop
-Source17:       nsight-sys.wrapper
+Source17:       nsight-sys.appdata.xml
 
 Source19:       accinj64.pc
 Source20:       cublas.pc
@@ -69,11 +71,10 @@ Source39:       nppist.pc
 Source40:       nppisu.pc
 Source41:       nppitc.pc
 Source42:       npps.pc
-Source43:       nvgraph.pc
-Source44:       nvml.pc
-Source45:       nvrtc.pc
-Source46:       nvToolsExt.pc
-Source47:       nvjpeg.pc
+Source43:       nvml.pc
+Source44:       nvrtc.pc
+Source45:       nvToolsExt.pc
+Source46:       nvjpeg.pc
 
 BuildRequires:  ImageMagick
 BuildRequires:  desktop-file-utils
@@ -106,6 +107,7 @@ Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-devel = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       expat >= 1.95
 Conflicts:      %{name}-command-line-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-cuobjdump-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-gdb-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-memcheck-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-nvdisasm-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
@@ -138,11 +140,11 @@ Requires:       %{name}-curand = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-cusolver = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-cusparse = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-npp = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:       %{name}-nvgraph = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvjpeg = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvrtc = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvtx = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-runtime-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:      %{name}-nvgraph < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description extra-libs
 Metapackage that installs all runtime NVIDIA CUDA libraries.
@@ -315,26 +317,6 @@ Conflicts:      %{name}-npp-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{
 This package provides development files for the NVIDIA Performance Primitives
 libraries.
 
-%package nvgraph
-Summary:        NVIDIA Graph Analytics library (nvGRAPH)
-Requires(post): ldconfig
-Conflicts:      %{name}-nvgraph-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-
-%description nvgraph
-The NVIDIA Graph Analytics library (nvGRAPH) comprises of parallel algorithms
-for high performance analytics on graphs with up to 2 billion edges. nvGRAPH
-makes it possible to build interactive and high throughput graph analytics
-applications.
-
-%package nvgraph-devel
-Summary:        Development files for NVIDIA Graph Analytics library (nvGRAPH)
-Requires:       %{name}-nvgraph%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Conflicts:      %{name}-nvgraph-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-
-%description nvgraph-devel
-This package provides development files for the NVIDIA Graph Analytics library
-(nvGRAPH).
-
 %package nvjpeg
 Summary:        NVIDIA JPEG decoder (nvJPEG)
 Requires(post): ldconfig
@@ -418,7 +400,6 @@ Requires:       %{name}-curand-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{re
 Requires:       %{name}-cusolver-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-cusparse-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-npp-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:       %{name}-nvgraph-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvjpeg-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvml-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvrtc-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -429,6 +410,7 @@ Conflicts:      %{name}-misc-headers-%{major_package_version} < %{?epoch:%{epoch
 Conflicts:      %{name}-toolkit-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Obsoletes:      %{name}-static < %{?epoch:%{epoch}:}%{version}
 Provides:       %{name}-static = %{?epoch:%{epoch}:}%{version}
+Obsoletes:      %{name}-nvgraph-devel < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description devel
 This package provides the development files of the %{name} package.
@@ -439,7 +421,8 @@ BuildArch:      noarch
 Conflicts:      %{name}-documentation-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description docs
-Contains all guides and library documentation for CUDA.
+Contains all guides and library documentation for CUDA. Nsight Eclipse plugins
+are also contained in this package.
 
 %package samples
 Summary:        Compute Unified Device Architecture toolkit samples
@@ -463,22 +446,11 @@ Requires:       libXi-devel
 %description samples
 Contains an extensive set of example CUDA programs.
 
-%package nsight
-Summary:        NVIDIA Nsight Eclipse Edition
-Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-Conflicts:      %{name}-nsight-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Conflicts:      %{name}-visual-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-
-%description nsight
-NVIDIA Nsight Eclipse Edition is a full-featured IDE powered by the Eclipse
-platform that provides an all-in-one integrated environment to edit, build,
-debug and profile CUDA-C applications. Nsight Eclipse Edition supports a rich
-set of commercial and free plugins.
-
 %package nvvp
 Summary:        NVIDIA Visual Profiler
 Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-nvvp-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-visual-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description nvvp
 The NVIDIA Visual Profiler is a cross-platform performance profiling tool that
@@ -488,6 +460,7 @@ delivers developers vital feedback for optimizing CUDA C/C++ applications.
 Summary:        NVIDIA Nsight Compute
 Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-nsight-compute-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-visual-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description nsight-compute
 NVIDIA Nsight Compute is an interactive kernel profiler for CUDA applications on
@@ -498,6 +471,7 @@ a user interface and command line tool.
 Summary:        NVIDIA Nsight Systems
 Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-nsight-systems-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-visual-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description nsight-systems
 NVIDIA Nsight Systems is a system-wide performance analysis tool designed to
@@ -505,16 +479,32 @@ visualize an application's algorithms, help you identify the largest
 opportunities to optimize, and tune to scale efficiently across any quantity or
 size of CPUs and GPUs; from large servers to the smallest SoC.
 
+%package sanitizer
+Summary:        CUDA Sanitizer
+Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:       %{name}-cupti-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-sanitizer-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description sanitizer
+Provides a set of API's to enable third party tools to write GPU sanitizing
+tools, such as memory and race checkers.
+
 %prep
 %setup -q -n %{name}-%{version}-x86_64
 
+# Remove crypto libraries not linked correctly
+find . -name "libcrypto.so*" -delete
+find . -name "libssl.so*" -delete
+
 # Remove RUNPATH on binaries
-chrpath -d cuda-toolkit/nvvm/bin/cicc
-chrpath -d cuda-toolkit/nsight-compute-*/host/linux-desktop-glibc_*-x64/libicu*.so.*
-chrpath -d cuda-toolkit/nsight-systems-*/host-linux-x64/libicu*.so.*
+chrpath -d cuda_nvcc/nvvm/bin/cicc \
+  nsight_systems/host-linux-x64/libicu*.so.* \
+  nsight_systems/host-linux-x64/libpapi.so.* \
+  nsight_compute/host/linux-desktop-glibc_*/libicu*.so.* \
+  nsight_compute/target/linux-desktop*/libTreeLauncherTargetInjection.so
 
 # Replaced later
-rm -f cuda-toolkit/bin/nvcc.profile
+rm -f cuda_nvcc/bin/nvcc.profile
 
 # RPMlint issues
 find . -name "*.h" -exec chmod 644 {} \;
@@ -522,17 +512,14 @@ find . -name "*.hpp" -exec chmod 644 {} \;
 find . -name "*.bat" -delete
 find . -size 0 -delete
 
-sed -i -e 's/env python/python2/g' cuda-samples/6_Advanced/matrixMulDynlinkJIT/extras/ptx2c.py
-
-# Adjust path for NSight plugin
-sed -i -e 's|`dirname $0`/..|%{_libdir}/nsight|g' cuda-toolkit/bin/nsight_ee_plugins_manage.sh
+sed -i -e 's/env python/python2/g' cuda_samples/6_Advanced/matrixMulDynlinkJIT/extras/ptx2c.py
 
 # Remove double quotes in samples' Makefiles (cosmetical)
-find cuda-samples -name "Makefile" -exec sed -i -e 's|"/usr"|/usr|g' {} \;
+find cuda_samples -name "Makefile" -exec sed -i -e 's|"/usr"|/usr|g' {} \;
 # Make samples build without specifying anything on the command line for the
 # include directories so people stop asking
-find cuda-samples -type f -exec sed -i -e 's|/bin/nvcc|/bin/nvcc --include-path %{_includedir}/cuda|g' {} \;
-find cuda-samples -name "Makefile" -exec sed -i -e 's|$(CUDA_PATH)/include|%{_includedir}/cuda|g' {} \;
+find cuda_samples -type f -exec sed -i -e 's|/bin/nvcc|/bin/nvcc --include-path %{_includedir}/cuda|g' {} \;
+find cuda_samples -name "Makefile" -exec sed -i -e 's|$(CUDA_PATH)/include|%{_includedir}/cuda|g' {} \;
 
 %build
 # Nothing to build
@@ -545,7 +532,7 @@ mkdir -p %{buildroot}%{_datadir}/%{name}/
 mkdir -p %{buildroot}%{_datadir}/libnsight/
 mkdir -p %{buildroot}%{_datadir}/libnvvp/
 mkdir -p %{buildroot}%{_datadir}/pixmaps/
-mkdir -p %{buildroot}%{_includedir}/%{name}/
+mkdir -p %{buildroot}%{_includedir}/%{name}/f
 mkdir -p %{buildroot}%{_libdir}/pkgconfig/
 mkdir -p %{buildroot}%{_libexecdir}/%{name}/
 mkdir -p %{buildroot}%{_mandir}/man{1,3,7}/
@@ -555,9 +542,9 @@ mkdir -p %{buildroot}%{_sysconfdir}/profile.d/
 install -pm 644 %{SOURCE3} %{SOURCE4} %{buildroot}%{_sysconfdir}/profile.d
 
 # Man pages
-rm -f cuda-toolkit/doc/man/man1/cuda-install-samples-*
-for man in cuda-toolkit/doc/man/man{1,3,7}/*; do gzip -9 $man; done
-cp -fr cuda-toolkit/doc/man/* %{buildroot}%{_mandir}
+rm -f cuda_documentation/doc/man/man1/cuda-install-samples-*
+for man in cuda_documentation/doc/man/man{1,3,7}/*; do gzip -9 $man; done
+cp -fr cuda_documentation/doc/man/* %{buildroot}%{_mandir}
 # This man page conflicts with *a lot* of other packages
 mv %{buildroot}%{_mandir}/man3/deprecated.3.gz \
     %{buildroot}%{_mandir}/man3/cuda_deprecated.3.gz
@@ -565,18 +552,49 @@ mv %{buildroot}%{_mandir}/man3/deprecated.3.gz \
 rm -f %{buildroot}%{_mandir}/man3/uuid.*
 
 # Docs
-mv cuda-toolkit/extras/Debugger/Readme.txt cuda-toolkit/extras/Debugger/Readme-Debugger.txt
+mv cuda_gdb/extras/Debugger/Readme.txt cuda_gdb/extras/Debugger/Readme-Debugger.txt
 
+# Remove duplicate headers
+rm -f cuda_sanitizer_api/Sanitizer/include/generated*
 # Headers
-cp -fr cuda-toolkit/src %{buildroot}%{_includedir}/%{name}/fortran/
-cp -fr cuda-toolkit/include/* cuda-toolkit/nvvm/include/* %{buildroot}%{_includedir}/%{name}/
-cp -fr cuda-toolkit/extras/CUPTI/include %{buildroot}%{_includedir}/%{name}/CUPTI/
-cp -fr cuda-toolkit/extras/Debugger/include %{buildroot}%{_includedir}/%{name}/Debugger/
+cp -fr \
+    cuda_cudart/include/* \
+    cuda_cupti/extras/CUPTI/include/* \
+    cuda_nvcc/nvvm/include/* cuda_nvcc/include/* \
+    cuda_nvml_dev/include/* \
+    cuda_nvprof/include/* \
+    cuda_nvrtc/include/* \
+    cuda_nvtx/include/* \
+    libcublas/include/* libcublas/src/* \
+    libcufft/include/* \
+    libcurand/include/* \
+    libcusolver/include/* \
+    libcusparse/include/* libcusparse/src/* \
+    libnpp/include/* \
+    libnvjpeg/include/* \
+    cuda_sanitizer_api/Sanitizer/include/* \
+    %{buildroot}%{_includedir}/%{name}/
+
+cp -fr cuda_gdb/extras/Debugger/include %{buildroot}%{_includedir}/%{name}/Debugger/
 
 # Libraries
-cp -fr cuda-toolkit/%{_lib}/* cuda-toolkit/nvvm/%{_lib}/* %{buildroot}%{_libdir}/
-cp -fr cuda-toolkit/extras/CUPTI/%{_lib}/* %{buildroot}%{_libdir}/
-cp -fr cuda-toolkit/nvvm/libdevice/* %{buildroot}%{_datadir}/%{name}/
+cp -fr \
+    cuda_cudart/lib64/* \
+    cuda_cupti/extras/CUPTI/lib64/* \
+    cuda_nvcc/nvvm/lib64/* \
+    cuda_nvprof/lib64/* \
+    cuda_nvrtc/lib64/* \
+    cuda_nvtx/lib64/* \
+    libcublas/lib64/* \
+    libcufft/lib64/* \
+    libcurand/lib64/* \
+    libcusolver/lib64/* \
+    libcusparse/lib64/* \
+    libnpp/lib64/* \
+    libnvjpeg/lib64/* \
+    %{buildroot}%{_libdir}/
+
+cp -fr cuda_nvcc/nvvm/libdevice/* %{buildroot}%{_datadir}/%{name}/
 
 # Libraries in the driver package
 ln -sf libnvidia-ml.so.1 %{buildroot}%{_libdir}/libnvidia-ml.so
@@ -587,7 +605,7 @@ install -pm 644 \
     %{SOURCE25} %{SOURCE26} %{SOURCE27} %{SOURCE28} %{SOURCE29} %{SOURCE30} \
     %{SOURCE31} %{SOURCE32} %{SOURCE33} %{SOURCE34} %{SOURCE35} %{SOURCE36} \
     %{SOURCE37} %{SOURCE38} %{SOURCE39} %{SOURCE40} %{SOURCE41} %{SOURCE42} \
-    %{SOURCE43} %{SOURCE44} %{SOURCE45} %{SOURCE46} %{SOURCE47} \
+    %{SOURCE43} %{SOURCE44} %{SOURCE45} %{SOURCE46} \
     %{buildroot}/%{_libdir}/pkgconfig
 
 # nvcc settings
@@ -601,52 +619,69 @@ sed -i \
     %{buildroot}/%{_libdir}/pkgconfig/*.pc %{buildroot}/%{_bindir}/nvcc.profile
 
 # Binaries
-cp -fr cuda-toolkit/bin/* cuda-toolkit/nvvm/bin/* %{buildroot}%{_bindir}/
+cp -fr \
+    cuda_cuobjdump/bin/* \
+    cuda_gdb/bin/* \
+    cuda_memcheck/bin/* \
+    cuda_nvcc/bin/* \
+    cuda_nvcc/nvvm/bin/* \
+    cuda_nvdisasm/bin/* \
+    cuda_nvprof/bin/* \
+    cuda_nvprune/bin/* \
+    cuda_nvvp/bin/* \
+    %{buildroot}%{_bindir}/
+
+cp -fr cuda_sanitizer_api/Sanitizer/*.so %{buildroot}/%{_libexecdir}/%{name}
+
+ln -sf %{_libexecdir}/%{name}/compute-sanitizer %{buildroot}%{_bindir}/compute-sanitizer
 
 # Additional samples
-cp -fr cuda-samples %{buildroot}%{_datadir}/%{name}/samples
-cp -fr cuda-toolkit/extras/CUPTI/samples %{buildroot}%{_datadir}/%{name}/samples/CUPTI
-cp -fr cuda-toolkit/nvml/example %{buildroot}%{_datadir}/%{name}/samples/nvml
-cp -fr cuda-toolkit/nvvm/libnvvm-samples %{buildroot}%{_datadir}/%{name}/samples/nvvm
-cp -fr cuda-toolkit/extras/demo_suite %{buildroot}%{_datadir}/%{name}/
+cp -fr cuda_samples %{buildroot}%{_datadir}/%{name}/samples
+cp -fr cuda_cupti/extras/CUPTI/samples %{buildroot}%{_datadir}/%{name}/samples/CUPTI
+cp -fr cuda_nvml_dev/nvml/example %{buildroot}%{_datadir}/%{name}/samples/nvml
+cp -fr cuda_nvcc/nvvm/libnvvm-samples %{buildroot}%{_datadir}/%{name}/samples/nvvm
+cp -fr cuda_demo_suite/extras %{buildroot}%{_datadir}/%{name}/demo_suite
 
-# Java stuff
-sed -i -e '/^-vm/d' -e '/jre\/bin\/java/d' \
-    cuda-toolkit/libnsight/nsight.ini cuda-toolkit/libnvvp/nvvp.ini
-convert cuda-toolkit/libnsight/icon.xpm nsight.png
-convert cuda-toolkit/libnvvp/icon.xpm nvvp.png
-install -m 644 -p nsight.png %{buildroot}%{_datadir}/pixmaps/nsight.png
+# Remove non-working libcrypto libraries
+find . -name "*libcrypto*" -delete
+
+# Nsight Compute
+cp -fr nsight_compute %{buildroot}%{_libdir}/nsight-compute
+ln -sf %{_libdir}/nsight-compute/host/linux-desktop-glibc_2_11_3-x64/ncu-ui.png \
+    %{buildroot}%{_datadir}/pixmaps/ncu-ui.png
+for binary in ncu ncu-ui nv-nsight-cu nv-nsight-cu-cli; do
+  ln -sf %{_libdir}/nsight-compute/$binary %{buildroot}%{_bindir}/$binary
+done
+
+# Nsight Systems
+cp -fr nsight_systems %{buildroot}%{_libdir}/nsight-systems
+ln -sf %{_libdir}/nsight-systems/host-linux-x64/nsight-sys.png \
+  %{buildroot}%{_datadir}/pixmaps/nsight-sys.png
+for binary in nsight-sys nsys nsys-ui; do
+  ln -sf %{_libdir}/nsight-systems/bin/$binary %{buildroot}%{_bindir}/$binary
+done
+
+# Nvidia Visual Profiler
+convert cuda_nvvp/libnvvp/icon.xpm nvvp.png
 install -m 644 -p nvvp.png %{buildroot}%{_datadir}/pixmaps/nvvp.png
-cp -fr cuda-toolkit/libnsight %{buildroot}%{_libdir}/nsight
-cp -fr cuda-toolkit/libnvvp %{buildroot}%{_libdir}/nvvp
-ln -sf %{_libdir}/nsight/nsight %{buildroot}%{_bindir}/
-ln -sf %{_libdir}/nvvp/nvvp %{buildroot}%{_bindir}/
-cp -fr cuda-toolkit/nsightee_plugins %{buildroot}%{_libdir}/nsight/
-
-# QT programs
-cp -fr cuda-toolkit/nsight-compute-* %{buildroot}%{_libdir}/nsight-compute
-cp -fr cuda-toolkit/nsight-systems-* %{buildroot}%{_libdir}/nsight-systems
-ln -sf %{_libdir}/nsight-compute/host/linux-desktop-glibc_2_11_3-x64/nv-nsight-cu.png \
-    %{buildroot}%{_datadir}/pixmaps/nv-nsight-cu.png
-ln -sf %{_libdir}/nsight-systems/host/Host-x86_64/nsight-sys.png \
-    %{buildroot}%{_datadir}/pixmaps/nsight-sys.png
-install -m 755 %{SOURCE15} %{buildroot}%{_bindir}/nv-nsight-cu
-install -m 755 %{SOURCE15} %{buildroot}%{_bindir}/nsight-sys
+cp -fr cuda_nvvp/libnvvp %{buildroot}%{_libdir}/nvvp
+ln -sf ../%{_lib}/nvvp/nvvp %{buildroot}%{_bindir}/
 
 # Desktop files
 desktop-file-install --dir %{buildroot}%{_datadir}/applications/ \
-    %{SOURCE10} %{SOURCE12} %{SOURCE14} %{SOURCE16}
+    %{SOURCE12} %{SOURCE14} %{SOURCE16}
+
+%check
 # Only Fedora and RHEL 7+ desktop-file-validate binaries can check multiple
 # desktop files at the same time
-desktop-file-validate %{buildroot}%{_datadir}/applications/nsight.desktop
-desktop-file-validate %{buildroot}%{_datadir}/applications/nvvp.desktop
-desktop-file-validate %{buildroot}%{_datadir}/applications/nv-nsight-cu.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/ncu-ui.desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/nsight-sys.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/nvvp.desktop
 
 %if 0%{?fedora}
 # install AppData and add modalias provides
-mkdir -p %{buildroot}%{_datadir}/appdata
-install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
+mkdir -p %{buildroot}%{_metainfodir}
+install -p -m 0644 %{SOURCE13} %{SOURCE15} %{SOURCE17} %{buildroot}%{_metainfodir}/
 %endif
 
 %ldconfig_scriptlets
@@ -670,8 +705,6 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %ldconfig_scriptlets cusparse
 
 %ldconfig_scriptlets npp
-
-%ldconfig_scriptlets nvgraph
 
 %ldconfig_scriptlets nvjpeg
 
@@ -717,21 +750,29 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_mandir}/man1/nvprof.*
 
 %files libs
-%license cuda-toolkit/EULA.txt
+%license EULA.txt
 %{_libdir}/libaccinj%{__isa_bits}.so.*
-%{_libdir}/libcudart.so.*
 %{_libdir}/libcuinj%{__isa_bits}.so.*
 %{_libdir}/libnvvm.so.*
 
 %files cublas
-%license cuda-toolkit/EULA.txt
+%license EULA.txt
 %{_libdir}/libcublas.so.*
 %{_libdir}/libcublasLt.so.*
 %{_libdir}/libnvblas.so.*
 
 %files cublas-devel
-%{_includedir}/%{name}/cublas*
-%{_includedir}/%{name}/nvblas*
+%{_includedir}/%{name}/nvblas.h
+%{_includedir}/%{name}/cublasLt.h
+%{_includedir}/%{name}/cublas_v2.h
+%{_includedir}/%{name}/cublas.h
+%{_includedir}/%{name}/cublas_api.h
+%{_includedir}/%{name}/cublasXt.h
+%{_includedir}/%{name}/fortran.c
+%{_includedir}/%{name}/fortran_common.h
+%{_includedir}/%{name}/fortran.h
+%{_includedir}/%{name}/fortran_thunking.c
+%{_includedir}/%{name}/fortran_thunking.h
 %{_libdir}/libcublas_static.a
 %{_libdir}/libcublas.so
 %{_libdir}/libcublasLt_static.a
@@ -741,15 +782,93 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/cublasLt.pc
 
 %files cudart
-%license cuda-toolkit/EULA.txt
+%license EULA.txt
 %{_libdir}/libcudart.so.*
 
 %files cudart-devel
-%{_includedir}/%{name}/crt
+%{_includedir}/%{name}/crt/
+%{_includedir}/%{name}/builtin_types.h
+%{_includedir}/%{name}/channel_descriptor.h
+%{_includedir}/%{name}/CL
+%{_includedir}/%{name}/common_functions.h
+%{_includedir}/%{name}/cooperative_groups
+%{_includedir}/%{name}/cooperative_groups.h
+%{_includedir}/%{name}/cub
+%{_includedir}/%{name}/cuComplex.h
+#%{_includedir}/%{name}/cuda
+%{_includedir}/%{name}/cuda/atomic
+%{_includedir}/%{name}/cuda_awbarrier.h
+%{_includedir}/%{name}/cuda_awbarrier_helpers.h
+%{_includedir}/%{name}/cuda_awbarrier_primitives.h
+%{_includedir}/%{name}/cuda/barrier
+%{_includedir}/%{name}/cuda_bf16.h
+%{_includedir}/%{name}/cuda_bf16.hpp
 %{_includedir}/%{name}/cuda_device_runtime_api.h
-%{_includedir}/%{name}/cuda_runtime.h
-%{_includedir}/%{name}/cuda_runtime_api.h
+%{_includedir}/%{name}/cudaEGL.h
+%{_includedir}/%{name}/cuda_egl_interop.h
+%{_includedir}/%{name}/cuda_fp16.h
+%{_includedir}/%{name}/cuda_fp16.hpp
+%{_includedir}/%{name}/cudaGL.h
+%{_includedir}/%{name}/cuda_gl_interop.h
+%{_includedir}/%{name}/cuda.h
+%{_includedir}/%{name}/cuda_occupancy.h
+%{_includedir}/%{name}/cuda_pipeline.h
+%{_includedir}/%{name}/cuda_pipeline_helpers.h
+%{_includedir}/%{name}/cuda_pipeline_primitives.h
 %{_includedir}/%{name}/cudart_platform.h
+%{_includedir}/%{name}/cuda_runtime_api.h
+%{_includedir}/%{name}/cuda_runtime.h
+#%{_includedir}/%{name}/cuda/std
+%{_includedir}/%{name}/cuda/std
+%{_includedir}/%{name}/cuda_surface_types.h
+%{_includedir}/%{name}/cuda_texture_types.h
+%{_includedir}/%{name}/cudaVDPAU.h
+%{_includedir}/%{name}/cuda_vdpau_interop.h
+%{_includedir}/%{name}/device_atomic_functions.h
+%{_includedir}/%{name}/device_atomic_functions.hpp
+%{_includedir}/%{name}/device_double_functions.h
+%{_includedir}/%{name}/device_functions.h
+%{_includedir}/%{name}/device_launch_parameters.h
+%{_includedir}/%{name}/device_types.h
+%{_includedir}/%{name}/driver_functions.h
+%{_includedir}/%{name}/driver_types.h
+%{_includedir}/%{name}/host_config.h
+%{_includedir}/%{name}/host_defines.h
+%{_includedir}/%{name}/library_types.h
+%{_includedir}/%{name}/math_constants.h
+%{_includedir}/%{name}/math_functions.h
+%{_includedir}/%{name}/mma.h
+%{_includedir}/%{name}/nvfunctional
+%{_includedir}/%{name}/sm_20_atomic_functions.h
+%{_includedir}/%{name}/sm_20_atomic_functions.hpp
+%{_includedir}/%{name}/sm_20_intrinsics.h
+%{_includedir}/%{name}/sm_20_intrinsics.hpp
+%{_includedir}/%{name}/sm_30_intrinsics.h
+%{_includedir}/%{name}/sm_30_intrinsics.hpp
+%{_includedir}/%{name}/sm_32_atomic_functions.h
+%{_includedir}/%{name}/sm_32_atomic_functions.hpp
+%{_includedir}/%{name}/sm_32_intrinsics.h
+%{_includedir}/%{name}/sm_32_intrinsics.hpp
+%{_includedir}/%{name}/sm_35_atomic_functions.h
+%{_includedir}/%{name}/sm_35_intrinsics.h
+%{_includedir}/%{name}/sm_60_atomic_functions.h
+%{_includedir}/%{name}/sm_60_atomic_functions.hpp
+%{_includedir}/%{name}/sm_61_intrinsics.h
+%{_includedir}/%{name}/sm_61_intrinsics.hpp
+%{_includedir}/%{name}/surface_functions.h
+%{_includedir}/%{name}/surface_functions.hpp
+%{_includedir}/%{name}/surface_indirect_functions.h
+%{_includedir}/%{name}/surface_indirect_functions.hpp
+%{_includedir}/%{name}/surface_types.h
+%{_includedir}/%{name}/texture_fetch_functions.h
+%{_includedir}/%{name}/texture_fetch_functions.hpp
+%{_includedir}/%{name}/texture_indirect_functions.h
+%{_includedir}/%{name}/texture_indirect_functions.hpp
+%{_includedir}/%{name}/texture_types.h
+%{_includedir}/%{name}/thrust
+%{_includedir}/%{name}/vector_functions.h
+%{_includedir}/%{name}/vector_functions.hpp
+%{_includedir}/%{name}/vector_types.h
 %{_libdir}/libcudadevrt.a
 %{_libdir}/libcudart_static.a
 %{_libdir}/libcudart.so
@@ -757,7 +876,7 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/cudart.pc
 
 %files nvtx
-%license cuda-toolkit/EULA.txt
+%license EULA.txt
 %{_libdir}/libnvToolsExt.so.*
 
 %files nvtx-devel
@@ -771,12 +890,15 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/nvToolsExt.pc
 
 %files cufft
-%license cuda-toolkit/EULA.txt
+%license EULA.txt
 %{_libdir}/libcufft.so.*
 %{_libdir}/libcufftw.so.*
 
 %files cufft-devel
-%{_includedir}/%{name}/cufft*
+%{_includedir}/%{name}/cudalibxt.h
+%{_includedir}/%{name}/cufft.h
+%{_includedir}/%{name}/cufftw.h
+%{_includedir}/%{name}/cufftXt.h
 %{_libdir}/libcufft_static.a
 %{_libdir}/libcufft_static_nocallback.a
 %{_libdir}/libcufft.so
@@ -786,12 +908,36 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/cufftw.pc
 
 %files cupti
-%license cuda-toolkit/EULA.txt
+%license EULA.txt
 %{_libdir}/libcupti.so.*
 
 %files cupti-devel
-%doc cuda-toolkit/extras/CUPTI/doc/*
-%{_includedir}/%{name}/CUPTI
+%doc cuda_cupti/extras/CUPTI/doc/*
+%{_includedir}/%{name}/cuda_stdint.h
+%{_includedir}/%{name}/cupti_activity.h
+%{_includedir}/%{name}/cupti_callbacks.h
+%{_includedir}/%{name}/cupti_driver_cbid.h
+%{_includedir}/%{name}/cupti_events.h
+%{_includedir}/%{name}/cupti.h
+%{_includedir}/%{name}/cupti_metrics.h
+%{_includedir}/%{name}/cupti_nvtx_cbid.h
+%{_includedir}/%{name}/cupti_profiler_target.h
+%{_includedir}/%{name}/cupti_result.h
+%{_includedir}/%{name}/cupti_runtime_cbid.h
+%{_includedir}/%{name}/cupti_target.h
+%{_includedir}/%{name}/cupti_version.h
+%{_includedir}/%{name}/generated_cuda_gl_interop_meta.h
+%{_includedir}/%{name}/generated_cudaGL_meta.h
+%{_includedir}/%{name}/generated_cuda_meta.h
+%{_includedir}/%{name}/generated_cuda_runtime_api_meta.h
+%{_includedir}/%{name}/generated_cuda_vdpau_interop_meta.h
+%{_includedir}/%{name}/generated_cudaVDPAU_meta.h
+%{_includedir}/%{name}/generated_nvtx_meta.h
+%{_includedir}/%{name}/nvperf_cuda_host.h
+%{_includedir}/%{name}/nvperf_host.h
+%{_includedir}/%{name}/nvperf_target.h
+%{_includedir}/%{name}/Openacc
+%{_includedir}/%{name}/Openmp
 %{_libdir}/libcupti_static.a
 %{_libdir}/libcupti.so
 %{_libdir}/libnvperf_host.so
@@ -799,22 +945,43 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/libnvperf_target.so
 
 %files curand
-%license cuda-toolkit/EULA.txt
+%license EULA.txt
 %{_libdir}/libcurand.so.*
 
 %files curand-devel
-%{_includedir}/%{name}/curand*
+%{_includedir}/%{name}/curand_discrete2.h
+%{_includedir}/%{name}/curand_discrete.h
+%{_includedir}/%{name}/curand_globals.h
+%{_includedir}/%{name}/curand.h
+%{_includedir}/%{name}/curand_kernel.h
+%{_includedir}/%{name}/curand_lognormal.h
+%{_includedir}/%{name}/curand_mrg32k3a.h
+%{_includedir}/%{name}/curand_mtgp32dc_p_11213.h
+%{_includedir}/%{name}/curand_mtgp32.h
+%{_includedir}/%{name}/curand_mtgp32_host.h
+%{_includedir}/%{name}/curand_mtgp32_kernel.h
+%{_includedir}/%{name}/curand_normal.h
+%{_includedir}/%{name}/curand_normal_static.h
+%{_includedir}/%{name}/curand_philox4x32_x.h
+%{_includedir}/%{name}/curand_poisson.h
+%{_includedir}/%{name}/curand_precalc.h
+%{_includedir}/%{name}/curand_uniform.h
 %{_libdir}/libcurand_static.a
 %{_libdir}/libcurand.so
 %{_libdir}/pkgconfig/curand.pc
 
 %files cusolver
-%license cuda-toolkit/EULA.txt
+%license EULA.txt
 %{_libdir}/libcusolver.so.*
 %{_libdir}/libcusolverMg.so.*
 
 %files cusolver-devel
-%{_includedir}/%{name}/cusolver*
+%{_includedir}/%{name}/cusolver_common.h
+%{_includedir}/%{name}/cusolverDn.h
+%{_includedir}/%{name}/cusolverMg.h
+%{_includedir}/%{name}/cusolverRf.h
+%{_includedir}/%{name}/cusolverSp.h
+%{_includedir}/%{name}/cusolverSp_LOWLEVEL_PREVIEW.h
 %{_libdir}/libcusolver_static.a
 %{_libdir}/libcusolver.so
 %{_libdir}/libcusolverMg.so
@@ -823,37 +990,81 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/cusolver.pc
 
 %files cusparse
-%license cuda-toolkit/EULA.txt
+%license EULA.txt
 %{_libdir}/libcusparse.so.*
 
 %files cusparse-devel
-%{_includedir}/%{name}/cusparse*
+%{_includedir}/%{name}/cusparse.h
+%{_includedir}/%{name}/cusparse_v2.h
+%{_includedir}/%{name}/cusparse_fortran.c
+%{_includedir}/%{name}/cusparse_fortran_common.h
+%{_includedir}/%{name}/cusparse_fortran.h
 %{_libdir}/libcusparse_static.a
 %{_libdir}/libcusparse.so
 %{_libdir}/pkgconfig/cusparse.pc
 
 %files npp
-%license cuda-toolkit/EULA.txt
-%{_libdir}/libnpp*.so.*
+%license EULA.txt
+%{_libdir}/libnppc.so.*
+%{_libdir}/libnppial.so.*
+%{_libdir}/libnppicc.so.*
+%{_libdir}/libnppidei.so.*
+%{_libdir}/libnppif.so.*
+%{_libdir}/libnppig.so.*
+%{_libdir}/libnppim.so.*
+%{_libdir}/libnppist.so.*
+%{_libdir}/libnppisu.so.*
+%{_libdir}/libnppitc.so.*
+%{_libdir}/libnpps.so.*
 
 %files npp-devel
-%{_includedir}/%{name}/npp*
-%{_libdir}/libnpp*_static.a
-%{_libdir}/libnpp*.so
+%{_includedir}/%{name}/nppcore.h
+%{_includedir}/%{name}/nppdefs.h
+%{_includedir}/%{name}/npp.h
+%{_includedir}/%{name}/nppi_arithmetic_and_logical_operations.h
+%{_includedir}/%{name}/nppi_color_conversion.h
+%{_includedir}/%{name}/nppi_data_exchange_and_initialization.h
+%{_includedir}/%{name}/nppi_filtering_functions.h
+%{_includedir}/%{name}/nppi_geometry_transforms.h
+%{_includedir}/%{name}/nppi.h
+%{_includedir}/%{name}/nppi_linear_transforms.h
+%{_includedir}/%{name}/nppi_morphological_operations.h
+%{_includedir}/%{name}/nppi_statistics_functions.h
+%{_includedir}/%{name}/nppi_support_functions.h
+%{_includedir}/%{name}/nppi_threshold_and_compare_operations.h
+%{_includedir}/%{name}/npps_arithmetic_and_logical_operations.h
+%{_includedir}/%{name}/npps_conversion_functions.h
+%{_includedir}/%{name}/npps_filtering_functions.h
+%{_includedir}/%{name}/npps.h
+%{_includedir}/%{name}/npps_initialization.h
+%{_includedir}/%{name}/npps_statistics_functions.h
+%{_includedir}/%{name}/npps_support_functions.h
+%{_libdir}/libnppc.so
+%{_libdir}/libnppc_static.a
+%{_libdir}/libnppial.so
+%{_libdir}/libnppial_static.a
+%{_libdir}/libnppicc.so
+%{_libdir}/libnppicc_static.a
+%{_libdir}/libnppidei.so
+%{_libdir}/libnppidei_static.a
+%{_libdir}/libnppif.so
+%{_libdir}/libnppif_static.a
+%{_libdir}/libnppig.so
+%{_libdir}/libnppig_static.a
+%{_libdir}/libnppim.so
+%{_libdir}/libnppim_static.a
+%{_libdir}/libnppist.so
+%{_libdir}/libnppist_static.a
+%{_libdir}/libnppisu.so
+%{_libdir}/libnppisu_static.a
+%{_libdir}/libnppitc.so
+%{_libdir}/libnppitc_static.a
+%{_libdir}/libnpps.so
+%{_libdir}/libnpps_static.a
 %{_libdir}/pkgconfig/npp*.pc
 
-%files nvgraph
-%license cuda-toolkit/EULA.txt
-%{_libdir}/libnvgraph_static.a
-%{_libdir}/libnvgraph.so.*
-
-%files nvgraph-devel
-%{_includedir}/%{name}/nvgraph*
-%{_libdir}/libnvgraph.so
-%{_libdir}/pkgconfig/nvgraph.pc
-
 %files nvjpeg
-%license cuda-toolkit/EULA.txt
+%license EULA.txt
 %{_libdir}/libnvjpeg_static.a
 %{_libdir}/libnvjpeg.so.*
 
@@ -868,12 +1079,12 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/nvml.pc
 
 %files nvrtc
-%license cuda-toolkit/EULA.txt
+%license EULA.txt
 %{_libdir}/libnvrtc-builtins.so.*
 %{_libdir}/libnvrtc.so.*
 
 %files nvrtc-devel
-%{_includedir}/%{name}/nvrtc*
+%{_includedir}/%{name}/nvrtc.h
 %{_libdir}/libnvrtc-builtins.so
 %{_libdir}/libnvrtc.so
 %{_libdir}/pkgconfig/nvrtc.pc
@@ -882,14 +1093,13 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 # Empty metapackage
 
 %files devel
-%doc cuda-toolkit/extras/Debugger/Readme-Debugger.txt
+%doc cuda_gdb/extras/Debugger/Readme-Debugger.txt
 %{_includedir}/%{name}/CL
 %{_includedir}/%{name}/Debugger
 %{_includedir}/%{name}/builtin_types.h
 %{_includedir}/%{name}/channel_descriptor.h
 %{_includedir}/%{name}/common_functions.h
 %{_includedir}/%{name}/cooperative_groups.h
-%{_includedir}/%{name}/cooperative_groups_helpers.h
 %{_includedir}/%{name}/cuComplex.h
 %{_includedir}/%{name}/cuda.h
 %{_includedir}/%{name}/cudaEGL.h
@@ -917,7 +1127,6 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_includedir}/%{name}/fatBinaryCtl.h
 %{_includedir}/%{name}/fatbinary.h
 %{_includedir}/%{name}/fatbinary_section.h
-%{_includedir}/%{name}/fortran  
 %{_includedir}/%{name}/host_config.h
 %{_includedir}/%{name}/host_defines.h
 %{_includedir}/%{name}/library_types.h
@@ -968,28 +1177,18 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/pkgconfig/cuinj64.pc
 
 %files docs
-%doc cuda-toolkit/doc/pdf cuda-toolkit/doc/html cuda-toolkit/tools/*
+%doc cuda_documentation/doc/pdf cuda_documentation/doc/html cuda_documentation/tools cuda_documentation/CUDA_Toolkit_Release_Notes.txt
+%doc cuda_nsight/*
 
 %files samples
 %{_datadir}/%{name}/samples
 %{_datadir}/%{name}/demo_suite
 
-%files nsight
-%{_bindir}/nsight
-%{_bindir}/nsight_ee_plugins_manage.sh
-%if 0%{?fedora}
-%{_datadir}/appdata/nsight.appdata.xml
-%endif
-%{_datadir}/applications/nsight.desktop
-%{_datadir}/pixmaps/nsight.png
-%{_libdir}/nsight
-%{_mandir}/man1/nsight.*
-
 %files nvvp
 %{_bindir}/computeprof
 %{_bindir}/nvvp
 %if 0%{?fedora}
-%{_datadir}/appdata/nvvp.appdata.xml
+%{_metainfodir}/nvvp.appdata.xml
 %endif
 %{_datadir}/applications/nvvp.desktop
 %{_datadir}/pixmaps/nvvp.png
@@ -997,24 +1196,52 @@ install -p -m 0644 %{SOURCE11} %{SOURCE13} %{buildroot}%{_datadir}/appdata/
 %{_libdir}/nvvp
 
 %files nsight-compute
+%{_bindir}/ncu
+%{_bindir}/ncu-ui
 %{_bindir}/nv-nsight-cu
-#%if 0%{?fedora}
-#%{_datadir}/appdata/nsight-compute.appdata.xml
-#%endif
-%{_datadir}/applications/nv-nsight-cu.desktop
-%{_datadir}/pixmaps/nv-nsight-cu.png
+%{_bindir}/nv-nsight-cu-cli
+%if 0%{?fedora}
+%{_metainfodir}/ncu-ui.appdata.xml
+%endif
+%{_datadir}/applications/ncu-ui.desktop
+%{_datadir}/pixmaps/ncu-ui.png
 %{_libdir}/nsight-compute
+%{_mandir}/man1/nsight.*
 
 %files nsight-systems
 %{_bindir}/nsight-sys
-#%if 0%{?fedora}
-#%{_datadir}/appdata/nsight-systems.appdata.xml
-#%endif
+%{_bindir}/nsys
+%{_bindir}/nsys-ui
+%if 0%{?fedora}
+%{_metainfodir}/nsight-sys.appdata.xml
+%endif
 %{_datadir}/applications/nsight-sys.desktop
 %{_datadir}/pixmaps/nsight-sys.png
 %{_libdir}/nsight-systems
+%{_mandir}/man1/nsight.*
+
+%files sanitizer
+%doc cuda_sanitizer_api/Sanitizer/docs
+%{_bindir}/compute-sanitizer
+%{_includedir}/%{name}/sanitizer_callbacks.h
+%{_includedir}/%{name}/sanitizer_driver_cbid.h
+%{_includedir}/%{name}/sanitizer.h
+%{_includedir}/%{name}/sanitizer_memory.h
+%{_includedir}/%{name}/sanitizer_patching.h
+%{_includedir}/%{name}/sanitizer_result.h
+%{_includedir}/%{name}/sanitizer_runtime_cbid.h
+%{_includedir}/%{name}/sanitizer_stream.h
+%{_libexecdir}/%{name}/libInterceptorInjectionTarget.so
+%{_libexecdir}/%{name}/libsanitizer-collection.so
+%{_libexecdir}/%{name}/libsanitizer-public.so
+%{_libexecdir}/%{name}/libTreeLauncherPlaceholder.so
+%{_libexecdir}/%{name}/libTreeLauncherTargetInjection.so
+%{_libexecdir}/%{name}/libTreeLauncherTargetUpdatePreloadInjection.so
 
 %changelog
+* Sat Sep 05 2020 Simone Caronni <negativo17@gmail.com> - 1:11.0.3-1
+- Update to 11.0.3.
+
 * Mon Mar 16 2020 Simone Caronni <negativo17@gmail.com> - 1:10.2.89-2
 - Do not merge the CUDA C++ standard library headers with the rest.
 

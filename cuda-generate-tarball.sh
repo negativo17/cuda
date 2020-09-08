@@ -2,8 +2,8 @@
 set -e
 
 PKG=cuda
-MAJOR_VERSION=${MAJOR_VERSION:-10.2}
-VERSION=${VERSION:-10.2.89}
+MAJOR_VERSION=${MAJOR_VERSION:-11}
+VERSION=${VERSION:-11.0.3}
 TARBALL=${PKG}-${VERSION}-x86_64
 
 get_run_file() {
@@ -13,8 +13,8 @@ get_run_file() {
 }
 
 # Main installer
-DL_SITE=http://developer.download.nvidia.com/compute/cuda/$MAJOR_VERSION/Prod/local_installers
-RUN_FILE=cuda_${VERSION}_440.33.01_linux.run
+DL_SITE=http://developer.download.nvidia.com/compute/cuda/$VERSION/local_installers
+RUN_FILE=cuda_${VERSION}_450.51.06_linux.run
 get_run_file
 
 # Unpack installer
@@ -26,29 +26,23 @@ printf "Creating tarball ${TARBALL}... "
 
 cd extract
 
-# Remove binaries included in system packages
-rm -fr cuda-toolkit/jre
-rm -f cuda-toolkit/targets/x86_64-linux/lib/libOpenCL.so*
-rm -fr cuda-samples/common/lib
+# Remove driver installer
+rm -f NVIDIA-Linux*.run
+
+# Move out GDB sources
+mv cuda_gdb/extras/cuda-gdb-*.src.tar.gz .
 
 # Remove stubs
-rm -fr cuda-toolkit/targets/x86_64-linux/lib/stubs
+rm -fr */targets/x86_64-linux/lib/stubs
 
-# Remove installers
-rm -fr cuda-toolkit/bin/cuda-uninstaller \
-    cuda-samples/bin
+# Remove OpenCL copy
+rm -fr cuda_cudart/targets/x86_64-linux/lib/libOpenCL.so*
 
-# Move out gdb sources
-mv cuda-toolkit/extras/${PKG}-gdb-*.src.tar.gz ..
-
-# Remove extra architectures for tools
-rm -fr \
-    cuda-toolkit/nsight-compute-*/target/linux-desktop-glibc*x86 \
-    cuda-toolkit/nsight-compute-*/target/linux-desktop-glibc*ppc64le
+mv ${PKG}-gdb-*.src.tar.gz ..
 
 # Create tarball
 mkdir ../${TARBALL}
-mv cuda-toolkit cuda-samples ../${TARBALL}
+mv * ../${TARBALL}
 cd ..
 tar --remove-files -cJf ${TARBALL}.tar.xz ${TARBALL}
 
