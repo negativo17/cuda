@@ -25,7 +25,7 @@
 %endif
 
 Name:           cuda
-Version:        11.0.3
+Version:        11.1.1
 Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
@@ -34,7 +34,7 @@ URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64
 
 Source0:        %{name}-%{version}-x86_64.tar.xz
-Source1:        %{name}-gdb-11.0.221.src.tar.gz
+Source1:        %{name}-gdb-11.1.105.src.tar.gz
 Source2:        %{name}-generate-tarball.sh
 Source3:        %{name}.sh
 Source4:        %{name}.csh
@@ -95,6 +95,7 @@ Conflicts:      %{name}-minimal-build-%{major_package_version} < %{?epoch:%{epoc
 Conflicts:      %{name}-gpu-library-advisor-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-nvcc-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-nvprune-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:      %{name}-docs < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description
 CUDA is a parallel computing platform and programming model that enables
@@ -415,15 +416,6 @@ Obsoletes:      %{name}-nvgraph-devel < %{?epoch:%{epoch}:}%{version}-%{release}
 %description devel
 This package provides the development files of the %{name} package.
 
-%package docs
-Summary:        Compute Unified Device Architecture toolkit documentation
-BuildArch:      noarch
-Conflicts:      %{name}-documentation-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
-
-%description docs
-Contains all guides and library documentation for CUDA. Nsight Eclipse plugins
-are also contained in this package.
-
 %package samples
 Summary:        Compute Unified Device Architecture toolkit samples
 Conflicts:      %{name}-demo-suite-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
@@ -498,6 +490,7 @@ find . -name "libssl.so*" -delete
 
 # Remove RUNPATH on binaries
 chrpath -d cuda_nvcc/nvvm/bin/cicc \
+  nsight_systems/target-linux-armv8/host-linux-armv8/* \
   nsight_systems/host-linux-x64/libicu*.so.* \
   nsight_systems/host-linux-x64/libpapi.so.* \
   nsight_compute/host/linux-desktop-glibc_*/libicu*.so.* \
@@ -535,27 +528,16 @@ mkdir -p %{buildroot}%{_datadir}/pixmaps/
 mkdir -p %{buildroot}%{_includedir}/%{name}/f
 mkdir -p %{buildroot}%{_libdir}/pkgconfig/
 mkdir -p %{buildroot}%{_libexecdir}/%{name}/
-mkdir -p %{buildroot}%{_mandir}/man{1,3,7}/
 mkdir -p %{buildroot}%{_sysconfdir}/profile.d/
 
 # Environment settings
 install -pm 644 %{SOURCE3} %{SOURCE4} %{buildroot}%{_sysconfdir}/profile.d
 
-# Man pages
-rm -f cuda_documentation/doc/man/man1/cuda-install-samples-*
-for man in cuda_documentation/doc/man/man{1,3,7}/*; do gzip -9 $man; done
-cp -fr cuda_documentation/doc/man/* %{buildroot}%{_mandir}
-# This man page conflicts with *a lot* of other packages
-mv %{buildroot}%{_mandir}/man3/deprecated.3.gz \
-    %{buildroot}%{_mandir}/man3/cuda_deprecated.3.gz
-# Man page conflicts on properties
-rm -f %{buildroot}%{_mandir}/man3/uuid.*
-
 # Docs
 mv cuda_gdb/extras/Debugger/Readme.txt cuda_gdb/extras/Debugger/Readme-Debugger.txt
 
 # Remove duplicate headers
-rm -f cuda_sanitizer_api/Sanitizer/include/generated*
+rm -f cuda_sanitizer_api/compute-sanitizer/include/generated*
 # Headers
 cp -fr \
     cuda_cudart/include/* \
@@ -572,7 +554,7 @@ cp -fr \
     libcusparse/include/* libcusparse/src/* \
     libnpp/include/* \
     libnvjpeg/include/* \
-    cuda_sanitizer_api/Sanitizer/include/* \
+    cuda_sanitizer_api/compute-sanitizer/include/* \
     %{buildroot}%{_includedir}/%{name}/
 
 cp -fr cuda_gdb/extras/Debugger/include %{buildroot}%{_includedir}/%{name}/Debugger/
@@ -631,7 +613,7 @@ cp -fr \
     cuda_nvvp/bin/* \
     %{buildroot}%{_bindir}/
 
-cp -fr cuda_sanitizer_api/Sanitizer/*.so %{buildroot}/%{_libexecdir}/%{name}
+cp -fr cuda_sanitizer_api/compute-sanitizer/*.so %{buildroot}/%{_libexecdir}/%{name}
 
 ln -sf %{_libexecdir}/%{name}/compute-sanitizer %{buildroot}%{_bindir}/compute-sanitizer
 
@@ -728,10 +710,6 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{SOURCE17} %{buildroot}%{_metainfodi
 %{_bindir}/ptxas
 %dir %{_includedir}/%{name}
 %{_libexecdir}/%{name}/
-%{_mandir}/man1/cuda-binaries.*
-%{_mandir}/man1/cuobjdump.*
-%{_mandir}/man1/nvcc.*
-%{_mandir}/man1/nvprune.*
 %{_datadir}/%{name}/
 %exclude %{_datadir}/%{name}/samples
 %exclude %{_datadir}/%{name}/demo_suite
@@ -743,11 +721,6 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{SOURCE17} %{buildroot}%{_metainfodi
 %{_bindir}/cuda-memcheck
 %{_bindir}/nvdisasm
 %{_bindir}/nvprof
-%{_mandir}/man1/cuda-gdb.*
-%{_mandir}/man1/cuda-gdbserver.*
-%{_mandir}/man1/cuda-memcheck.*
-%{_mandir}/man1/nvdisasm.*
-%{_mandir}/man1/nvprof.*
 
 %files libs
 %license EULA.txt
@@ -883,7 +856,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{SOURCE17} %{buildroot}%{_metainfodi
 %{_includedir}/%{name}/nvToolsExt.h
 %{_includedir}/%{name}/nvToolsExtCuda.h
 %{_includedir}/%{name}/nvToolsExtCudaRt.h
-%{_includedir}/%{name}/nvToolsExtMeta.h
+%{_includedir}/%{name}/nvToolsExtOpenCL.h
 %{_includedir}/%{name}/nvToolsExtSync.h
 %{_includedir}/%{name}/nvtx3
 %{_libdir}/libnvToolsExt.so
@@ -1134,6 +1107,7 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{SOURCE17} %{buildroot}%{_metainfodi
 %{_includedir}/%{name}/math_functions.h
 %{_includedir}/%{name}/mma.h
 %{_includedir}/%{name}/nvfunctional
+%{_includedir}/%{name}/nvPTXCompiler.h
 %{_includedir}/%{name}/nvvm.h
 %{_includedir}/%{name}/sm_20_atomic_functions.h
 %{_includedir}/%{name}/sm_20_atomic_functions.hpp
@@ -1170,15 +1144,9 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{SOURCE17} %{buildroot}%{_metainfodi
 %{_libdir}/libaccinj%{__isa_bits}.so
 %{_libdir}/libcuinj%{__isa_bits}.so
 %{_libdir}/libnvvm.so
-%{_mandir}/man3/*
-%{_mandir}/man7/*
 %{_libdir}/pkgconfig/accinj64.pc
 %{_libdir}/pkgconfig/cuda.pc
 %{_libdir}/pkgconfig/cuinj64.pc
-
-%files docs
-%doc cuda_documentation/doc/pdf cuda_documentation/doc/html cuda_documentation/tools cuda_documentation/CUDA_Toolkit_Release_Notes.txt
-%doc cuda_nsight/*
 
 %files samples
 %{_datadir}/%{name}/samples
@@ -1192,7 +1160,6 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{SOURCE17} %{buildroot}%{_metainfodi
 %endif
 %{_datadir}/applications/nvvp.desktop
 %{_datadir}/pixmaps/nvvp.png
-%{_mandir}/man1/nvvp.*
 %{_libdir}/nvvp
 
 %files nsight-compute
@@ -1206,7 +1173,6 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{SOURCE17} %{buildroot}%{_metainfodi
 %{_datadir}/applications/ncu-ui.desktop
 %{_datadir}/pixmaps/ncu-ui.png
 %{_libdir}/nsight-compute
-%{_mandir}/man1/nsight.*
 
 %files nsight-systems
 %{_bindir}/nsight-sys
@@ -1218,10 +1184,9 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{SOURCE17} %{buildroot}%{_metainfodi
 %{_datadir}/applications/nsight-sys.desktop
 %{_datadir}/pixmaps/nsight-sys.png
 %{_libdir}/nsight-systems
-%{_mandir}/man1/nsight.*
 
 %files sanitizer
-%doc cuda_sanitizer_api/Sanitizer/docs
+%doc cuda_sanitizer_api/compute-sanitizer/docs
 %{_bindir}/compute-sanitizer
 %{_includedir}/%{name}/sanitizer_callbacks.h
 %{_includedir}/%{name}/sanitizer_driver_cbid.h
@@ -1239,6 +1204,9 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{SOURCE17} %{buildroot}%{_metainfodi
 %{_libexecdir}/%{name}/libTreeLauncherTargetUpdatePreloadInjection.so
 
 %changelog
+* Sat Nov 14 2020 Simone Caronni <negativo17@gmail.com> - 1:11.1.1-1
+- Update to 11.1.1.
+
 * Sat Sep 05 2020 Simone Caronni <negativo17@gmail.com> - 1:11.0.3-1
 - Update to 11.0.3.
 
