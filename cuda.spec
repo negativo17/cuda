@@ -2,7 +2,6 @@
 # - build cuda-gdb from source
 # - /usr/include/cuda is owned by the cuda main package but the devel
 #   subpackages use the directory
-# - AppData for nsight-compute/systems
 
 %global         debug_package %{nil}
 %global         __strip /bin/true
@@ -13,20 +12,16 @@
 %{?filter_setup:
 %filter_from_provides /libQt5.*\.so.*/d; /libq.*\.so.*/d; /libicu.*\.so.*/d; /libssl\.so.*/d; /libcrypto\.so.*/d; /libstdc++\.so.*/d; /libprotobuf\.so.*/d; /libcupti\.so.*/d; /libboost_.*\.so.*/d
 %filter_from_requires /libQt5.*\.so.*/d; /libq.*\.so.*/d; /libicu.*\.so.*/d; /libssl\.so.*/d; /libcrypto\.so.*/d; /libstdc++\.so.*/d; /libprotobuf\.so.*/d; /libcupti\.so.*/d; /libboost_.*\.so.*/d
-%filter_provides_in %{_libdir}/nsight-systems/target.*; %{_libdir}/nsight-systems/host-linux-x64/Mesa; %{_libdir}/nsight-compute/target/.*
-%filter_requires_in %{_libdir}/nsight-systems/target.*; %{_libdir}/nsight-systems/host-linux-x64/Mesa; %{_libdir}/nsight-compute/target/.*
 %filter_setup
 }
 %else
 %global         __provides_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
 %global         __requires_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
-%global         __requires_exclude_from ^%{_libdir}/nsight-systems/target.*|^%{_libdir}/nsight-systems/host-linux-x64/Mesa|^%{_libdir}/nsight-compute/target/.*
-%global         __provides_exclude_from ^%{_libdir}/nsight-systems/target.*|^%{_libdir}/nsight-systems/host-linux-x64/Mesa|^%{_libdir}/nsight-compute/target/.*
 %endif
 
 Name:           cuda
 Version:        11.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -42,10 +37,6 @@ Source5:        nvcc.profile
 
 Source12:       nvvp.desktop
 Source13:       nvvp.appdata.xml
-Source14:       ncu-ui.desktop
-Source15:       ncu-ui.appdata.xml
-Source16:       nsight-sys.desktop
-Source17:       nsight-sys.appdata.xml
 
 Source19:       accinj64.pc
 Source20:       cublas.pc
@@ -448,29 +439,6 @@ Conflicts:      %{name}-visual-tools-%{major_package_version} < %{?epoch:%{epoch
 The NVIDIA Visual Profiler is a cross-platform performance profiling tool that
 delivers developers vital feedback for optimizing CUDA C/C++ applications.
 
-%package nsight-compute
-Summary:        NVIDIA Nsight Compute
-Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-Conflicts:      %{name}-nsight-compute-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Conflicts:      %{name}-visual-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-
-%description nsight-compute
-NVIDIA Nsight Compute is an interactive kernel profiler for CUDA applications on
-x86_64 platforms. It provides detailed performance metrics and API debugging via
-a user interface and command line tool.
-
-%package nsight-systems
-Summary:        NVIDIA Nsight Systems
-Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-Conflicts:      %{name}-nsight-systems-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-Conflicts:      %{name}-visual-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
-
-%description nsight-systems
-NVIDIA Nsight Systems is a system-wide performance analysis tool designed to
-visualize an application's algorithms, help you identify the largest
-opportunities to optimize, and tune to scale efficiently across any quantity or
-size of CPUs and GPUs; from large servers to the smallest SoC.
-
 %package sanitizer
 Summary:        CUDA Sanitizer
 Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -489,12 +457,7 @@ find . -name "libcrypto.so*" -delete
 find . -name "libssl.so*" -delete
 
 # Remove RUNPATH on binaries
-chrpath -d cuda_nvcc/nvvm/bin/cicc \
-  nsight_systems/target-linux-armv8/host-linux-armv8/* \
-  nsight_systems/host-linux-x64/libicu*.so.* \
-  nsight_systems/host-linux-x64/libpapi.so.* \
-  nsight_compute/host/linux-desktop-glibc_*/libicu*.so.* \
-  nsight_compute/target/linux-desktop*/libTreeLauncherTargetInjection.so
+chrpath -d cuda_nvcc/nvvm/bin/cicc
 
 # Replaced later
 rm -f cuda_nvcc/bin/nvcc.profile
@@ -627,22 +590,6 @@ cp -fr cuda_demo_suite/extras %{buildroot}%{_datadir}/%{name}/demo_suite
 # Remove non-working libcrypto libraries
 find . -name "*libcrypto*" -delete
 
-# Nsight Compute
-cp -fr nsight_compute %{buildroot}%{_libdir}/nsight-compute
-ln -sf %{_libdir}/nsight-compute/host/linux-desktop-glibc_2_11_3-x64/ncu-ui.png \
-    %{buildroot}%{_datadir}/pixmaps/ncu-ui.png
-for binary in ncu ncu-ui nv-nsight-cu nv-nsight-cu-cli; do
-  ln -sf %{_libdir}/nsight-compute/$binary %{buildroot}%{_bindir}/$binary
-done
-
-# Nsight Systems
-cp -fr nsight_systems %{buildroot}%{_libdir}/nsight-systems
-ln -sf %{_libdir}/nsight-systems/host-linux-x64/nsight-sys.png \
-  %{buildroot}%{_datadir}/pixmaps/nsight-sys.png
-for binary in nsight-sys nsys nsys-ui; do
-  ln -sf %{_libdir}/nsight-systems/bin/$binary %{buildroot}%{_bindir}/$binary
-done
-
 # Nvidia Visual Profiler
 convert cuda_nvvp/libnvvp/icon.xpm nvvp.png
 install -m 644 -p nvvp.png %{buildroot}%{_datadir}/pixmaps/nvvp.png
@@ -650,20 +597,15 @@ cp -fr cuda_nvvp/libnvvp %{buildroot}%{_libdir}/nvvp
 ln -sf ../%{_lib}/nvvp/nvvp %{buildroot}%{_bindir}/
 
 # Desktop files
-desktop-file-install --dir %{buildroot}%{_datadir}/applications/ \
-    %{SOURCE12} %{SOURCE14} %{SOURCE16}
+desktop-file-install --dir %{buildroot}%{_datadir}/applications/ %{SOURCE12}
 
 %check
-# Only Fedora and RHEL 7+ desktop-file-validate binaries can check multiple
-# desktop files at the same time
-desktop-file-validate %{buildroot}%{_datadir}/applications/ncu-ui.desktop
-desktop-file-validate %{buildroot}%{_datadir}/applications/nsight-sys.desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/nvvp.desktop
 
 %if 0%{?fedora}
 # install AppData and add modalias provides
 mkdir -p %{buildroot}%{_metainfodir}
-install -p -m 0644 %{SOURCE13} %{SOURCE15} %{SOURCE17} %{buildroot}%{_metainfodir}/
+install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %endif
 
 %ldconfig_scriptlets
@@ -1162,29 +1104,6 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{SOURCE17} %{buildroot}%{_metainfodi
 %{_datadir}/pixmaps/nvvp.png
 %{_libdir}/nvvp
 
-%files nsight-compute
-%{_bindir}/ncu
-%{_bindir}/ncu-ui
-%{_bindir}/nv-nsight-cu
-%{_bindir}/nv-nsight-cu-cli
-%if 0%{?fedora}
-%{_metainfodir}/ncu-ui.appdata.xml
-%endif
-%{_datadir}/applications/ncu-ui.desktop
-%{_datadir}/pixmaps/ncu-ui.png
-%{_libdir}/nsight-compute
-
-%files nsight-systems
-%{_bindir}/nsight-sys
-%{_bindir}/nsys
-%{_bindir}/nsys-ui
-%if 0%{?fedora}
-%{_metainfodir}/nsight-sys.appdata.xml
-%endif
-%{_datadir}/applications/nsight-sys.desktop
-%{_datadir}/pixmaps/nsight-sys.png
-%{_libdir}/nsight-systems
-
 %files sanitizer
 %doc cuda_sanitizer_api/compute-sanitizer/docs
 %{_bindir}/compute-sanitizer
@@ -1204,6 +1123,9 @@ install -p -m 0644 %{SOURCE13} %{SOURCE15} %{SOURCE17} %{buildroot}%{_metainfodi
 %{_libexecdir}/%{name}/libTreeLauncherTargetUpdatePreloadInjection.so
 
 %changelog
+* Mon Nov 16 2020 Simone Caronni <negativo17@gmail.com> - 1:11.1.1-2
+- Nsight Compute & Systems are available separately.
+
 * Sat Nov 14 2020 Simone Caronni <negativo17@gmail.com> - 1:11.1.1-1
 - Update to 11.1.1.
 
