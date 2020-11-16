@@ -37,6 +37,9 @@ rm -fr */targets/x86_64-linux/lib/stubs
 # Remove OpenCL copy
 rm -fr cuda_cudart/targets/x86_64-linux/lib/libOpenCL.so*
 
+# Remove Nsight apps
+rm -fr nsight_systems nsight_compute integration
+
 mv ${PKG}-gdb-*.src.tar.gz ..
 
 # Create tarball
