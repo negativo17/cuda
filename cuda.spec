@@ -21,7 +21,7 @@
 
 Name:           cuda
 Version:        11.1.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -414,11 +414,7 @@ Conflicts:      %{name}-samples-%{major_package_version} < %{?epoch:%{epoch}:}%{
 Obsoletes:      %{name}-samples < %{?epoch:%{epoch}:}%{version}
 Provides:       %{name}-samples = %{?epoch:%{epoch}:}%{version}
 Requires:       cuda-devel = %{?epoch:%{epoch}:}%{version}
-%if 0%{?fedora} >= 30
-Requires:       cuda-gcc-c++
-%else
 Requires:       gcc-c++
-%endif
 Requires:       freeglut-devel
 Requires:       make
 Requires:       mesa-libGLU-devel
@@ -1123,6 +1119,9 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libexecdir}/%{name}/libTreeLauncherTargetUpdatePreloadInjection.so
 
 %changelog
+* Sat Nov 28 2020 Simone Caronni <negativo17@gmail.com> - 1:11.1.1-3
+- GCC 10 works fine.
+
 * Mon Nov 16 2020 Simone Caronni <negativo17@gmail.com> - 1:11.1.1-2
 - Nsight Compute & Systems are available separately.
 
