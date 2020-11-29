@@ -1,7 +1,5 @@
 # Todo:
 # - build cuda-gdb from source
-# - /usr/include/cuda is owned by the cuda main package but the devel
-#   subpackages use the directory
 
 %global         debug_package %{nil}
 %global         __strip /bin/true
@@ -639,7 +637,6 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_bindir}/crt/
 %{_bindir}/cudafe++
 %{_bindir}/cuobjdump
-#%{_bindir}/gpu-library-advisor
 %{_bindir}/fatbinary
 %{_bindir}/nvcc
 %{_bindir}/nvcc.profile
@@ -706,12 +703,12 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/cooperative_groups.h
 %{_includedir}/%{name}/cub
 %{_includedir}/%{name}/cuComplex.h
-#%{_includedir}/%{name}/cuda
 %{_includedir}/%{name}/cuda/atomic
+%{_includedir}/%{name}/cuda/barrier
+%{_includedir}/%{name}/cuda/std
 %{_includedir}/%{name}/cuda_awbarrier.h
 %{_includedir}/%{name}/cuda_awbarrier_helpers.h
 %{_includedir}/%{name}/cuda_awbarrier_primitives.h
-%{_includedir}/%{name}/cuda/barrier
 %{_includedir}/%{name}/cuda_bf16.h
 %{_includedir}/%{name}/cuda_bf16.hpp
 %{_includedir}/%{name}/cuda_device_runtime_api.h
@@ -729,8 +726,6 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/cudart_platform.h
 %{_includedir}/%{name}/cuda_runtime_api.h
 %{_includedir}/%{name}/cuda_runtime.h
-#%{_includedir}/%{name}/cuda/std
-%{_includedir}/%{name}/cuda/std
 %{_includedir}/%{name}/cuda_surface_types.h
 %{_includedir}/%{name}/cuda_texture_types.h
 %{_includedir}/%{name}/cudaVDPAU.h
@@ -1121,6 +1116,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %changelog
 * Sat Nov 28 2020 Simone Caronni <negativo17@gmail.com> - 1:11.1.1-3
 - GCC 10 works fine.
+- rpmlint fixes.
 
 * Mon Nov 16 2020 Simone Caronni <negativo17@gmail.com> - 1:11.1.1-2
 - Nsight Compute & Systems are available separately.
