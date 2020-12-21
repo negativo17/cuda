@@ -10,8 +10,8 @@
 %global         __requires_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
 
 Name:           cuda
-Version:        11.1.1
-Release:        3%{?dist}
+Version:        11.2.0
+Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        NVIDIA License
@@ -19,7 +19,7 @@ URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64
 
 Source0:        %{name}-%{version}-x86_64.tar.xz
-Source1:        %{name}-gdb-11.1.105.src.tar.gz
+Source1:        %{name}-gdb-11.2.67.src.tar.gz
 Source2:        %{name}-generate-tarball.sh
 Source3:        %{name}.sh
 Source4:        %{name}.csh
@@ -438,10 +438,6 @@ tools, such as memory and race checkers.
 %prep
 %setup -q -n %{name}-%{version}-x86_64
 
-# Remove crypto libraries not linked correctly
-find . -name "libcrypto.so*" -delete
-find . -name "libssl.so*" -delete
-
 # Remove RUNPATH on binaries
 chrpath -d cuda_nvcc/nvvm/bin/cicc
 
@@ -462,6 +458,9 @@ find cuda_samples -name "Makefile" -exec sed -i -e 's|"/usr"|/usr|g' {} \;
 # include directories so people stop asking
 find cuda_samples -type f -exec sed -i -e 's|/bin/nvcc|/bin/nvcc --include-path %{_includedir}/cuda|g' {} \;
 find cuda_samples -name "Makefile" -exec sed -i -e 's|$(CUDA_PATH)/include|%{_includedir}/cuda|g' {} \;
+
+# ?
+rm -frv cuda_nvrtc/lib64/nvrtc-prev
 
 %build
 # Nothing to build
@@ -552,6 +551,7 @@ sed -i \
 # Binaries
 cp -fr \
     cuda_cuobjdump/bin/* \
+    cuda_cuxxfilt/bin/* \
     cuda_gdb/bin/* \
     cuda_memcheck/bin/* \
     cuda_nvcc/bin/* \
@@ -629,6 +629,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_bindir}/crt/
 %{_bindir}/cudafe++
 %{_bindir}/cuobjdump
+%{_bindir}/cu++filt
 %{_bindir}/fatbinary
 %{_bindir}/nvcc
 %{_bindir}/nvcc.profile
@@ -1106,6 +1107,9 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libexecdir}/%{name}/libTreeLauncherTargetUpdatePreloadInjection.so
 
 %changelog
+* Sun Dec 20 2020 Simone Caronni <negativo17@gmail.com> - 1:11.2.0-1
+- Update to CUDA 11.2.0.
+
 * Sat Nov 28 2020 Simone Caronni <negativo17@gmail.com> - 1:11.1.1-3
 - GCC 10 works fine.
 - rpmlint fixes.
