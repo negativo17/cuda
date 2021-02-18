@@ -10,7 +10,7 @@
 %global         __requires_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
 
 Name:           cuda
-Version:        11.2.0
+Version:        11.2.1
 Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
@@ -19,7 +19,7 @@ URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64
 
 Source0:        %{name}-%{version}-x86_64.tar.xz
-Source1:        %{name}-gdb-11.2.67.src.tar.gz
+Source1:        %{name}-gdb-11.2.135.src.tar.gz
 Source2:        %{name}-generate-tarball.sh
 Source3:        %{name}.sh
 Source4:        %{name}.csh
@@ -1107,6 +1107,9 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libexecdir}/%{name}/libTreeLauncherTargetUpdatePreloadInjection.so
 
 %changelog
+* Thu Feb 18 2021 Simone Caronni <negativo17@gmail.com> - 1:11.2.1-1
+- Update to 11.2.1.
+
 * Sun Dec 20 2020 Simone Caronni <negativo17@gmail.com> - 1:11.2.0-1
 - Update to CUDA 11.2.0.
 
