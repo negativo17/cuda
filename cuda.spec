@@ -4,22 +4,23 @@
 %global         debug_package %{nil}
 %global         __strip /bin/true
 %global         _missing_build_ids_terminate_build 0
+%global         _build_id_links none
 %global         major_package_version 11-0
 
 %global         __provides_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
 %global         __requires_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
 
 Name:           cuda
-Version:        11.2.1
+Version:        11.3.0
 Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
-License:        NVIDIA License
+License:        NVIDIA EULA
 URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64
 
 Source0:        %{name}-%{version}-x86_64.tar.xz
-Source1:        %{name}-gdb-11.2.135.src.tar.gz
+Source1:        %{name}-gdb-11.3.58.src.tar.gz
 Source2:        %{name}-generate-tarball.sh
 Source3:        %{name}.sh
 Source4:        %{name}.csh
@@ -157,9 +158,9 @@ Requires(post): ldconfig
 Conflicts:      %{name}-cudart-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cudart
-The runtime API eases device code management by providing implicit initialization,
-context management, and module management. This leads to simpler code, but it
-also lacks the level of control that the driver API has.
+The CUDA runtime API eases device code management by providing implicit
+initialization, context management, and module management. This leads to simpler
+code, but it also lacks the level of control that the driver API has.
 
 In comparison, the driver API offers more fine-grained control, especially over
 contexts and module loading. Kernel launches are much more complex to implement,
@@ -402,7 +403,6 @@ Summary:        Compute Unified Device Architecture toolkit samples
 Conflicts:      %{name}-demo-suite-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-samples-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Obsoletes:      %{name}-samples < %{?epoch:%{epoch}:}%{version}
-Provides:       %{name}-samples = %{?epoch:%{epoch}:}%{version}
 Requires:       cuda-devel = %{?epoch:%{epoch}:}%{version}
 Requires:       gcc-c++
 Requires:       freeglut-devel
@@ -562,9 +562,8 @@ cp -fr \
     cuda_nvvp/bin/* \
     %{buildroot}%{_bindir}/
 
-cp -fr cuda_sanitizer_api/compute-sanitizer/*.so %{buildroot}/%{_libexecdir}/%{name}
-
-ln -sf %{_libexecdir}/%{name}/compute-sanitizer %{buildroot}%{_bindir}/compute-sanitizer
+cp -a cuda_sanitizer_api/compute-sanitizer/*.so %{buildroot}/%{_libexecdir}/%{name}
+cp -a cuda_sanitizer_api/compute-sanitizer/compute-sanitizer %{buildroot}%{_bindir}/compute-sanitizer
 
 # Additional samples
 cp -fr cuda_samples %{buildroot}%{_datadir}/%{name}/samples
@@ -651,13 +650,13 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_bindir}/nvprof
 
 %files libs
-%license EULA.txt
+%license cuda_documentation/EULA.txt
 %{_libdir}/libaccinj%{__isa_bits}.so.*
 %{_libdir}/libcuinj%{__isa_bits}.so.*
 %{_libdir}/libnvvm.so.*
 
 %files cublas
-%license EULA.txt
+%license cuda_documentation/EULA.txt
 %{_libdir}/libcublas.so.*
 %{_libdir}/libcublasLt.so.*
 %{_libdir}/libnvblas.so.*
@@ -683,22 +682,18 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libdir}/pkgconfig/cublasLt.pc
 
 %files cudart
-%license EULA.txt
+%license cuda_documentation/EULA.txt
 %{_libdir}/libcudart.so.*
 
 %files cudart-devel
-%{_includedir}/%{name}/crt/
 %{_includedir}/%{name}/builtin_types.h
 %{_includedir}/%{name}/channel_descriptor.h
 %{_includedir}/%{name}/CL
 %{_includedir}/%{name}/common_functions.h
 %{_includedir}/%{name}/cooperative_groups
 %{_includedir}/%{name}/cooperative_groups.h
-%{_includedir}/%{name}/cub
+%{_includedir}/%{name}/crt/
 %{_includedir}/%{name}/cuComplex.h
-%{_includedir}/%{name}/cuda/atomic
-%{_includedir}/%{name}/cuda/barrier
-%{_includedir}/%{name}/cuda/std
 %{_includedir}/%{name}/cuda_awbarrier.h
 %{_includedir}/%{name}/cuda_awbarrier_helpers.h
 %{_includedir}/%{name}/cuda_awbarrier_primitives.h
@@ -707,22 +702,27 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/cuda_device_runtime_api.h
 %{_includedir}/%{name}/cudaEGL.h
 %{_includedir}/%{name}/cuda_egl_interop.h
+%{_includedir}/%{name}/cudaEGLTypedefs.h
 %{_includedir}/%{name}/cuda_fp16.h
 %{_includedir}/%{name}/cuda_fp16.hpp
 %{_includedir}/%{name}/cudaGL.h
 %{_includedir}/%{name}/cuda_gl_interop.h
+%{_includedir}/%{name}/cudaGLTypedefs.h
 %{_includedir}/%{name}/cuda.h
 %{_includedir}/%{name}/cuda_occupancy.h
 %{_includedir}/%{name}/cuda_pipeline.h
 %{_includedir}/%{name}/cuda_pipeline_helpers.h
 %{_includedir}/%{name}/cuda_pipeline_primitives.h
+%{_includedir}/%{name}/cudaProfilerTypedefs.h
 %{_includedir}/%{name}/cudart_platform.h
 %{_includedir}/%{name}/cuda_runtime_api.h
 %{_includedir}/%{name}/cuda_runtime.h
 %{_includedir}/%{name}/cuda_surface_types.h
 %{_includedir}/%{name}/cuda_texture_types.h
+%{_includedir}/%{name}/cudaTypedefs.h
 %{_includedir}/%{name}/cudaVDPAU.h
 %{_includedir}/%{name}/cuda_vdpau_interop.h
+%{_includedir}/%{name}/cudaVDPAUTypedefs.h
 %{_includedir}/%{name}/device_atomic_functions.h
 %{_includedir}/%{name}/device_atomic_functions.hpp
 %{_includedir}/%{name}/device_double_functions.h
@@ -764,7 +764,6 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/texture_indirect_functions.h
 %{_includedir}/%{name}/texture_indirect_functions.hpp
 %{_includedir}/%{name}/texture_types.h
-%{_includedir}/%{name}/thrust
 %{_includedir}/%{name}/vector_functions.h
 %{_includedir}/%{name}/vector_functions.hpp
 %{_includedir}/%{name}/vector_types.h
@@ -775,7 +774,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libdir}/pkgconfig/cudart.pc
 
 %files nvtx
-%license EULA.txt
+%license cuda_documentation/EULA.txt
 %{_libdir}/libnvToolsExt.so.*
 
 %files nvtx-devel
@@ -789,7 +788,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libdir}/pkgconfig/nvToolsExt.pc
 
 %files cufft
-%license EULA.txt
+%license cuda_documentation/EULA.txt
 %{_libdir}/libcufft.so.*
 %{_libdir}/libcufftw.so.*
 
@@ -807,8 +806,9 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libdir}/pkgconfig/cufftw.pc
 
 %files cupti
-%license EULA.txt
+%license cuda_documentation/EULA.txt
 %{_libdir}/libcupti.so.*
+%{_libdir}/libpcsamplingutil.so
 
 %files cupti-devel
 %doc cuda_cupti/extras/CUPTI/doc/*
@@ -820,6 +820,8 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/cupti.h
 %{_includedir}/%{name}/cupti_metrics.h
 %{_includedir}/%{name}/cupti_nvtx_cbid.h
+%{_includedir}/%{name}/cupti_pcsampling.h
+%{_includedir}/%{name}/cupti_pcsampling_util.h
 %{_includedir}/%{name}/cupti_profiler_target.h
 %{_includedir}/%{name}/cupti_result.h
 %{_includedir}/%{name}/cupti_runtime_cbid.h
@@ -844,7 +846,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libdir}/libnvperf_target.so
 
 %files curand
-%license EULA.txt
+%license cuda_documentation/EULA.txt
 %{_libdir}/libcurand.so.*
 
 %files curand-devel
@@ -870,7 +872,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libdir}/pkgconfig/curand.pc
 
 %files cusolver
-%license EULA.txt
+%license cuda_documentation/EULA.txt
 %{_libdir}/libcusolver.so.*
 %{_libdir}/libcusolverMg.so.*
 
@@ -889,7 +891,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libdir}/pkgconfig/cusolver.pc
 
 %files cusparse
-%license EULA.txt
+%license cuda_documentation/EULA.txt
 %{_libdir}/libcusparse.so.*
 
 %files cusparse-devel
@@ -903,7 +905,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libdir}/pkgconfig/cusparse.pc
 
 %files npp
-%license EULA.txt
+%license cuda_documentation/EULA.txt
 %{_libdir}/libnppc.so.*
 %{_libdir}/libnppial.so.*
 %{_libdir}/libnppicc.so.*
@@ -963,7 +965,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libdir}/pkgconfig/npp*.pc
 
 %files nvjpeg
-%license EULA.txt
+%license cuda_documentation/EULA.txt
 %{_libdir}/libnvjpeg_static.a
 %{_libdir}/libnvjpeg.so.*
 
@@ -978,7 +980,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libdir}/pkgconfig/nvml.pc
 
 %files nvrtc
-%license EULA.txt
+%license cuda_documentation/EULA.txt
 %{_libdir}/libnvrtc-builtins.so.*
 %{_libdir}/libnvrtc.so.*
 
@@ -1023,8 +1025,6 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/device_types.h
 %{_includedir}/%{name}/driver_functions.h
 %{_includedir}/%{name}/driver_types.h
-%{_includedir}/%{name}/fatBinaryCtl.h
-%{_includedir}/%{name}/fatbinary.h
 %{_includedir}/%{name}/fatbinary_section.h
 %{_includedir}/%{name}/host_config.h
 %{_includedir}/%{name}/host_defines.h
@@ -1061,12 +1061,9 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/texture_indirect_functions.h
 %{_includedir}/%{name}/texture_indirect_functions.hpp
 %{_includedir}/%{name}/texture_types.h
-%{_includedir}/%{name}/thrust
 %{_includedir}/%{name}/vector_functions.h
 %{_includedir}/%{name}/vector_functions.hpp
 %{_includedir}/%{name}/vector_types.h
-# libcu++ headers:
-%{_includedir}/%{name}/cuda/
 %{_libdir}/libaccinj%{__isa_bits}.so
 %{_libdir}/libcuinj%{__isa_bits}.so
 %{_libdir}/libnvvm.so
@@ -1091,6 +1088,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %files sanitizer
 %doc cuda_sanitizer_api/compute-sanitizer/docs
 %{_bindir}/compute-sanitizer
+%{_includedir}/%{name}/sanitizer_barrier.h
 %{_includedir}/%{name}/sanitizer_callbacks.h
 %{_includedir}/%{name}/sanitizer_driver_cbid.h
 %{_includedir}/%{name}/sanitizer.h
@@ -1107,6 +1105,9 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libexecdir}/%{name}/libTreeLauncherTargetUpdatePreloadInjection.so
 
 %changelog
+* Sun Apr 25 2021 Simone Caronni <negativo17@gmail.com> - 1:11.3.0-1
+- Update to 11.3.0.
+
 * Thu Feb 18 2021 Simone Caronni <negativo17@gmail.com> - 1:11.2.1-1
 - Update to 11.2.1.
 

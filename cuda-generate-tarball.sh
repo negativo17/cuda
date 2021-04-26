@@ -3,7 +3,7 @@ set -e
 
 PKG=cuda
 MAJOR_VERSION=${MAJOR_VERSION:-11}
-VERSION=${VERSION:-11.2.1}
+VERSION=${VERSION:-11.3.0}
 TARBALL=${PKG}-${VERSION}-x86_64
 
 get_run_file() {
@@ -13,7 +13,7 @@ get_run_file() {
 }
 # Main installer
 DL_SITE=http://developer.download.nvidia.com/compute/cuda/$VERSION/local_installers
-RUN_FILE=cuda_${VERSION}_460.32.03_linux.run
+RUN_FILE=cuda_${VERSION}_465.19.01_linux.run
 get_run_file
 
 # Unpack installer
@@ -39,6 +39,10 @@ rm -fr cuda_cudart/targets/x86_64-linux/lib/libOpenCL.so*
 
 # Remove Nsight apps
 rm -fr nsight_systems nsight_compute integration
+
+# Remove installers/uninstallers
+find . -name cuda-uninstaller -delete
+find . -name "cuda-install*" -delete
 
 mv ${PKG}-gdb-*.src.tar.gz ..
 
