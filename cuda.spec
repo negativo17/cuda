@@ -151,6 +151,14 @@ Conflicts:      %{name}-cublas-dev-%{major_package_version} < %{?epoch:%{epoch}:
 This package provides development files for the NVIDIA CUDA Basic Linear
 Algebra Subroutines (cuBLAS) libraries.
 
+%package cublas-static
+Summary:        Static libraries for NVIDIA CUDA Basic Linear Algebra Subroutines (cuBLAS)
+Requires:       %{name}-cublas-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description cublas-static
+This package contains static libraries for the NVIDIA CUDA Basic Linear Algebra
+Subroutines (cuBLAS).
+
 %package cudart
 Summary:        NVIDIA CUDA Runtime API library
 #Requires:       ocl-icd
@@ -177,7 +185,14 @@ Requires:       %{name}-cudart%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-cudart-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description cudart-devel
-This package provides development files for the NVIDIA CUDA Runtime API library
+This package provides development files for the NVIDIA CUDA Runtime API library.
+
+%package cudart-static
+Summary:        Static libraries for NVIDIA CUDA Runtime API
+Requires:       %{name}-cudart-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description cudart-static
+This package contains static libraries for NVIDIA CUDA Runtime API.
 
 %package cufft
 Summary:        NVIDIA CUDA Fast Fourier Transform library (cuFFT) libraries
@@ -199,6 +214,13 @@ Conflicts:      %{name}-cufft-dev-%{major_package_version} < %{?epoch:%{epoch}:}
 This package provides development files for the NVIDIA CUDA Fast Fourier
 Transform library (cuFFT) libraries.
 
+%package cufft-static
+Summary:        Static libraries for NVIDIA CUDA Fast Fourier Transform (cuFFT)
+Requires:       %{name}-cufft-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description cufft-static
+This package contains static libraries for NVIDIA CUDA Fast Fourier Transform (cuFFT).
+
 %package cupti
 Summary:        NVIDIA CUDA Profiling Tools Interface (CUPTI) library
 Requires(post): ldconfig
@@ -217,6 +239,14 @@ Conflicts:      %{name}-cupti-dev-%{major_package_version} < %{?epoch:%{epoch}:}
 %description cupti-devel
 This package provides development files for the NVIDIA CUDA Profiling Tools
 Interface (CUPTI) library.
+
+%package cupti-static
+Summary:        Static libraries for NVIDIA CUDA Profiling Tools Interface (CUPTI)
+Requires:       %{name}-cupti-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description cupti-static
+This package contains static libraries for NVIDIA CUDA Profiling Tools Interface
+(CUPTI).
 
 %package curand
 Summary:        NVIDIA CUDA Random Number Generation library (cuRAND)
@@ -238,6 +268,14 @@ Conflicts:      %{name}-curand-dev-%{major_package_version} < %{?epoch:%{epoch}:
 This package provides development files for the NVIDIA CUDA Random Number
 Generation library (cuRAND).
 
+%package curand-static
+Summary:        Static libraries for NVIDIA CUDA Random Number Generation (cuRAND)
+Requires:       %{name}-curand-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description curand-static
+This package contains static libraries for NVIDIA CUDA Random Number Generation
+(cuRAND).
+
 %package cusolver
 Summary:        NVIDIA cuSOLVER library
 Requires(post): ldconfig
@@ -257,6 +295,13 @@ Conflicts:      %{name}-cusolver-dev-%{major_package_version} < %{?epoch:%{epoch
 %description cusolver-devel
 This package provides development files for the NVIDIA cuSOLVER library.
 
+%package cusolver-static
+Summary:        Static libraries for NVIDIA cuSOLVER
+Requires:       %{name}-cusolver-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description cusolver-static
+This package contains static libraries for NVIDIA cuSOLVER.
+
 %package cusparse
 Summary:        NVIDIA CUDA Sparse Matrix library (cuSPARSE) library
 Requires(post): ldconfig
@@ -270,13 +315,20 @@ called from C or C++, and the latest release includes a sparse triangular
 solver.
 
 %package cusparse-devel
-Summary:        Development files for NVIDIA CUDA Sparse Matrix library (cuSPARSE) library
+Summary:        Development files for NVIDIA CUDA Sparse Matrix (cuSPARSE) library
 Requires:       %{name}-cusparse%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-cusparse-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description cusparse-devel
 This package provides development files for the NVIDIA CUDA Sparse Matrix
 library (cuSPARSE) library.
+
+%package cusparse-static
+Summary:        Static libraries for NVIDIA CUDA Sparse Matrix (cuSPARSE)
+Requires:       %{name}-cusparse-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description cusparse-static
+This package contains static libraries for NVIDIA CUDA Sparse Matrix (cuSPARSE).
 
 %package npp
 Summary:        NVIDIA Performance Primitives libraries
@@ -300,6 +352,13 @@ Conflicts:      %{name}-npp-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{
 This package provides development files for the NVIDIA Performance Primitives
 libraries.
 
+%package npp-static
+Summary:        Static libraries for NVIDIA Performance Primitives
+Requires:       %{name}-npp-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description npp-static
+This package contains static libraries for NVIDIA Performance Primitives.
+
 %package nvjpeg
 Summary:        NVIDIA JPEG decoder (nvJPEG)
 Requires(post): ldconfig
@@ -319,6 +378,13 @@ Conflicts:      %{name}-nvjpeg-dev-%{major_package_version} < %{?epoch:%{epoch}:
 
 %description nvjpeg-devel
 This package provides development files for the NVIDIA JPEG decoder (nvJPEG).
+
+%package nvjpeg-static
+Summary:        Static libraries for NVIDIA JPEG decoder (nvJPEG)
+Requires:       %{name}-nvjpeg-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description nvjpeg-static
+This package contains static libraries for NVIDIA JPEG decoder (nvJPEG).
 
 %package nvml-devel
 Summary:        Development files for NVIDIA Management library (nvML)
@@ -673,13 +739,15 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/fortran.h
 %{_includedir}/%{name}/fortran_thunking.c
 %{_includedir}/%{name}/fortran_thunking.h
-%{_libdir}/libcublas_static.a
 %{_libdir}/libcublas.so
-%{_libdir}/libcublasLt_static.a
 %{_libdir}/libcublasLt.so
 %{_libdir}/libnvblas.so
 %{_libdir}/pkgconfig/cublas.pc
 %{_libdir}/pkgconfig/cublasLt.pc
+
+%files cublas-static
+%{_libdir}/libcublas_static.a
+%{_libdir}/libcublasLt_static.a
 
 %files cudart
 %license cuda_documentation/EULA.txt
@@ -768,10 +836,12 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/vector_functions.hpp
 %{_includedir}/%{name}/vector_types.h
 %{_libdir}/libcudadevrt.a
-%{_libdir}/libcudart_static.a
 %{_libdir}/libcudart.so
 %{_libdir}/libculibos.a
 %{_libdir}/pkgconfig/cudart.pc
+
+%files cudart-static
+%{_libdir}/libcudart_static.a
 
 %files nvtx
 %license cuda_documentation/EULA.txt
@@ -797,13 +867,15 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/cufft.h
 %{_includedir}/%{name}/cufftw.h
 %{_includedir}/%{name}/cufftXt.h
-%{_libdir}/libcufft_static.a
-%{_libdir}/libcufft_static_nocallback.a
 %{_libdir}/libcufft.so
-%{_libdir}/libcufftw_static.a
 %{_libdir}/libcufftw.so
 %{_libdir}/pkgconfig/cufft.pc
 %{_libdir}/pkgconfig/cufftw.pc
+
+%files cufft-static
+%{_libdir}/libcufft_static.a
+%{_libdir}/libcufft_static_nocallback.a
+%{_libdir}/libcufftw_static.a
 
 %files cupti
 %license cuda_documentation/EULA.txt
@@ -839,11 +911,13 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/nvperf_target.h
 %{_includedir}/%{name}/Openacc
 %{_includedir}/%{name}/Openmp
-%{_libdir}/libcupti_static.a
 %{_libdir}/libcupti.so
 %{_libdir}/libnvperf_host.so
-%{_libdir}/libnvperf_host_static.a
 %{_libdir}/libnvperf_target.so
+
+%files cupti-static
+%{_libdir}/libcupti_static.a
+%{_libdir}/libnvperf_host_static.a
 
 %files curand
 %license cuda_documentation/EULA.txt
@@ -867,9 +941,11 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/curand_poisson.h
 %{_includedir}/%{name}/curand_precalc.h
 %{_includedir}/%{name}/curand_uniform.h
-%{_libdir}/libcurand_static.a
 %{_libdir}/libcurand.so
 %{_libdir}/pkgconfig/curand.pc
+
+%files curand-static
+%{_libdir}/libcurand_static.a
 
 %files cusolver
 %license cuda_documentation/EULA.txt
@@ -883,12 +959,14 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/cusolverRf.h
 %{_includedir}/%{name}/cusolverSp.h
 %{_includedir}/%{name}/cusolverSp_LOWLEVEL_PREVIEW.h
-%{_libdir}/libcusolver_static.a
 %{_libdir}/libcusolver.so
 %{_libdir}/libcusolverMg.so
 %{_libdir}/liblapack_static.a
 %{_libdir}/libmetis_static.a
 %{_libdir}/pkgconfig/cusolver.pc
+
+%files cusolver-static
+%{_libdir}/libcusolver_static.a
 
 %files cusparse
 %license cuda_documentation/EULA.txt
@@ -900,9 +978,11 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/cusparse_fortran.c
 %{_includedir}/%{name}/cusparse_fortran_common.h
 %{_includedir}/%{name}/cusparse_fortran.h
-%{_libdir}/libcusparse_static.a
 %{_libdir}/libcusparse.so
 %{_libdir}/pkgconfig/cusparse.pc
+
+%files cusparse-static
+%{_libdir}/libcusparse_static.a
 
 %files npp
 %license cuda_documentation/EULA.txt
@@ -941,33 +1021,37 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/npps_statistics_functions.h
 %{_includedir}/%{name}/npps_support_functions.h
 %{_libdir}/libnppc.so
-%{_libdir}/libnppc_static.a
 %{_libdir}/libnppial.so
-%{_libdir}/libnppial_static.a
 %{_libdir}/libnppicc.so
-%{_libdir}/libnppicc_static.a
 %{_libdir}/libnppidei.so
-%{_libdir}/libnppidei_static.a
 %{_libdir}/libnppif.so
-%{_libdir}/libnppif_static.a
 %{_libdir}/libnppig.so
-%{_libdir}/libnppig_static.a
 %{_libdir}/libnppim.so
-%{_libdir}/libnppim_static.a
 %{_libdir}/libnppist.so
-%{_libdir}/libnppist_static.a
 %{_libdir}/libnppisu.so
-%{_libdir}/libnppisu_static.a
 %{_libdir}/libnppitc.so
-%{_libdir}/libnppitc_static.a
 %{_libdir}/libnpps.so
-%{_libdir}/libnpps_static.a
 %{_libdir}/pkgconfig/npp*.pc
+
+%files npp-static
+%{_libdir}/libnppc_static.a
+%{_libdir}/libnppial_static.a
+%{_libdir}/libnppicc_static.a
+%{_libdir}/libnppidei_static.a
+%{_libdir}/libnppif_static.a
+%{_libdir}/libnppig_static.a
+%{_libdir}/libnppim_static.a
+%{_libdir}/libnppist_static.a
+%{_libdir}/libnppisu_static.a
+%{_libdir}/libnppitc_static.a
+%{_libdir}/libnpps_static.a
 
 %files nvjpeg
 %license cuda_documentation/EULA.txt
-%{_libdir}/libnvjpeg_static.a
 %{_libdir}/libnvjpeg.so.*
+
+%files nvjpeg-static
+%{_libdir}/libnvjpeg_static.a
 
 %files nvjpeg-devel
 %{_includedir}/%{name}/nvjpeg.h
@@ -1107,6 +1191,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %changelog
 * Sun Apr 25 2021 Simone Caronni <negativo17@gmail.com> - 1:11.3.0-1
 - Update to 11.3.0.
+- Split static libraries in subpackages.
 
 * Thu Feb 18 2021 Simone Caronni <negativo17@gmail.com> - 1:11.2.1-1
 - Update to 11.2.1.
