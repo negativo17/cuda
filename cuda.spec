@@ -5,13 +5,13 @@
 %global         __strip /bin/true
 %global         _missing_build_ids_terminate_build 0
 %global         _build_id_links none
-%global         major_package_version 11-0
+%global         major_package_version 11-4
 
 %global         __provides_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
 %global         __requires_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
 
 Name:           cuda
-Version:        11.3.0
+Version:        11.4.0
 Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
@@ -20,7 +20,7 @@ URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64
 
 Source0:        %{name}-%{version}-x86_64.tar.xz
-Source1:        %{name}-gdb-11.3.58.src.tar.gz
+Source1:        %{name}-gdb-11.4.55.src.tar.gz
 Source2:        %{name}-generate-tarball.sh
 Source3:        %{name}.sh
 Source4:        %{name}.csh
@@ -136,6 +136,7 @@ Metapackage that installs all runtime NVIDIA CUDA libraries.
 Summary:        NVIDIA CUDA Basic Linear Algebra Subroutines (cuBLAS) libraries
 Requires(post): ldconfig
 Conflicts:      %{name}-cublas-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      libcublas-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cublas
 The NVIDIA CUDA Basic Linear Algebra Subroutines (cuBLAS) library is a
@@ -146,6 +147,7 @@ to 17x faster performance than the latest MKL BLAS.
 Summary:        Development files for NVIDIA CUDA Basic Linear Algebra Subroutines (cuBLAS)
 Requires:       %{name}-cublas%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-cublas-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
+Conflicts:      libcublas-devel-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description cublas-devel
 This package provides development files for the NVIDIA CUDA Basic Linear
@@ -198,6 +200,7 @@ This package contains static libraries for NVIDIA CUDA Runtime API.
 Summary:        NVIDIA CUDA Fast Fourier Transform library (cuFFT) libraries
 Requires(post): ldconfig
 Conflicts:      %{name}-cufft-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      libcufft-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cufft
 The NVIDIA CUDA Fast Fourier Transform libraries (cuFFT) provide a simple
@@ -209,6 +212,7 @@ GPU without having to develop your own custom GPU FFT implementation.
 Summary:        Development files for NVIDIA CUDA Fast Fourier Transform library (cuFFT)
 Requires:       %{name}-cufft%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-cufft-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
+Conflicts:      libcufft-devel-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description cufft-devel
 This package provides development files for the NVIDIA CUDA Fast Fourier
@@ -281,6 +285,7 @@ Summary:        NVIDIA cuSOLVER library
 Requires(post): ldconfig
 Requires:       libgomp%{_isa}
 Conflicts:      %{name}-cusolver-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      libcusolver-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cusolver
 The NVIDIA cuSOLVER library provides a collection of dense and sparse direct
@@ -291,6 +296,7 @@ Computational Chemistry, and Linear Optimization applications.
 Summary:        Development files for NVIDIA cuSOLVER library
 Requires:       %{name}-cusolver%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-cusolver-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
+Conflicts:      libcusolver-devel-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description cusolver-devel
 This package provides development files for the NVIDIA cuSOLVER library.
@@ -306,6 +312,7 @@ This package contains static libraries for NVIDIA cuSOLVER.
 Summary:        NVIDIA CUDA Sparse Matrix library (cuSPARSE) library
 Requires(post): ldconfig
 Conflicts:      %{name}-cusparse-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      libcusparse-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description cusparse
 The NVIDIA CUDA Sparse Matrix library (cuSPARSE) provides a collection of basic
@@ -318,6 +325,7 @@ solver.
 Summary:        Development files for NVIDIA CUDA Sparse Matrix (cuSPARSE) library
 Requires:       %{name}-cusparse%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-cusparse-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
+Conflicts:      libcusparse-devel-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description cusparse-devel
 This package provides development files for the NVIDIA CUDA Sparse Matrix
@@ -334,6 +342,7 @@ This package contains static libraries for NVIDIA CUDA Sparse Matrix (cuSPARSE).
 Summary:        NVIDIA Performance Primitives libraries
 Requires(post): ldconfig
 Conflicts:      %{name}-npp-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      libnpp-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description npp
 The NVIDIA Performance Primitives library (NPP) is a collection of
@@ -347,6 +356,7 @@ performance in a matter of hours.
 Summary:        Development files for NVIDIA Performance Primitives
 Requires:       %{name}-npp%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-npp-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
+Conflicts:      libnpp-devel-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description npp-devel
 This package provides development files for the NVIDIA Performance Primitives
@@ -363,6 +373,7 @@ This package contains static libraries for NVIDIA Performance Primitives.
 Summary:        NVIDIA JPEG decoder (nvJPEG)
 Requires(post): ldconfig
 Conflicts:      %{name}-nvjpeg-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      libnvjpeg-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description nvjpeg
 nvJPEG is a high-performance GPU-accelerated library for JPEG decoding. nvJPEG
@@ -375,6 +386,7 @@ decode compared CPU-only decoding.
 Summary:        Development files for NVIDIA JPEG decoder (nvJPEG)
 Requires:       %{name}-nvjpeg%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-nvjpeg-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
+Conflicts:      libnvjpeg-devel-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 
 %description nvjpeg-devel
 This package provides development files for the NVIDIA JPEG decoder (nvJPEG).
@@ -453,12 +465,16 @@ Requires:       %{name}-nvjpeg-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{re
 Requires:       %{name}-nvml-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvrtc-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-nvtx-devel%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Conflicts:      %{name}-cccl-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-headers-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-libraries-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-misc-headers-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-toolkit-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Obsoletes:      %{name}-static < %{?epoch:%{epoch}:}%{version}
+Provides:       %{name}-cub = %{?epoch:%{epoch}:}%{version}
 Provides:       %{name}-static = %{?epoch:%{epoch}:}%{version}
+Provides:       %{name}-toolkit-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
+Provides:       %{name}-thrust-%{major_package_version} = %{?epoch:%{epoch}:}%{version}
 Obsoletes:      %{name}-nvgraph-devel < %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description devel
@@ -561,6 +577,7 @@ cp -fr \
     cuda_nvprof/include/* \
     cuda_nvrtc/include/* \
     cuda_nvtx/include/* \
+    cuda_thrust/include/* \
     libcublas/include/* libcublas/src/* \
     libcufft/include/* \
     libcurand/include/* \
@@ -906,6 +923,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/generated_cuda_vdpau_interop_meta.h
 %{_includedir}/%{name}/generated_cudaVDPAU_meta.h
 %{_includedir}/%{name}/generated_nvtx_meta.h
+%{_includedir}/%{name}/nvperf_common.h
 %{_includedir}/%{name}/nvperf_cuda_host.h
 %{_includedir}/%{name}/nvperf_host.h
 %{_includedir}/%{name}/nvperf_target.h
@@ -1079,28 +1097,339 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 
 %files devel
 %doc cuda_gdb/extras/Debugger/Readme-Debugger.txt
-%{_includedir}/%{name}/CL
-%{_includedir}/%{name}/Debugger
 %{_includedir}/%{name}/builtin_types.h
 %{_includedir}/%{name}/channel_descriptor.h
+%{_includedir}/%{name}/CL
 %{_includedir}/%{name}/common_functions.h
 %{_includedir}/%{name}/cooperative_groups.h
+%{_includedir}/%{name}/cub/agent/agent_histogram.cuh
+%{_includedir}/%{name}/cub/agent/agent_radix_sort_downsweep.cuh
+%{_includedir}/%{name}/cub/agent/agent_radix_sort_histogram.cuh
+%{_includedir}/%{name}/cub/agent/agent_radix_sort_onesweep.cuh
+%{_includedir}/%{name}/cub/agent/agent_radix_sort_upsweep.cuh
+%{_includedir}/%{name}/cub/agent/agent_reduce_by_key.cuh
+%{_includedir}/%{name}/cub/agent/agent_reduce.cuh
+%{_includedir}/%{name}/cub/agent/agent_rle.cuh
+%{_includedir}/%{name}/cub/agent/agent_scan.cuh
+%{_includedir}/%{name}/cub/agent/agent_segment_fixup.cuh
+%{_includedir}/%{name}/cub/agent/agent_select_if.cuh
+%{_includedir}/%{name}/cub/agent/agent_spmv_orig.cuh
+%{_includedir}/%{name}/cub/agent/single_pass_scan_operators.cuh
+%{_includedir}/%{name}/cub/block/block_adjacent_difference.cuh
+%{_includedir}/%{name}/cub/block/block_discontinuity.cuh
+%{_includedir}/%{name}/cub/block/block_exchange.cuh
+%{_includedir}/%{name}/cub/block/block_histogram.cuh
+%{_includedir}/%{name}/cub/block/block_load.cuh
+%{_includedir}/%{name}/cub/block/block_radix_rank.cuh
+%{_includedir}/%{name}/cub/block/block_radix_sort.cuh
+%{_includedir}/%{name}/cub/block/block_raking_layout.cuh
+%{_includedir}/%{name}/cub/block/block_reduce.cuh
+%{_includedir}/%{name}/cub/block/block_scan.cuh
+%{_includedir}/%{name}/cub/block/block_shuffle.cuh
+%{_includedir}/%{name}/cub/block/block_store.cuh
+%{_includedir}/%{name}/cub/block/radix_rank_sort_operations.cuh
+%{_includedir}/%{name}/cub/block/specializations/block_histogram_atomic.cuh
+%{_includedir}/%{name}/cub/block/specializations/block_histogram_sort.cuh
+%{_includedir}/%{name}/cub/block/specializations/block_reduce_raking_commutative_only.cuh
+%{_includedir}/%{name}/cub/block/specializations/block_reduce_raking.cuh
+%{_includedir}/%{name}/cub/block/specializations/block_reduce_warp_reductions.cuh
+%{_includedir}/%{name}/cub/block/specializations/block_scan_raking.cuh
+%{_includedir}/%{name}/cub/block/specializations/block_scan_warp_scans2.cuh
+%{_includedir}/%{name}/cub/block/specializations/block_scan_warp_scans3.cuh
+%{_includedir}/%{name}/cub/block/specializations/block_scan_warp_scans.cuh
+%{_includedir}/%{name}/cub/cmake/cub-config.cmake
+%{_includedir}/%{name}/cub/cmake/cub-config-version.cmake
+%{_includedir}/%{name}/cub/config.cuh
+%{_includedir}/%{name}/cub/cub.cuh
+%{_includedir}/%{name}/cub/device/device_histogram.cuh
+%{_includedir}/%{name}/cub/device/device_partition.cuh
+%{_includedir}/%{name}/cub/device/device_radix_sort.cuh
+%{_includedir}/%{name}/cub/device/device_reduce.cuh
+%{_includedir}/%{name}/cub/device/device_run_length_encode.cuh
+%{_includedir}/%{name}/cub/device/device_scan.cuh
+%{_includedir}/%{name}/cub/device/device_segmented_radix_sort.cuh
+%{_includedir}/%{name}/cub/device/device_segmented_reduce.cuh
+%{_includedir}/%{name}/cub/device/device_select.cuh
+%{_includedir}/%{name}/cub/device/device_spmv.cuh
+%{_includedir}/%{name}/cub/device/dispatch/dispatch_histogram.cuh
+%{_includedir}/%{name}/cub/device/dispatch/dispatch_radix_sort.cuh
+%{_includedir}/%{name}/cub/device/dispatch/dispatch_reduce_by_key.cuh
+%{_includedir}/%{name}/cub/device/dispatch/dispatch_reduce.cuh
+%{_includedir}/%{name}/cub/device/dispatch/dispatch_rle.cuh
+%{_includedir}/%{name}/cub/device/dispatch/dispatch_scan.cuh
+%{_includedir}/%{name}/cub/device/dispatch/dispatch_select_if.cuh
+%{_includedir}/%{name}/cub/device/dispatch/dispatch_spmv_orig.cuh
+%{_includedir}/%{name}/cub/grid/grid_barrier.cuh
+%{_includedir}/%{name}/cub/grid/grid_even_share.cuh
+%{_includedir}/%{name}/cub/grid/grid_mapping.cuh
+%{_includedir}/%{name}/cub/grid/grid_queue.cuh
+%{_includedir}/%{name}/cub/host/mutex.cuh
+%{_includedir}/%{name}/cub/iterator/arg_index_input_iterator.cuh
+%{_includedir}/%{name}/cub/iterator/cache_modified_input_iterator.cuh
+%{_includedir}/%{name}/cub/iterator/cache_modified_output_iterator.cuh
+%{_includedir}/%{name}/cub/iterator/constant_input_iterator.cuh
+%{_includedir}/%{name}/cub/iterator/counting_input_iterator.cuh
+%{_includedir}/%{name}/cub/iterator/discard_output_iterator.cuh
+%{_includedir}/%{name}/cub/iterator/tex_obj_input_iterator.cuh
+%{_includedir}/%{name}/cub/iterator/tex_ref_input_iterator.cuh
+%{_includedir}/%{name}/cub/iterator/transform_input_iterator.cuh
+%{_includedir}/%{name}/cub/thread/thread_load.cuh
+%{_includedir}/%{name}/cub/thread/thread_operators.cuh
+%{_includedir}/%{name}/cub/thread/thread_reduce.cuh
+%{_includedir}/%{name}/cub/thread/thread_scan.cuh
+%{_includedir}/%{name}/cub/thread/thread_search.cuh
+%{_includedir}/%{name}/cub/thread/thread_store.cuh
+%{_includedir}/%{name}/cub/util_allocator.cuh
+%{_includedir}/%{name}/cub/util_arch.cuh
+%{_includedir}/%{name}/cub/util_compiler.cuh
+%{_includedir}/%{name}/cub/util_cpp_dialect.cuh
+%{_includedir}/%{name}/cub/util_debug.cuh
+%{_includedir}/%{name}/cub/util_deprecated.cuh
+%{_includedir}/%{name}/cub/util_device.cuh
+%{_includedir}/%{name}/cub/util_macro.cuh
+%{_includedir}/%{name}/cub/util_math.cuh
+%{_includedir}/%{name}/cub/util_namespace.cuh
+%{_includedir}/%{name}/cub/util_ptx.cuh
+%{_includedir}/%{name}/cub/util_type.cuh
+%{_includedir}/%{name}/cub/version.cuh
+%{_includedir}/%{name}/cub/warp/specializations/warp_reduce_shfl.cuh
+%{_includedir}/%{name}/cub/warp/specializations/warp_reduce_smem.cuh
+%{_includedir}/%{name}/cub/warp/specializations/warp_scan_shfl.cuh
+%{_includedir}/%{name}/cub/warp/specializations/warp_scan_smem.cuh
+%{_includedir}/%{name}/cub/warp/warp_reduce.cuh
+%{_includedir}/%{name}/cub/warp/warp_scan.cuh
 %{_includedir}/%{name}/cuComplex.h
-%{_includedir}/%{name}/cuda.h
+%{_includedir}/%{name}/cuda/atomic
+%{_includedir}/%{name}/cuda/barrier
 %{_includedir}/%{name}/cudaEGL.h
-%{_includedir}/%{name}/cudaGL.h
-%{_includedir}/%{name}/cudaProfiler.h
-%{_includedir}/%{name}/cudaVDPAU.h
 %{_includedir}/%{name}/cuda_egl_interop.h
 %{_includedir}/%{name}/cuda_fp16.h
 %{_includedir}/%{name}/cuda_fp16.hpp
+%{_includedir}/%{name}/cudaGL.h
 %{_includedir}/%{name}/cuda_gl_interop.h
+%{_includedir}/%{name}/cuda.h
+%{_includedir}/%{name}/cuda/latch
+%{_includedir}/%{name}/cudalibxt.h
 %{_includedir}/%{name}/cuda_occupancy.h
+%{_includedir}/%{name}/cuda/pipeline
 %{_includedir}/%{name}/cuda_profiler_api.h
+%{_includedir}/%{name}/cudaProfiler.h
+%{_includedir}/%{name}/cuda/semaphore
+%{_includedir}/%{name}/cuda/std/atomic
+%{_includedir}/%{name}/cuda/std/barrier
+%{_includedir}/%{name}/cuda/std/cassert
+%{_includedir}/%{name}/cuda/std/ccomplex
+%{_includedir}/%{name}/cuda/std/cfloat
+%{_includedir}/%{name}/cuda/std/chrono
+%{_includedir}/%{name}/cuda/std/climits
+%{_includedir}/%{name}/cuda/std/cmath
+%{_includedir}/%{name}/cuda/std/complex
+%{_includedir}/%{name}/cuda/std/cstddef
+%{_includedir}/%{name}/cuda/std/cstdint
+%{_includedir}/%{name}/cuda/std/ctime
+%{_includedir}/%{name}/cuda/std/detail/__atomic
+%{_includedir}/%{name}/cuda/std/detail/__atomic_derived
+%{_includedir}/%{name}/cuda/std/detail/__atomic_generated
+%{_includedir}/%{name}/cuda/std/detail/__config
+%{_includedir}/%{name}/cuda/std/detail/__functional_base
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/algorithm
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/any
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/array
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/atomic
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/barrier
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/bit
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__bit_reference
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/bitset
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__bsd_locale_defaults.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__bsd_locale_fallbacks.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cassert
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/ccomplex
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cctype
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cerrno
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cfenv
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cfloat
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/charconv
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/chrono
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cinttypes
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/ciso646
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/climits
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/clocale
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/CMakeLists.txt
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cmath
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/codecvt
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/compare
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/complex
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/complex.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/condition_variable
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__config
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__config_site.in
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/csetjmp
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/csignal
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cstdarg
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cstdbool
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cstddef
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cstdint
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cstdio
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cstdlib
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cstring
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/ctgmath
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/ctime
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/ctype.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cwchar
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/cwctype
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__debug
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/deque
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__errc
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/errno.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/exception
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/execution
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/algorithm
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/__config
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/coroutine
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/deque
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/filesystem
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/forward_list
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/functional
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/iterator
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/list
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/map
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/__memory
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/memory_resource
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/propagate_const
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/regex
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/set
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/simd
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/string
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/type_traits
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/unordered_map
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/unordered_set
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/utility
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/experimental/vector
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/ext/__hash
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/ext/hash_map
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/ext/hash_set
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/fenv.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/filesystem
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/float.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/forward_list
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/fstream
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/functional
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__functional_03
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__functional_base
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__functional_base_03
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/future
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__hash_table
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/initializer_list
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/inttypes.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/iomanip
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/ios
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/iosfwd
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/iostream
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/istream
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/iterator
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/latch
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__libcpp_version
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/limits
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/limits.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/list
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__locale
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/locale
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/locale.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/map
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/math.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/memory
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/module.modulemap
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/mutex
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__mutex_base
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/new
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__node_handle
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__nullptr
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/numeric
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/optional
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/ostream
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__pragma_pop
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__pragma_push
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/queue
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/random
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/ratio
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/regex
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/scoped_allocator
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/semaphore
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/set
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/setjmp.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/shared_mutex
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/span
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__split_buffer
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__sso_allocator
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/sstream
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/stack
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/stdbool.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/stddef.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/stdexcept
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/stdint.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/stdio.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/stdlib.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__std_stream
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/streambuf
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__string
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/string
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/string.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/string_view
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/strstream
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/android/locale_bionic.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/fuchsia/xlocale.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/ibm/limits.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/ibm/locale_mgmt_aix.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/ibm/support.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/ibm/xlocale.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/musl/xlocale.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/newlib/xlocale.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/solaris/floatingpoint.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/solaris/wchar.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/solaris/xlocale.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/win32/atomic_msvc.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/win32/limits_msvc_win32.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/win32/locale_win32.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/xlocale/__nop_locale_mgmt.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/xlocale/__posix_l_fallback.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/xlocale/__strtonum_fallback.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/system_error
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/tgmath.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/thread
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__threading_support
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__tree
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__tuple
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/tuple
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/typeindex
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/typeinfo
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/type_traits
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/__undef_macros
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/unordered_map
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/unordered_set
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/utility
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/valarray
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/variant
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/vector
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/version
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/wchar.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/wctype.h
+%{_includedir}/%{name}/cuda/std/detail/__pragma_pop
+%{_includedir}/%{name}/cuda/std/detail/__pragma_push
+%{_includedir}/%{name}/cuda/std/detail/__threading_support
+%{_includedir}/%{name}/cuda/std/functional
+%{_includedir}/%{name}/cuda/std/latch
+%{_includedir}/%{name}/cuda/std/limits
+%{_includedir}/%{name}/cuda/std/ratio
+%{_includedir}/%{name}/cuda/std/semaphore
+%{_includedir}/%{name}/cuda/std/tuple
+%{_includedir}/%{name}/cuda/std/type_traits
+%{_includedir}/%{name}/cuda/std/utility
+%{_includedir}/%{name}/cuda/std/version
 %{_includedir}/%{name}/cuda_surface_types.h
 %{_includedir}/%{name}/cuda_texture_types.h
+%{_includedir}/%{name}/cudaVDPAU.h
 %{_includedir}/%{name}/cuda_vdpau_interop.h
-%{_includedir}/%{name}/cudalibxt.h
+%{_includedir}/%{name}/Debugger
 %{_includedir}/%{name}/device_atomic_functions.h
 %{_includedir}/%{name}/device_atomic_functions.hpp
 %{_includedir}/%{name}/device_double_functions.h
@@ -1116,8 +1445,11 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/math_constants.h
 %{_includedir}/%{name}/math_functions.h
 %{_includedir}/%{name}/mma.h
+%{_includedir}/%{name}/nv/detail/__preprocessor
+%{_includedir}/%{name}/nv/detail/__target_macros
 %{_includedir}/%{name}/nvfunctional
 %{_includedir}/%{name}/nvPTXCompiler.h
+%{_includedir}/%{name}/nv/target
 %{_includedir}/%{name}/nvvm.h
 %{_includedir}/%{name}/sm_20_atomic_functions.h
 %{_includedir}/%{name}/sm_20_atomic_functions.hpp
@@ -1145,6 +1477,824 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/texture_indirect_functions.h
 %{_includedir}/%{name}/texture_indirect_functions.hpp
 %{_includedir}/%{name}/texture_types.h
+%{_includedir}/%{name}/thrust/addressof.h
+%{_includedir}/%{name}/thrust/adjacent_difference.h
+%{_includedir}/%{name}/thrust/advance.h
+%{_includedir}/%{name}/thrust/allocate_unique.h
+%{_includedir}/%{name}/thrust/async/copy.h
+%{_includedir}/%{name}/thrust/async/for_each.h
+%{_includedir}/%{name}/thrust/async/reduce.h
+%{_includedir}/%{name}/thrust/async/scan.h
+%{_includedir}/%{name}/thrust/async/sort.h
+%{_includedir}/%{name}/thrust/async/transform.h
+%{_includedir}/%{name}/thrust/binary_search.h
+%{_includedir}/%{name}/thrust/cmake/FindTBB.cmake
+%{_includedir}/%{name}/thrust/cmake/README.md
+%{_includedir}/%{name}/thrust/cmake/thrust-config.cmake
+%{_includedir}/%{name}/thrust/cmake/thrust-config-version.cmake
+%{_includedir}/%{name}/thrust/complex.h
+%{_includedir}/%{name}/thrust/copy.h
+%{_includedir}/%{name}/thrust/count.h
+%{_includedir}/%{name}/thrust/detail/adjacent_difference.inl
+%{_includedir}/%{name}/thrust/detail/advance.inl
+%{_includedir}/%{name}/thrust/detail/algorithm_wrapper.h
+%{_includedir}/%{name}/thrust/detail/alignment.h
+%{_includedir}/%{name}/thrust/detail/allocator/allocator_traits.h
+%{_includedir}/%{name}/thrust/detail/allocator/allocator_traits.inl
+%{_includedir}/%{name}/thrust/detail/allocator_aware_execution_policy.h
+%{_includedir}/%{name}/thrust/detail/allocator/copy_construct_range.h
+%{_includedir}/%{name}/thrust/detail/allocator/copy_construct_range.inl
+%{_includedir}/%{name}/thrust/detail/allocator/default_construct_range.h
+%{_includedir}/%{name}/thrust/detail/allocator/default_construct_range.inl
+%{_includedir}/%{name}/thrust/detail/allocator/destroy_range.h
+%{_includedir}/%{name}/thrust/detail/allocator/destroy_range.inl
+%{_includedir}/%{name}/thrust/detail/allocator/fill_construct_range.h
+%{_includedir}/%{name}/thrust/detail/allocator/fill_construct_range.inl
+%{_includedir}/%{name}/thrust/detail/allocator/malloc_allocator.h
+%{_includedir}/%{name}/thrust/detail/allocator/malloc_allocator.inl
+%{_includedir}/%{name}/thrust/detail/allocator/no_throw_allocator.h
+%{_includedir}/%{name}/thrust/detail/allocator/tagged_allocator.h
+%{_includedir}/%{name}/thrust/detail/allocator/tagged_allocator.inl
+%{_includedir}/%{name}/thrust/detail/allocator/temporary_allocator.h
+%{_includedir}/%{name}/thrust/detail/allocator/temporary_allocator.inl
+%{_includedir}/%{name}/thrust/detail/binary_search.inl
+%{_includedir}/%{name}/thrust/detail/caching_allocator.h
+%{_includedir}/%{name}/thrust/detail/complex/arithmetic.h
+%{_includedir}/%{name}/thrust/detail/complex/c99math.h
+%{_includedir}/%{name}/thrust/detail/complex/catrigf.h
+%{_includedir}/%{name}/thrust/detail/complex/catrig.h
+%{_includedir}/%{name}/thrust/detail/complex/ccoshf.h
+%{_includedir}/%{name}/thrust/detail/complex/ccosh.h
+%{_includedir}/%{name}/thrust/detail/complex/cexpf.h
+%{_includedir}/%{name}/thrust/detail/complex/cexp.h
+%{_includedir}/%{name}/thrust/detail/complex/clogf.h
+%{_includedir}/%{name}/thrust/detail/complex/clog.h
+%{_includedir}/%{name}/thrust/detail/complex/complex.inl
+%{_includedir}/%{name}/thrust/detail/complex/cpow.h
+%{_includedir}/%{name}/thrust/detail/complex/cproj.h
+%{_includedir}/%{name}/thrust/detail/complex/csinhf.h
+%{_includedir}/%{name}/thrust/detail/complex/csinh.h
+%{_includedir}/%{name}/thrust/detail/complex/csqrtf.h
+%{_includedir}/%{name}/thrust/detail/complex/csqrt.h
+%{_includedir}/%{name}/thrust/detail/complex/ctanhf.h
+%{_includedir}/%{name}/thrust/detail/complex/ctanh.h
+%{_includedir}/%{name}/thrust/detail/complex/math_private.h
+%{_includedir}/%{name}/thrust/detail/complex/stream.h
+%{_includedir}/%{name}/thrust/detail/config/compiler_fence.h
+%{_includedir}/%{name}/thrust/detail/config/compiler.h
+%{_includedir}/%{name}/thrust/detail/config/config.h
+%{_includedir}/%{name}/thrust/detail/config/cpp_compatibility.h
+%{_includedir}/%{name}/thrust/detail/config/cpp_dialect.h
+%{_includedir}/%{name}/thrust/detail/config/debug.h
+%{_includedir}/%{name}/thrust/detail/config/deprecated.h
+%{_includedir}/%{name}/thrust/detail/config/device_system.h
+%{_includedir}/%{name}/thrust/detail/config/exec_check_disable.h
+%{_includedir}/%{name}/thrust/detail/config/forceinline.h
+%{_includedir}/%{name}/thrust/detail/config/global_workarounds.h
+%{_includedir}/%{name}/thrust/detail/config.h
+%{_includedir}/%{name}/thrust/detail/config/host_device.h
+%{_includedir}/%{name}/thrust/detail/config/host_system.h
+%{_includedir}/%{name}/thrust/detail/config/memory_resource.h
+%{_includedir}/%{name}/thrust/detail/config/simple_defines.h
+%{_includedir}/%{name}/thrust/detail/contiguous_storage.h
+%{_includedir}/%{name}/thrust/detail/contiguous_storage.inl
+%{_includedir}/%{name}/thrust/detail/copy.h
+%{_includedir}/%{name}/thrust/detail/copy_if.h
+%{_includedir}/%{name}/thrust/detail/copy_if.inl
+%{_includedir}/%{name}/thrust/detail/copy.inl
+%{_includedir}/%{name}/thrust/detail/count.inl
+%{_includedir}/%{name}/thrust/detail/cpp11_required.h
+%{_includedir}/%{name}/thrust/detail/cpp14_required.h
+%{_includedir}/%{name}/thrust/detail/cstdint.h
+%{_includedir}/%{name}/thrust/detail/dependencies_aware_execution_policy.h
+%{_includedir}/%{name}/thrust/detail/device_delete.inl
+%{_includedir}/%{name}/thrust/detail/device_free.inl
+%{_includedir}/%{name}/thrust/detail/device_malloc.inl
+%{_includedir}/%{name}/thrust/detail/device_new.inl
+%{_includedir}/%{name}/thrust/detail/device_ptr.inl
+%{_includedir}/%{name}/thrust/detail/distance.inl
+%{_includedir}/%{name}/thrust/detail/equal.inl
+%{_includedir}/%{name}/thrust/detail/event_error.h
+%{_includedir}/%{name}/thrust/detail/execute_with_allocator_fwd.h
+%{_includedir}/%{name}/thrust/detail/execute_with_allocator.h
+%{_includedir}/%{name}/thrust/detail/execute_with_dependencies.h
+%{_includedir}/%{name}/thrust/detail/execution_policy.h
+%{_includedir}/%{name}/thrust/detail/extrema.inl
+%{_includedir}/%{name}/thrust/detail/fill.inl
+%{_includedir}/%{name}/thrust/detail/find.inl
+%{_includedir}/%{name}/thrust/detail/for_each.inl
+%{_includedir}/%{name}/thrust/detail/functional/actor.h
+%{_includedir}/%{name}/thrust/detail/functional/actor.inl
+%{_includedir}/%{name}/thrust/detail/functional/argument.h
+%{_includedir}/%{name}/thrust/detail/functional/composite.h
+%{_includedir}/%{name}/thrust/detail/functional.inl
+%{_includedir}/%{name}/thrust/detail/functional/operators/arithmetic_operators.h
+%{_includedir}/%{name}/thrust/detail/functional/operators/assignment_operator.h
+%{_includedir}/%{name}/thrust/detail/functional/operators/bitwise_operators.h
+%{_includedir}/%{name}/thrust/detail/functional/operators/compound_assignment_operators.h
+%{_includedir}/%{name}/thrust/detail/functional/operators.h
+%{_includedir}/%{name}/thrust/detail/functional/operators/logical_operators.h
+%{_includedir}/%{name}/thrust/detail/functional/operators/operator_adaptors.h
+%{_includedir}/%{name}/thrust/detail/functional/operators/relational_operators.h
+%{_includedir}/%{name}/thrust/detail/functional/placeholder.h
+%{_includedir}/%{name}/thrust/detail/functional/value.h
+%{_includedir}/%{name}/thrust/detail/function.h
+%{_includedir}/%{name}/thrust/detail/gather.inl
+%{_includedir}/%{name}/thrust/detail/generate.inl
+%{_includedir}/%{name}/thrust/detail/get_iterator_value.h
+%{_includedir}/%{name}/thrust/detail/inner_product.inl
+%{_includedir}/%{name}/thrust/detail/integer_math.h
+%{_includedir}/%{name}/thrust/detail/integer_traits.h
+%{_includedir}/%{name}/thrust/detail/internal_functional.h
+%{_includedir}/%{name}/thrust/detail/logical.inl
+%{_includedir}/%{name}/thrust/detail/malloc_and_free.h
+%{_includedir}/%{name}/thrust/detail/memory_algorithms.h
+%{_includedir}/%{name}/thrust/detail/memory_wrapper.h
+%{_includedir}/%{name}/thrust/detail/merge.inl
+%{_includedir}/%{name}/thrust/detail/minmax.h
+%{_includedir}/%{name}/thrust/detail/mismatch.inl
+%{_includedir}/%{name}/thrust/detail/modern_gcc_required.h
+%{_includedir}/%{name}/thrust/detail/mpl/math.h
+%{_includedir}/%{name}/thrust/detail/numeric_traits.h
+%{_includedir}/%{name}/thrust/detail/overlapped_copy.h
+%{_includedir}/%{name}/thrust/detail/pair.inl
+%{_includedir}/%{name}/thrust/detail/partition.inl
+%{_includedir}/%{name}/thrust/detail/pointer.h
+%{_includedir}/%{name}/thrust/detail/pointer.inl
+%{_includedir}/%{name}/thrust/detail/preprocessor.h
+%{_includedir}/%{name}/thrust/detail/range/head_flags.h
+%{_includedir}/%{name}/thrust/detail/range/tail_flags.h
+%{_includedir}/%{name}/thrust/detail/raw_pointer_cast.h
+%{_includedir}/%{name}/thrust/detail/raw_reference_cast.h
+%{_includedir}/%{name}/thrust/detail/reduce.inl
+%{_includedir}/%{name}/thrust/detail/reference_forward_declaration.h
+%{_includedir}/%{name}/thrust/detail/reference.h
+%{_includedir}/%{name}/thrust/detail/remove.inl
+%{_includedir}/%{name}/thrust/detail/replace.inl
+%{_includedir}/%{name}/thrust/detail/reverse.inl
+%{_includedir}/%{name}/thrust/detail/scan.inl
+%{_includedir}/%{name}/thrust/detail/scatter.inl
+%{_includedir}/%{name}/thrust/detail/select_system.h
+%{_includedir}/%{name}/thrust/detail/seq.h
+%{_includedir}/%{name}/thrust/detail/sequence.inl
+%{_includedir}/%{name}/thrust/detail/set_operations.inl
+%{_includedir}/%{name}/thrust/detail/shuffle.inl
+%{_includedir}/%{name}/thrust/detail/sort.inl
+%{_includedir}/%{name}/thrust/detail/static_assert.h
+%{_includedir}/%{name}/thrust/detail/static_map.h
+%{_includedir}/%{name}/thrust/detail/swap.h
+%{_includedir}/%{name}/thrust/detail/swap.inl
+%{_includedir}/%{name}/thrust/detail/swap_ranges.inl
+%{_includedir}/%{name}/thrust/detail/tabulate.inl
+%{_includedir}/%{name}/thrust/detail/temporary_array.h
+%{_includedir}/%{name}/thrust/detail/temporary_array.inl
+%{_includedir}/%{name}/thrust/detail/temporary_buffer.h
+%{_includedir}/%{name}/thrust/detail/transform.inl
+%{_includedir}/%{name}/thrust/detail/transform_reduce.inl
+%{_includedir}/%{name}/thrust/detail/transform_scan.inl
+%{_includedir}/%{name}/thrust/detail/trivial_sequence.h
+%{_includedir}/%{name}/thrust/detail/tuple_algorithms.h
+%{_includedir}/%{name}/thrust/detail/tuple.inl
+%{_includedir}/%{name}/thrust/detail/tuple_meta_transform.h
+%{_includedir}/%{name}/thrust/detail/tuple_transform.h
+%{_includedir}/%{name}/thrust/detail/type_deduction.h
+%{_includedir}/%{name}/thrust/detail/type_traits/function_traits.h
+%{_includedir}/%{name}/thrust/detail/type_traits.h
+%{_includedir}/%{name}/thrust/detail/type_traits/has_member_function.h
+%{_includedir}/%{name}/thrust/detail/type_traits/has_nested_type.h
+%{_includedir}/%{name}/thrust/detail/type_traits/has_trivial_assign.h
+%{_includedir}/%{name}/thrust/detail/type_traits/is_call_possible.h
+%{_includedir}/%{name}/thrust/detail/type_traits/is_metafunction_defined.h
+%{_includedir}/%{name}/thrust/detail/type_traits/iterator/is_discard_iterator.h
+%{_includedir}/%{name}/thrust/detail/type_traits/iterator/is_output_iterator.h
+%{_includedir}/%{name}/thrust/detail/type_traits/minimum_type.h
+%{_includedir}/%{name}/thrust/detail/type_traits/pointer_traits.h
+%{_includedir}/%{name}/thrust/detail/type_traits/result_of_adaptable_function.h
+%{_includedir}/%{name}/thrust/detail/uninitialized_copy.inl
+%{_includedir}/%{name}/thrust/detail/uninitialized_fill.inl
+%{_includedir}/%{name}/thrust/detail/unique.inl
+%{_includedir}/%{name}/thrust/detail/use_default.h
+%{_includedir}/%{name}/thrust/detail/util/align.h
+%{_includedir}/%{name}/thrust/detail/vector_base.h
+%{_includedir}/%{name}/thrust/detail/vector_base.inl
+%{_includedir}/%{name}/thrust/device_allocator.h
+%{_includedir}/%{name}/thrust/device_delete.h
+%{_includedir}/%{name}/thrust/device_free.h
+%{_includedir}/%{name}/thrust/device_make_unique.h
+%{_includedir}/%{name}/thrust/device_malloc_allocator.h
+%{_includedir}/%{name}/thrust/device_malloc.h
+%{_includedir}/%{name}/thrust/device_new_allocator.h
+%{_includedir}/%{name}/thrust/device_new.h
+%{_includedir}/%{name}/thrust/device_ptr.h
+%{_includedir}/%{name}/thrust/device_reference.h
+%{_includedir}/%{name}/thrust/device_vector.h
+%{_includedir}/%{name}/thrust/distance.h
+%{_includedir}/%{name}/thrust/equal.h
+%{_includedir}/%{name}/thrust/event.h
+%{_includedir}/%{name}/thrust/execution_policy.h
+%{_includedir}/%{name}/thrust/extrema.h
+%{_includedir}/%{name}/thrust/fill.h
+%{_includedir}/%{name}/thrust/find.h
+%{_includedir}/%{name}/thrust/for_each.h
+%{_includedir}/%{name}/thrust/functional.h
+%{_includedir}/%{name}/thrust/future.h
+%{_includedir}/%{name}/thrust/gather.h
+%{_includedir}/%{name}/thrust/generate.h
+%{_includedir}/%{name}/thrust/host_vector.h
+%{_includedir}/%{name}/thrust/inner_product.h
+%{_includedir}/%{name}/thrust/iterator/constant_iterator.h
+%{_includedir}/%{name}/thrust/iterator/counting_iterator.h
+%{_includedir}/%{name}/thrust/iterator/detail/any_assign.h
+%{_includedir}/%{name}/thrust/iterator/detail/any_system_tag.h
+%{_includedir}/%{name}/thrust/iterator/detail/constant_iterator_base.h
+%{_includedir}/%{name}/thrust/iterator/detail/counting_iterator.inl
+%{_includedir}/%{name}/thrust/iterator/detail/device_system_tag.h
+%{_includedir}/%{name}/thrust/iterator/detail/discard_iterator_base.h
+%{_includedir}/%{name}/thrust/iterator/detail/distance_from_result.h
+%{_includedir}/%{name}/thrust/iterator/detail/host_system_tag.h
+%{_includedir}/%{name}/thrust/iterator/detail/is_iterator_category.h
+%{_includedir}/%{name}/thrust/iterator/detail/iterator_adaptor_base.h
+%{_includedir}/%{name}/thrust/iterator/detail/iterator_category_to_system.h
+%{_includedir}/%{name}/thrust/iterator/detail/iterator_category_to_traversal.h
+%{_includedir}/%{name}/thrust/iterator/detail/iterator_category_with_system_and_traversal.h
+%{_includedir}/%{name}/thrust/iterator/detail/iterator_facade_category.h
+%{_includedir}/%{name}/thrust/iterator/detail/iterator_traits.inl
+%{_includedir}/%{name}/thrust/iterator/detail/iterator_traversal_tags.h
+%{_includedir}/%{name}/thrust/iterator/detail/join_iterator.h
+%{_includedir}/%{name}/thrust/iterator/detail/minimum_category.h
+%{_includedir}/%{name}/thrust/iterator/detail/minimum_system.h
+%{_includedir}/%{name}/thrust/iterator/detail/normal_iterator.h
+%{_includedir}/%{name}/thrust/iterator/detail/permutation_iterator_base.h
+%{_includedir}/%{name}/thrust/iterator/detail/retag.h
+%{_includedir}/%{name}/thrust/iterator/detail/reverse_iterator_base.h
+%{_includedir}/%{name}/thrust/iterator/detail/reverse_iterator.inl
+%{_includedir}/%{name}/thrust/iterator/detail/tagged_iterator.h
+%{_includedir}/%{name}/thrust/iterator/detail/transform_input_output_iterator.inl
+%{_includedir}/%{name}/thrust/iterator/detail/transform_iterator.inl
+%{_includedir}/%{name}/thrust/iterator/detail/transform_output_iterator.inl
+%{_includedir}/%{name}/thrust/iterator/detail/tuple_of_iterator_references.h
+%{_includedir}/%{name}/thrust/iterator/detail/universal_categories.h
+%{_includedir}/%{name}/thrust/iterator/detail/zip_iterator_base.h
+%{_includedir}/%{name}/thrust/iterator/detail/zip_iterator.inl
+%{_includedir}/%{name}/thrust/iterator/discard_iterator.h
+%{_includedir}/%{name}/thrust/iterator/iterator_adaptor.h
+%{_includedir}/%{name}/thrust/iterator/iterator_categories.h
+%{_includedir}/%{name}/thrust/iterator/iterator_facade.h
+%{_includedir}/%{name}/thrust/iterator/iterator_traits.h
+%{_includedir}/%{name}/thrust/iterator/permutation_iterator.h
+%{_includedir}/%{name}/thrust/iterator/retag.h
+%{_includedir}/%{name}/thrust/iterator/reverse_iterator.h
+%{_includedir}/%{name}/thrust/iterator/transform_input_output_iterator.h
+%{_includedir}/%{name}/thrust/iterator/transform_iterator.h
+%{_includedir}/%{name}/thrust/iterator/transform_output_iterator.h
+%{_includedir}/%{name}/thrust/iterator/zip_iterator.h
+%{_includedir}/%{name}/thrust/limits.h
+%{_includedir}/%{name}/thrust/logical.h
+%{_includedir}/%{name}/thrust/memory.h
+%{_includedir}/%{name}/thrust/merge.h
+%{_includedir}/%{name}/thrust/mismatch.h
+%{_includedir}/%{name}/thrust/mr/allocator.h
+%{_includedir}/%{name}/thrust/mr/device_memory_resource.h
+%{_includedir}/%{name}/thrust/mr/disjoint_pool.h
+%{_includedir}/%{name}/thrust/mr/disjoint_sync_pool.h
+%{_includedir}/%{name}/thrust/mr/disjoint_tls_pool.h
+%{_includedir}/%{name}/thrust/mr/fancy_pointer_resource.h
+%{_includedir}/%{name}/thrust/mr/host_memory_resource.h
+%{_includedir}/%{name}/thrust/mr/memory_resource.h
+%{_includedir}/%{name}/thrust/mr/new.h
+%{_includedir}/%{name}/thrust/mr/polymorphic_adaptor.h
+%{_includedir}/%{name}/thrust/mr/pool.h
+%{_includedir}/%{name}/thrust/mr/pool_options.h
+%{_includedir}/%{name}/thrust/mr/sync_pool.h
+%{_includedir}/%{name}/thrust/mr/tls_pool.h
+%{_includedir}/%{name}/thrust/mr/universal_memory_resource.h
+%{_includedir}/%{name}/thrust/mr/validator.h
+%{_includedir}/%{name}/thrust/optional.h
+%{_includedir}/%{name}/thrust/pair.h
+%{_includedir}/%{name}/thrust/partition.h
+%{_includedir}/%{name}/thrust/per_device_resource.h
+%{_includedir}/%{name}/thrust/random/detail/discard_block_engine.inl
+%{_includedir}/%{name}/thrust/random/detail/linear_congruential_engine_discard.h
+%{_includedir}/%{name}/thrust/random/detail/linear_congruential_engine.inl
+%{_includedir}/%{name}/thrust/random/detail/linear_feedback_shift_engine.inl
+%{_includedir}/%{name}/thrust/random/detail/linear_feedback_shift_engine_wordmask.h
+%{_includedir}/%{name}/thrust/random/detail/mod.h
+%{_includedir}/%{name}/thrust/random/detail/normal_distribution_base.h
+%{_includedir}/%{name}/thrust/random/detail/normal_distribution.inl
+%{_includedir}/%{name}/thrust/random/detail/random_core_access.h
+%{_includedir}/%{name}/thrust/random/detail/subtract_with_carry_engine.inl
+%{_includedir}/%{name}/thrust/random/detail/uniform_int_distribution.inl
+%{_includedir}/%{name}/thrust/random/detail/uniform_real_distribution.inl
+%{_includedir}/%{name}/thrust/random/detail/xor_combine_engine.inl
+%{_includedir}/%{name}/thrust/random/detail/xor_combine_engine_max.h
+%{_includedir}/%{name}/thrust/random/discard_block_engine.h
+%{_includedir}/%{name}/thrust/random.h
+%{_includedir}/%{name}/thrust/random/linear_congruential_engine.h
+%{_includedir}/%{name}/thrust/random/linear_feedback_shift_engine.h
+%{_includedir}/%{name}/thrust/random/normal_distribution.h
+%{_includedir}/%{name}/thrust/random/subtract_with_carry_engine.h
+%{_includedir}/%{name}/thrust/random/uniform_int_distribution.h
+%{_includedir}/%{name}/thrust/random/uniform_real_distribution.h
+%{_includedir}/%{name}/thrust/random/xor_combine_engine.h
+%{_includedir}/%{name}/thrust/reduce.h
+%{_includedir}/%{name}/thrust/remove.h
+%{_includedir}/%{name}/thrust/replace.h
+%{_includedir}/%{name}/thrust/reverse.h
+%{_includedir}/%{name}/thrust/scan.h
+%{_includedir}/%{name}/thrust/scatter.h
+%{_includedir}/%{name}/thrust/sequence.h
+%{_includedir}/%{name}/thrust/set_operations.h
+%{_includedir}/%{name}/thrust/shuffle.h
+%{_includedir}/%{name}/thrust/sort.h
+%{_includedir}/%{name}/thrust/swap.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/adjacent_difference.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/assign_value.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/binary_search.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/copy.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/copy_if.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/count.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/equal.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/execution_policy.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/extrema.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/fill.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/find.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/for_each.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/gather.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/generate.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/get_value.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/inner_product.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/iter_swap.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/logical.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/malloc_and_free.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/memory.inl
+%{_includedir}/%{name}/thrust/system/cpp/detail/merge.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/mismatch.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/par.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/partition.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/per_device_resource.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/reduce_by_key.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/reduce.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/remove.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/replace.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/reverse.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/scan_by_key.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/scan.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/scatter.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/sequence.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/set_operations.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/sort.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/swap_ranges.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/tabulate.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/temporary_buffer.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/transform.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/transform_reduce.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/transform_scan.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/uninitialized_copy.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/uninitialized_fill.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/unique_by_key.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/unique.h
+%{_includedir}/%{name}/thrust/system/cpp/detail/vector.inl
+%{_includedir}/%{name}/thrust/system/cpp/execution_policy.h
+%{_includedir}/%{name}/thrust/system/cpp/memory.h
+%{_includedir}/%{name}/thrust/system/cpp/memory_resource.h
+%{_includedir}/%{name}/thrust/system/cpp/pointer.h
+%{_includedir}/%{name}/thrust/system/cpp/vector.h
+%{_includedir}/%{name}/thrust/system/cuda/config.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/adjacent_difference.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/assign_value.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/async/copy.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/async/customization.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/async/exclusive_scan.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/async/for_each.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/async/inclusive_scan.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/async/reduce.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/async/scan.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/async/sort.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/async/transform.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/binary_search.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/copy.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/copy_if.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/core/agent_launcher.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/core/alignment.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/core/triple_chevron_launch.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/core/util.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/count.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/cross_system.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/dispatch.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/equal.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/error.inl
+%{_includedir}/%{name}/thrust/system/cuda/detail/execution_policy.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/extrema.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/fill.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/find.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/for_each.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/future.inl
+%{_includedir}/%{name}/thrust/system/cuda/detail/gather.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/generate.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/get_value.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/guarded_cuda_runtime_api.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/guarded_driver_types.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/inner_product.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/internal/copy_cross_system.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/internal/copy_device_to_device.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/iter_swap.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/logical.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/make_unsigned_special.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/malloc_and_free.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/memory.inl
+%{_includedir}/%{name}/thrust/system/cuda/detail/merge.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/mismatch.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/parallel_for.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/par.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/partition.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/par_to_seq.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/per_device_resource.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/reduce_by_key.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/reduce.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/remove.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/replace.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/reverse.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/scan_by_key.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/scan.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/scatter.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/sequence.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/set_operations.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/sort.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/swap_ranges.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/tabulate.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/temporary_buffer.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/terminate.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/transform.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/transform_reduce.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/transform_scan.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/uninitialized_copy.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/uninitialized_fill.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/unique_by_key.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/unique.h
+%{_includedir}/%{name}/thrust/system/cuda/detail/util.h
+%{_includedir}/%{name}/thrust/system/cuda/error.h
+%{_includedir}/%{name}/thrust/system/cuda/execution_policy.h
+%{_includedir}/%{name}/thrust/system/cuda/experimental/pinned_allocator.h
+%{_includedir}/%{name}/thrust/system/cuda/future.h
+%{_includedir}/%{name}/thrust/system/cuda/memory.h
+%{_includedir}/%{name}/thrust/system/cuda/memory_resource.h
+%{_includedir}/%{name}/thrust/system/cuda/pointer.h
+%{_includedir}/%{name}/thrust/system/cuda/vector.h
+%{_includedir}/%{name}/thrust/system/detail/adl/adjacent_difference.h
+%{_includedir}/%{name}/thrust/system/detail/adl/assign_value.h
+%{_includedir}/%{name}/thrust/system/detail/adl/async/copy.h
+%{_includedir}/%{name}/thrust/system/detail/adl/async/for_each.h
+%{_includedir}/%{name}/thrust/system/detail/adl/async/reduce.h
+%{_includedir}/%{name}/thrust/system/detail/adl/async/scan.h
+%{_includedir}/%{name}/thrust/system/detail/adl/async/sort.h
+%{_includedir}/%{name}/thrust/system/detail/adl/async/transform.h
+%{_includedir}/%{name}/thrust/system/detail/adl/binary_search.h
+%{_includedir}/%{name}/thrust/system/detail/adl/copy.h
+%{_includedir}/%{name}/thrust/system/detail/adl/copy_if.h
+%{_includedir}/%{name}/thrust/system/detail/adl/count.h
+%{_includedir}/%{name}/thrust/system/detail/adl/equal.h
+%{_includedir}/%{name}/thrust/system/detail/adl/extrema.h
+%{_includedir}/%{name}/thrust/system/detail/adl/fill.h
+%{_includedir}/%{name}/thrust/system/detail/adl/find.h
+%{_includedir}/%{name}/thrust/system/detail/adl/for_each.h
+%{_includedir}/%{name}/thrust/system/detail/adl/gather.h
+%{_includedir}/%{name}/thrust/system/detail/adl/generate.h
+%{_includedir}/%{name}/thrust/system/detail/adl/get_value.h
+%{_includedir}/%{name}/thrust/system/detail/adl/inner_product.h
+%{_includedir}/%{name}/thrust/system/detail/adl/iter_swap.h
+%{_includedir}/%{name}/thrust/system/detail/adl/logical.h
+%{_includedir}/%{name}/thrust/system/detail/adl/malloc_and_free.h
+%{_includedir}/%{name}/thrust/system/detail/adl/merge.h
+%{_includedir}/%{name}/thrust/system/detail/adl/mismatch.h
+%{_includedir}/%{name}/thrust/system/detail/adl/partition.h
+%{_includedir}/%{name}/thrust/system/detail/adl/per_device_resource.h
+%{_includedir}/%{name}/thrust/system/detail/adl/reduce_by_key.h
+%{_includedir}/%{name}/thrust/system/detail/adl/reduce.h
+%{_includedir}/%{name}/thrust/system/detail/adl/remove.h
+%{_includedir}/%{name}/thrust/system/detail/adl/replace.h
+%{_includedir}/%{name}/thrust/system/detail/adl/reverse.h
+%{_includedir}/%{name}/thrust/system/detail/adl/scan_by_key.h
+%{_includedir}/%{name}/thrust/system/detail/adl/scan.h
+%{_includedir}/%{name}/thrust/system/detail/adl/scatter.h
+%{_includedir}/%{name}/thrust/system/detail/adl/sequence.h
+%{_includedir}/%{name}/thrust/system/detail/adl/set_operations.h
+%{_includedir}/%{name}/thrust/system/detail/adl/sort.h
+%{_includedir}/%{name}/thrust/system/detail/adl/swap_ranges.h
+%{_includedir}/%{name}/thrust/system/detail/adl/tabulate.h
+%{_includedir}/%{name}/thrust/system/detail/adl/temporary_buffer.h
+%{_includedir}/%{name}/thrust/system/detail/adl/transform.h
+%{_includedir}/%{name}/thrust/system/detail/adl/transform_reduce.h
+%{_includedir}/%{name}/thrust/system/detail/adl/transform_scan.h
+%{_includedir}/%{name}/thrust/system/detail/adl/uninitialized_copy.h
+%{_includedir}/%{name}/thrust/system/detail/adl/uninitialized_fill.h
+%{_includedir}/%{name}/thrust/system/detail/adl/unique_by_key.h
+%{_includedir}/%{name}/thrust/system/detail/adl/unique.h
+%{_includedir}/%{name}/thrust/system/detail/bad_alloc.h
+%{_includedir}/%{name}/thrust/system/detail/errno.h
+%{_includedir}/%{name}/thrust/system/detail/error_category.inl
+%{_includedir}/%{name}/thrust/system/detail/error_code.inl
+%{_includedir}/%{name}/thrust/system/detail/error_condition.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/adjacent_difference.h
+%{_includedir}/%{name}/thrust/system/detail/generic/adjacent_difference.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/advance.h
+%{_includedir}/%{name}/thrust/system/detail/generic/advance.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/binary_search.h
+%{_includedir}/%{name}/thrust/system/detail/generic/binary_search.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/copy.h
+%{_includedir}/%{name}/thrust/system/detail/generic/copy_if.h
+%{_includedir}/%{name}/thrust/system/detail/generic/copy_if.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/copy.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/count.h
+%{_includedir}/%{name}/thrust/system/detail/generic/count.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/distance.h
+%{_includedir}/%{name}/thrust/system/detail/generic/distance.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/equal.h
+%{_includedir}/%{name}/thrust/system/detail/generic/equal.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/extrema.h
+%{_includedir}/%{name}/thrust/system/detail/generic/extrema.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/fill.h
+%{_includedir}/%{name}/thrust/system/detail/generic/find.h
+%{_includedir}/%{name}/thrust/system/detail/generic/find.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/for_each.h
+%{_includedir}/%{name}/thrust/system/detail/generic/gather.h
+%{_includedir}/%{name}/thrust/system/detail/generic/gather.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/generate.h
+%{_includedir}/%{name}/thrust/system/detail/generic/generate.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/inner_product.h
+%{_includedir}/%{name}/thrust/system/detail/generic/inner_product.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/logical.h
+%{_includedir}/%{name}/thrust/system/detail/generic/memory.h
+%{_includedir}/%{name}/thrust/system/detail/generic/memory.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/merge.h
+%{_includedir}/%{name}/thrust/system/detail/generic/merge.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/mismatch.h
+%{_includedir}/%{name}/thrust/system/detail/generic/mismatch.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/partition.h
+%{_includedir}/%{name}/thrust/system/detail/generic/partition.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/per_device_resource.h
+%{_includedir}/%{name}/thrust/system/detail/generic/reduce_by_key.h
+%{_includedir}/%{name}/thrust/system/detail/generic/reduce_by_key.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/reduce.h
+%{_includedir}/%{name}/thrust/system/detail/generic/reduce.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/remove.h
+%{_includedir}/%{name}/thrust/system/detail/generic/remove.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/replace.h
+%{_includedir}/%{name}/thrust/system/detail/generic/replace.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/reverse.h
+%{_includedir}/%{name}/thrust/system/detail/generic/reverse.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/scalar/binary_search.h
+%{_includedir}/%{name}/thrust/system/detail/generic/scalar/binary_search.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/scan_by_key.h
+%{_includedir}/%{name}/thrust/system/detail/generic/scan_by_key.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/scan.h
+%{_includedir}/%{name}/thrust/system/detail/generic/scan.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/scatter.h
+%{_includedir}/%{name}/thrust/system/detail/generic/scatter.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/select_system_exists.h
+%{_includedir}/%{name}/thrust/system/detail/generic/select_system.h
+%{_includedir}/%{name}/thrust/system/detail/generic/select_system.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/sequence.h
+%{_includedir}/%{name}/thrust/system/detail/generic/sequence.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/set_operations.h
+%{_includedir}/%{name}/thrust/system/detail/generic/set_operations.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/shuffle.h
+%{_includedir}/%{name}/thrust/system/detail/generic/shuffle.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/sort.h
+%{_includedir}/%{name}/thrust/system/detail/generic/sort.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/swap_ranges.h
+%{_includedir}/%{name}/thrust/system/detail/generic/swap_ranges.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/tabulate.h
+%{_includedir}/%{name}/thrust/system/detail/generic/tabulate.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/tag.h
+%{_includedir}/%{name}/thrust/system/detail/generic/temporary_buffer.h
+%{_includedir}/%{name}/thrust/system/detail/generic/temporary_buffer.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/transform.h
+%{_includedir}/%{name}/thrust/system/detail/generic/transform.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/transform_reduce.h
+%{_includedir}/%{name}/thrust/system/detail/generic/transform_reduce.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/transform_scan.h
+%{_includedir}/%{name}/thrust/system/detail/generic/transform_scan.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/uninitialized_copy.h
+%{_includedir}/%{name}/thrust/system/detail/generic/uninitialized_copy.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/uninitialized_fill.h
+%{_includedir}/%{name}/thrust/system/detail/generic/uninitialized_fill.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/unique_by_key.h
+%{_includedir}/%{name}/thrust/system/detail/generic/unique_by_key.inl
+%{_includedir}/%{name}/thrust/system/detail/generic/unique.h
+%{_includedir}/%{name}/thrust/system/detail/generic/unique.inl
+%{_includedir}/%{name}/thrust/system/detail/internal/decompose.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/adjacent_difference.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/assign_value.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/binary_search.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/copy_backward.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/copy.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/copy_if.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/copy.inl
+%{_includedir}/%{name}/thrust/system/detail/sequential/count.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/equal.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/execution_policy.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/extrema.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/fill.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/find.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/for_each.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/gather.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/general_copy.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/generate.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/get_value.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/inner_product.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/insertion_sort.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/iter_swap.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/logical.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/malloc_and_free.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/merge.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/merge.inl
+%{_includedir}/%{name}/thrust/system/detail/sequential/mismatch.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/partition.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/per_device_resource.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/reduce_by_key.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/reduce.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/remove.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/replace.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/reverse.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/scan_by_key.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/scan.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/scatter.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/sequence.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/set_operations.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/sort.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/sort.inl
+%{_includedir}/%{name}/thrust/system/detail/sequential/stable_merge_sort.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/stable_merge_sort.inl
+%{_includedir}/%{name}/thrust/system/detail/sequential/stable_primitive_sort.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/stable_primitive_sort.inl
+%{_includedir}/%{name}/thrust/system/detail/sequential/stable_radix_sort.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/stable_radix_sort.inl
+%{_includedir}/%{name}/thrust/system/detail/sequential/swap_ranges.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/tabulate.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/temporary_buffer.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/transform.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/transform_reduce.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/transform_scan.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/trivial_copy.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/uninitialized_copy.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/uninitialized_fill.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/unique_by_key.h
+%{_includedir}/%{name}/thrust/system/detail/sequential/unique.h
+%{_includedir}/%{name}/thrust/system/detail/system_error.inl
+%{_includedir}/%{name}/thrust/system/error_code.h
+%{_includedir}/%{name}/thrust/system_error.h
+%{_includedir}/%{name}/thrust/system/omp/detail/adjacent_difference.h
+%{_includedir}/%{name}/thrust/system/omp/detail/assign_value.h
+%{_includedir}/%{name}/thrust/system/omp/detail/binary_search.h
+%{_includedir}/%{name}/thrust/system/omp/detail/copy.h
+%{_includedir}/%{name}/thrust/system/omp/detail/copy_if.h
+%{_includedir}/%{name}/thrust/system/omp/detail/copy_if.inl
+%{_includedir}/%{name}/thrust/system/omp/detail/copy.inl
+%{_includedir}/%{name}/thrust/system/omp/detail/count.h
+%{_includedir}/%{name}/thrust/system/omp/detail/default_decomposition.h
+%{_includedir}/%{name}/thrust/system/omp/detail/default_decomposition.inl
+%{_includedir}/%{name}/thrust/system/omp/detail/equal.h
+%{_includedir}/%{name}/thrust/system/omp/detail/execution_policy.h
+%{_includedir}/%{name}/thrust/system/omp/detail/extrema.h
+%{_includedir}/%{name}/thrust/system/omp/detail/fill.h
+%{_includedir}/%{name}/thrust/system/omp/detail/find.h
+%{_includedir}/%{name}/thrust/system/omp/detail/for_each.h
+%{_includedir}/%{name}/thrust/system/omp/detail/for_each.inl
+%{_includedir}/%{name}/thrust/system/omp/detail/gather.h
+%{_includedir}/%{name}/thrust/system/omp/detail/generate.h
+%{_includedir}/%{name}/thrust/system/omp/detail/get_value.h
+%{_includedir}/%{name}/thrust/system/omp/detail/inner_product.h
+%{_includedir}/%{name}/thrust/system/omp/detail/iter_swap.h
+%{_includedir}/%{name}/thrust/system/omp/detail/logical.h
+%{_includedir}/%{name}/thrust/system/omp/detail/malloc_and_free.h
+%{_includedir}/%{name}/thrust/system/omp/detail/memory.inl
+%{_includedir}/%{name}/thrust/system/omp/detail/merge.h
+%{_includedir}/%{name}/thrust/system/omp/detail/mismatch.h
+%{_includedir}/%{name}/thrust/system/omp/detail/par.h
+%{_includedir}/%{name}/thrust/system/omp/detail/partition.h
+%{_includedir}/%{name}/thrust/system/omp/detail/partition.inl
+%{_includedir}/%{name}/thrust/system/omp/detail/per_device_resource.h
+%{_includedir}/%{name}/thrust/system/omp/detail/reduce_by_key.h
+%{_includedir}/%{name}/thrust/system/omp/detail/reduce_by_key.inl
+%{_includedir}/%{name}/thrust/system/omp/detail/reduce.h
+%{_includedir}/%{name}/thrust/system/omp/detail/reduce.inl
+%{_includedir}/%{name}/thrust/system/omp/detail/reduce_intervals.h
+%{_includedir}/%{name}/thrust/system/omp/detail/reduce_intervals.inl
+%{_includedir}/%{name}/thrust/system/omp/detail/remove.h
+%{_includedir}/%{name}/thrust/system/omp/detail/remove.inl
+%{_includedir}/%{name}/thrust/system/omp/detail/replace.h
+%{_includedir}/%{name}/thrust/system/omp/detail/reverse.h
+%{_includedir}/%{name}/thrust/system/omp/detail/scan_by_key.h
+%{_includedir}/%{name}/thrust/system/omp/detail/scan.h
+%{_includedir}/%{name}/thrust/system/omp/detail/scatter.h
+%{_includedir}/%{name}/thrust/system/omp/detail/sequence.h
+%{_includedir}/%{name}/thrust/system/omp/detail/set_operations.h
+%{_includedir}/%{name}/thrust/system/omp/detail/sort.h
+%{_includedir}/%{name}/thrust/system/omp/detail/sort.inl
+%{_includedir}/%{name}/thrust/system/omp/detail/swap_ranges.h
+%{_includedir}/%{name}/thrust/system/omp/detail/tabulate.h
+%{_includedir}/%{name}/thrust/system/omp/detail/temporary_buffer.h
+%{_includedir}/%{name}/thrust/system/omp/detail/transform.h
+%{_includedir}/%{name}/thrust/system/omp/detail/transform_reduce.h
+%{_includedir}/%{name}/thrust/system/omp/detail/transform_scan.h
+%{_includedir}/%{name}/thrust/system/omp/detail/uninitialized_copy.h
+%{_includedir}/%{name}/thrust/system/omp/detail/uninitialized_fill.h
+%{_includedir}/%{name}/thrust/system/omp/detail/unique_by_key.h
+%{_includedir}/%{name}/thrust/system/omp/detail/unique_by_key.inl
+%{_includedir}/%{name}/thrust/system/omp/detail/unique.h
+%{_includedir}/%{name}/thrust/system/omp/detail/unique.inl
+%{_includedir}/%{name}/thrust/system/omp/execution_policy.h
+%{_includedir}/%{name}/thrust/system/omp/memory.h
+%{_includedir}/%{name}/thrust/system/omp/memory_resource.h
+%{_includedir}/%{name}/thrust/system/omp/pointer.h
+%{_includedir}/%{name}/thrust/system/omp/vector.h
+%{_includedir}/%{name}/thrust/system/system_error.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/adjacent_difference.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/assign_value.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/binary_search.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/copy.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/copy_if.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/copy_if.inl
+%{_includedir}/%{name}/thrust/system/tbb/detail/copy.inl
+%{_includedir}/%{name}/thrust/system/tbb/detail/count.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/equal.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/execution_policy.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/extrema.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/fill.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/find.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/for_each.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/for_each.inl
+%{_includedir}/%{name}/thrust/system/tbb/detail/gather.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/generate.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/get_value.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/inner_product.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/iter_swap.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/logical.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/malloc_and_free.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/memory.inl
+%{_includedir}/%{name}/thrust/system/tbb/detail/merge.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/merge.inl
+%{_includedir}/%{name}/thrust/system/tbb/detail/mismatch.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/par.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/partition.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/partition.inl
+%{_includedir}/%{name}/thrust/system/tbb/detail/per_device_resource.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/reduce_by_key.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/reduce_by_key.inl
+%{_includedir}/%{name}/thrust/system/tbb/detail/reduce.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/reduce.inl
+%{_includedir}/%{name}/thrust/system/tbb/detail/reduce_intervals.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/remove.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/remove.inl
+%{_includedir}/%{name}/thrust/system/tbb/detail/replace.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/reverse.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/scan_by_key.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/scan.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/scan.inl
+%{_includedir}/%{name}/thrust/system/tbb/detail/scatter.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/sequence.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/set_operations.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/sort.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/sort.inl
+%{_includedir}/%{name}/thrust/system/tbb/detail/swap_ranges.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/tabulate.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/temporary_buffer.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/transform.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/transform_reduce.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/transform_scan.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/uninitialized_copy.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/uninitialized_fill.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/unique_by_key.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/unique_by_key.inl
+%{_includedir}/%{name}/thrust/system/tbb/detail/unique.h
+%{_includedir}/%{name}/thrust/system/tbb/detail/unique.inl
+%{_includedir}/%{name}/thrust/system/tbb/execution_policy.h
+%{_includedir}/%{name}/thrust/system/tbb/memory.h
+%{_includedir}/%{name}/thrust/system/tbb/memory_resource.h
+%{_includedir}/%{name}/thrust/system/tbb/pointer.h
+%{_includedir}/%{name}/thrust/system/tbb/vector.h
+%{_includedir}/%{name}/thrust/tabulate.h
+%{_includedir}/%{name}/thrust/transform.h
+%{_includedir}/%{name}/thrust/transform_reduce.h
+%{_includedir}/%{name}/thrust/transform_scan.h
+%{_includedir}/%{name}/thrust/tuple.h
+%{_includedir}/%{name}/thrust/type_traits/integer_sequence.h
+%{_includedir}/%{name}/thrust/type_traits/is_contiguous_iterator.h
+%{_includedir}/%{name}/thrust/type_traits/is_execution_policy.h
+%{_includedir}/%{name}/thrust/type_traits/is_operator_less_or_greater_function_object.h
+%{_includedir}/%{name}/thrust/type_traits/is_operator_plus_function_object.h
+%{_includedir}/%{name}/thrust/type_traits/is_trivially_relocatable.h
+%{_includedir}/%{name}/thrust/type_traits/logical_metafunctions.h
+%{_includedir}/%{name}/thrust/type_traits/remove_cvref.h
+%{_includedir}/%{name}/thrust/type_traits/void_t.h
+%{_includedir}/%{name}/thrust/uninitialized_copy.h
+%{_includedir}/%{name}/thrust/uninitialized_fill.h
+%{_includedir}/%{name}/thrust/unique.h
+%{_includedir}/%{name}/thrust/universal_allocator.h
+%{_includedir}/%{name}/thrust/universal_ptr.h
+%{_includedir}/%{name}/thrust/universal_vector.h
+%{_includedir}/%{name}/thrust/version.h
+%{_includedir}/%{name}/thrust/zip_function.h
 %{_includedir}/%{name}/vector_functions.h
 %{_includedir}/%{name}/vector_functions.hpp
 %{_includedir}/%{name}/vector_types.h
@@ -1189,6 +2339,11 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_libexecdir}/%{name}/libTreeLauncherTargetUpdatePreloadInjection.so
 
 %changelog
+* Tue Jul 20 2021 Simone Caronni <negativo17@gmail.com> - 1:11.4.0-1
+- Update to 11.4.0.
+- Update package names used in conflict statements to match upstream changes.
+- Add missing CCCL (C++ Core Compute libraries )headers to devel subpackage.
+
 * Sun Apr 25 2021 Simone Caronni <negativo17@gmail.com> - 1:11.3.0-1
 - Update to 11.3.0.
 - Split static libraries in subpackages.
