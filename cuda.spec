@@ -11,7 +11,7 @@
 %global         __requires_exclude ^(libQt5.*\\.so.*|libq.*\\.so.*|libicu.*\\.so.*|libssl\\.so.*|libcrypto\\.so.*|libstdc\\+\\+\\.so.*|libprotobuf\\.so.*|libcupti\\.so.*|libboost_.*\\.so.*)$
 
 Name:           cuda
-Version:        11.4.2
+Version:        11.5.0
 Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
@@ -20,7 +20,7 @@ URL:            https://developer.nvidia.com/cuda-zone
 ExclusiveArch:  x86_64
 
 Source0:        %{name}-%{version}-x86_64.tar.xz
-Source1:        %{name}-gdb-11.4.120.src.tar.gz
+Source1:        %{name}-gdb-11.5.50.src.tar.gz
 Source2:        %{name}-generate-tarball.sh
 Source3:        %{name}.sh
 Source4:        %{name}.csh
@@ -840,14 +840,10 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/sm_61_intrinsics.h
 %{_includedir}/%{name}/sm_61_intrinsics.hpp
 %{_includedir}/%{name}/surface_functions.h
-%{_includedir}/%{name}/surface_functions.hpp
 %{_includedir}/%{name}/surface_indirect_functions.h
-%{_includedir}/%{name}/surface_indirect_functions.hpp
 %{_includedir}/%{name}/surface_types.h
 %{_includedir}/%{name}/texture_fetch_functions.h
-%{_includedir}/%{name}/texture_fetch_functions.hpp
 %{_includedir}/%{name}/texture_indirect_functions.h
-%{_includedir}/%{name}/texture_indirect_functions.hpp
 %{_includedir}/%{name}/texture_types.h
 %{_includedir}/%{name}/vector_functions.h
 %{_includedir}/%{name}/vector_functions.hpp
@@ -1137,8 +1133,6 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/cub/block/specializations/block_scan_warp_scans2.cuh
 %{_includedir}/%{name}/cub/block/specializations/block_scan_warp_scans3.cuh
 %{_includedir}/%{name}/cub/block/specializations/block_scan_warp_scans.cuh
-%{_includedir}/%{name}/cub/cmake/cub-config.cmake
-%{_includedir}/%{name}/cub/cmake/cub-config-version.cmake
 %{_includedir}/%{name}/cub/config.cuh
 %{_includedir}/%{name}/cub/cub.cuh
 %{_includedir}/%{name}/cub/device/device_histogram.cuh
@@ -1214,6 +1208,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/cuda/pipeline
 %{_includedir}/%{name}/cuda_profiler_api.h
 %{_includedir}/%{name}/cudaProfiler.h
+%{_includedir}/%{name}/cuda/annotated_ptr
 %{_includedir}/%{name}/cuda/semaphore
 %{_includedir}/%{name}/cuda/std/atomic
 %{_includedir}/%{name}/cuda/std/barrier
@@ -1227,9 +1222,8 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/cuda/std/cstddef
 %{_includedir}/%{name}/cuda/std/cstdint
 %{_includedir}/%{name}/cuda/std/ctime
-%{_includedir}/%{name}/cuda/std/detail/__atomic
-%{_includedir}/%{name}/cuda/std/detail/__atomic_derived
-%{_includedir}/%{name}/cuda/std/detail/__atomic_generated
+%{_includedir}/%{name}/cuda/std/detail/__access_property
+%{_includedir}/%{name}/cuda/std/detail/__annotated_ptr
 %{_includedir}/%{name}/cuda/std/detail/__config
 %{_includedir}/%{name}/cuda/std/detail/__functional_base
 %{_includedir}/%{name}/cuda/std/detail/libcxx/include/algorithm
@@ -1377,6 +1371,15 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/cuda/std/detail/libcxx/include/string_view
 %{_includedir}/%{name}/cuda/std/detail/libcxx/include/strstream
 %{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/android/locale_bionic.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/atomic/atomic_base.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/atomic/atomic_c11.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/atomic/atomic_cuda.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/atomic/atomic_cuda_derived.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/atomic/atomic_cuda_generated.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/atomic/atomic_gcc.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/atomic/atomic_msvc.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/atomic/atomic_nvrtc.h
+%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/atomic/cxx_atomic.h
 %{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/fuchsia/xlocale.h
 %{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/ibm/limits.h
 %{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/ibm/locale_mgmt_aix.h
@@ -1387,7 +1390,6 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/solaris/floatingpoint.h
 %{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/solaris/wchar.h
 %{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/solaris/xlocale.h
-%{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/win32/atomic_msvc.h
 %{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/win32/limits_msvc_win32.h
 %{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/win32/locale_win32.h
 %{_includedir}/%{name}/cuda/std/detail/libcxx/include/support/xlocale/__nop_locale_mgmt.h
@@ -1429,6 +1431,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/cuda_texture_types.h
 %{_includedir}/%{name}/cudaVDPAU.h
 %{_includedir}/%{name}/cuda_vdpau_interop.h
+%{_includedir}/%{name}/cupti_checkpoint.h
 %{_includedir}/%{name}/Debugger
 %{_includedir}/%{name}/device_atomic_functions.h
 %{_includedir}/%{name}/device_atomic_functions.hpp
@@ -1468,14 +1471,10 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/sm_61_intrinsics.h
 %{_includedir}/%{name}/sm_61_intrinsics.hpp
 %{_includedir}/%{name}/surface_functions.h
-%{_includedir}/%{name}/surface_functions.hpp
 %{_includedir}/%{name}/surface_indirect_functions.h
-%{_includedir}/%{name}/surface_indirect_functions.hpp
 %{_includedir}/%{name}/surface_types.h
 %{_includedir}/%{name}/texture_fetch_functions.h
-%{_includedir}/%{name}/texture_fetch_functions.hpp
 %{_includedir}/%{name}/texture_indirect_functions.h
-%{_includedir}/%{name}/texture_indirect_functions.hpp
 %{_includedir}/%{name}/texture_types.h
 %{_includedir}/%{name}/thrust/addressof.h
 %{_includedir}/%{name}/thrust/adjacent_difference.h
@@ -1488,10 +1487,6 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/thrust/async/sort.h
 %{_includedir}/%{name}/thrust/async/transform.h
 %{_includedir}/%{name}/thrust/binary_search.h
-%{_includedir}/%{name}/thrust/cmake/FindTBB.cmake
-%{_includedir}/%{name}/thrust/cmake/README.md
-%{_includedir}/%{name}/thrust/cmake/thrust-config.cmake
-%{_includedir}/%{name}/thrust/cmake/thrust-config-version.cmake
 %{_includedir}/%{name}/thrust/complex.h
 %{_includedir}/%{name}/thrust/copy.h
 %{_includedir}/%{name}/thrust/count.h
@@ -1555,6 +1550,7 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/thrust/detail/config/host_device.h
 %{_includedir}/%{name}/thrust/detail/config/host_system.h
 %{_includedir}/%{name}/thrust/detail/config/memory_resource.h
+%{_includedir}/%{name}/thrust/detail/config/namespace.h
 %{_includedir}/%{name}/thrust/detail/config/simple_defines.h
 %{_includedir}/%{name}/thrust/detail/contiguous_storage.h
 %{_includedir}/%{name}/thrust/detail/contiguous_storage.inl
@@ -2299,7 +2295,10 @@ install -p -m 0644 %{SOURCE13} %{buildroot}%{_metainfodir}/
 %{_includedir}/%{name}/vector_functions.hpp
 %{_includedir}/%{name}/vector_types.h
 %{_libdir}/libaccinj%{__isa_bits}.so
+%{_libdir}/libcheckpoint.so
 %{_libdir}/libcuinj%{__isa_bits}.so
+%{_libdir}/libnvrtc-builtins_static.a
+%{_libdir}/libnvrtc_static.a
 %{_libdir}/libnvvm.so
 %{_libdir}/pkgconfig/accinj64.pc
 %{_libdir}/pkgconfig/cuda.pc
