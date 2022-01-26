@@ -1,8 +1,0 @@
-libdir=LIBDIR
-includedir=INCLUDE_DIR
-
-Name: cusolver
-Description: A LAPACK-like library on dense and sparse linear algebra
-Version: CUDA_VERSION
-Libs: -L${libdir} -lcusolver
-Cflags: -I${includedir}

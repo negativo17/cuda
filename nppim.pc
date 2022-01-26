@@ -1,8 +1,0 @@
-libdir=LIBDIR
-includedir=INCLUDE_DIR
-
-Name: nppim
-Description: NVIDIA Performance Primitives - Image Processing - Morphological
-Version: CUDA_VERSION
-Libs: -L${libdir} -lnppim
-Cflags: -I${includedir}
