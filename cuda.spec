@@ -1,8 +1,8 @@
 %global debug_package %{nil}
-%global major_package_version 11-6
+%global major_package_version 11-8
 
 Name:           cuda
-Version:        11.7.91
+Version:        11.8.86
 Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
@@ -12,7 +12,7 @@ ExclusiveArch:  x86_64 ppc64le aarch64
 
 # Nvidia really provides the same package for ppc64le, aarch64 and x86_64 but
 # it's really the same package.
-Source0:        https://developer.download.nvidia.com/compute/cuda/redist/cuda_documentation/linux-x86_64/cuda_documentation-linux-x86_64-%{version}-archive.tar.xz
+Source0:        https://developer.download.nvidia.com/compute/cuda/redist/cuda_documentation/linux-x86_64/cuda_documentation-linux-x86_64-11.8.86-archive.tar.xz
 
 Source3:        %{name}.sh
 Source4:        %{name}.csh
