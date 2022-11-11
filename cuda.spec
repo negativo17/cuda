@@ -1,8 +1,8 @@
 %global debug_package %{nil}
-%global major_package_version 11-6
+%global major_package_version 11-8
 
 Name:           cuda
-Version:        11.7.91
+Version:        11.8.86
 Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
@@ -148,6 +148,9 @@ sed -i \
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
+* Fri Nov 11 2022 Simone Caronni <negativo17@gmail.com> - 1:11.8.86-1
+- Update to 11.8.86.
+
 * Sun Sep 04 2022 Simone Caronni <negativo17@gmail.com> - 1:11.7.91-1
 - Update to 11.7.91.
 
