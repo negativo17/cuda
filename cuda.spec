@@ -8,7 +8,7 @@ Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        CUDA Toolkit
 URL:            https://developer.nvidia.com/cuda-zone
-ExclusiveArch:  x86_64 ppc64le aarch64
+ExclusiveArch:  x86_64 aarch64
 
 # Nvidia really provides the same package for ppc64le, aarch64 and x86_64 but
 # it's really the same package.
@@ -150,6 +150,7 @@ sed -i \
 %changelog
 * Tue Mar 12 2024 Simone Caronni <negativo17@gmail.com> - 1:12.4.99-1
 - Update to 12.4.99.
+- Drop ppc64le.
 
 * Tue Nov 28 2023 Simone Caronni <negativo17@gmail.com> - 1:12.3.101-1
 - Update to 12.3.101.
