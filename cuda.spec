@@ -3,7 +3,7 @@
 
 Name:           cuda
 Version:        12.4.99
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        CUDA Toolkit
@@ -80,6 +80,7 @@ Metapackage that installs all runtime NVIDIA CUDA libraries.
 Summary:        Development files for %{name}
 Requires:       %{name}%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-libs%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:       %{name}-cccl-devel%{?_isa}
 Requires:       %{name}-cudart-devel%{?_isa}
 Requires:       %{name}-cupti-devel%{?_isa}
 Requires:       %{name}-nvcc%{?_isa}
@@ -148,6 +149,9 @@ sed -i \
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
+* Thu Mar 14 2024 Simone Caronni <negativo17@gmail.com> - 1:12.4.99-2
+- Require cuda-cccl-devel in cuda-devel (#31).
+
 * Tue Mar 12 2024 Simone Caronni <negativo17@gmail.com> - 1:12.4.99-1
 - Update to 12.4.99.
 - Drop ppc64le.
