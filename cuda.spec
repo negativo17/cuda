@@ -3,7 +3,7 @@
 
 Name:           cuda
 Version:        12.4.99
-Release:        2%{?dist}
+Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        CUDA Toolkit
@@ -149,6 +149,9 @@ sed -i \
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
+* Thu Jul 11 2024 Simone Caronni <negativo17@gmail.com> - 1:12.4.99-1
+- Update to 12.4.99.
+
 * Thu Mar 14 2024 Simone Caronni <negativo17@gmail.com> - 1:12.4.99-2
 - Require cuda-cccl-devel in cuda-devel (#31).
 
