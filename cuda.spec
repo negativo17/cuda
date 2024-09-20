@@ -1,5 +1,5 @@
 %global debug_package %{nil}
-%global major_package_version 12-5
+%global major_package_version 12-6
 
 Name:           cuda
 Version:        12.6.68
