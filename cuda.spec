@@ -2,7 +2,7 @@
 %global major_package_version 12-8
 
 Name:           cuda
-Version:        12.8.55
+Version:        13.0.39
 Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
@@ -150,6 +150,9 @@ sed -i \
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
+* Mon Aug 25 2025 Simone Caronni <negativo17@gmail.com> - 1:13.0.39-1
+- Update to 13.0.39.
+
 * Fri Feb 07 2025 Simone Caronni <negativo17@gmail.com> - 1:12.8.55-1
 - Update to 12.8.55.
 
