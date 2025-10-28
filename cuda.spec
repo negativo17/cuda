@@ -3,7 +3,7 @@
 
 Name:           cuda
 Version:        13.0.85
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        CUDA Toolkit
@@ -35,9 +35,6 @@ Requires:       %{name}-devel%{?_isa}
 Requires:       %{name}-gdb%{?_isa}
 Requires:       %{name}-memcheck%{?_isa}
 Requires:       %{name}-nvdisasm%{?_isa}
-%ifnarch aarch64
-Requires:       %{name}-nvprof%{?_isa}
-%endif
 Requires:       %{name}-nvtx%{?_isa}
 Requires:       %{name}-sanitizer%{?_isa}
 Requires:       expat >= 1.95
@@ -84,7 +81,6 @@ Requires:       %{name}-cccl-devel%{?_isa}
 Requires:       %{name}-cudart-devel%{?_isa}
 Requires:       %{name}-cupti-devel%{?_isa}
 Requires:       %{name}-nvcc%{?_isa}
-Requires:       %{name}-nvprof-devel%{?_isa}
 Requires:       %{name}-nvprune%{?_isa}
 Requires:       %{name}-nvml-devel%{?_isa}
 Requires:       %{name}-nvrtc-devel%{?_isa}
@@ -150,6 +146,9 @@ sed -i \
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
+* Mon Oct 27 2025 Eric Work <work.eric@gmail.com> - 1:13.0.85-2
+- Remove cuda-nvprof dependency.
+
 * Sun Oct 26 2025 Simone Caronni <negativo17@gmail.com> - 1:13.0.85-1
 - Update to 13.0.85.
 
