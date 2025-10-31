@@ -87,6 +87,7 @@ Requires:       %{name}-nvrtc-devel%{?_isa}
 Requires:       %{name}-nvtx-devel%{?_isa}
 Requires:       %{name}-cuobjdump%{?_isa}
 Requires:       %{name}-cuxxfilt-devel%{?_isa}
+Requires:       %{name}-profiler-devel%{?_isa}
 Requires:       %{name}-sandbox-devel%{?_isa}
 Requires:       libcublas-devel%{?_isa}
 Requires:       libcufft-devel%{?_isa}
@@ -114,7 +115,6 @@ This package provides the development files of the %{name} package.
 %install
 mkdir -p %{buildroot}%{_libdir}/pkgconfig/
 mkdir -p %{buildroot}%{_sysconfdir}/profile.d/
-mkdir -p %{buildroot}%{_includedir}/cuda/
 
 # Environment settings
 install -pm 644 %{SOURCE3} %{SOURCE4} %{buildroot}%{_sysconfdir}/profile.d
@@ -143,14 +143,13 @@ sed -i \
 # Empty metapackage
 
 %files devel
-%{_includedir}/cuda
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
 * Fri Oct 31 2025 Simone Caronni <negativo17@gmail.com> - 1:13.0.85-3
-- Drop no longer existing %%{_includedir}/cuda references, but create an empty
-  path, as cuda-samples is checking for that.
+- Drop no longer existing %%{_includedir}/cuda references.
 - Set also CUDA_PATH besides CUDA_ROOT.
+- Add cuda-profiler-devel to cuda-devel requirements.
 
 * Mon Oct 27 2025 Eric Work <work.eric@gmail.com> - 1:13.0.85-2
 - Remove cuda-nvprof dependency.
