@@ -55,6 +55,7 @@ Requires:       libcurand%{?_isa}
 Requires:       libcusolver%{?_isa}
 Requires:       libcusparse%{?_isa}
 Requires:       libnpp%{?_isa}
+Requires:       libnvjitlink%{?_isa}
 Requires:       libnvjpeg%{?_isa}
 Conflicts:      %{name}-driver-devel-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 Conflicts:      %{name}-libraries-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
@@ -96,6 +97,7 @@ Requires:       libcurand-devel%{?_isa}
 Requires:       libcusolver-devel%{?_isa}
 Requires:       libcusparse-devel%{?_isa}
 Requires:       libnpp-devel%{?_isa}
+Requires:       libnvjitlink-devel%{?_isa}
 Requires:       libnvjpeg-devel%{?_isa}
 Conflicts:      %{name}-headers-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-libraries-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
@@ -149,7 +151,8 @@ sed -i \
 * Fri Oct 31 2025 Simone Caronni <negativo17@gmail.com> - 1:13.0.85-3
 - Drop no longer existing %%{_includedir}/cuda references.
 - Set also CUDA_PATH besides CUDA_ROOT.
-- Add cuda-profiler-devel to cuda-devel requirements.
+- Add cuda-profiler-devel and libnvjitlink-devel to cuda-devel requirements.
+- Add libnvjitlink to cuda-libs requirements.
 
 * Mon Oct 27 2025 Eric Work <work.eric@gmail.com> - 1:13.0.85-2
 - Remove cuda-nvprof dependency.
