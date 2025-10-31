@@ -3,7 +3,7 @@
 
 Name:           cuda
 Version:        13.0.85
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        CUDA Toolkit
@@ -114,18 +114,18 @@ This package provides the development files of the %{name} package.
 %install
 mkdir -p %{buildroot}%{_libdir}/pkgconfig/
 mkdir -p %{buildroot}%{_sysconfdir}/profile.d/
+mkdir -p %{buildroot}%{_includedir}/cuda/
 
 # Environment settings
 install -pm 644 %{SOURCE3} %{SOURCE4} %{buildroot}%{_sysconfdir}/profile.d
 
 # pkg-config files
 install -pm 644 %{SOURCE21} %{buildroot}/%{_libdir}/pkgconfig
-
-# Set proper variables
 sed -i \
     -e 's|CUDA_VERSION|%{version}|g' \
+    -e 's|PREFIX|%{_prefix}|g' \
     -e 's|LIBDIR|%{_libdir}|g' \
-    -e 's|INCLUDE_DIR|%{_includedir}/cuda|g' \
+    -e 's|INCLUDE_DIR|%{_includedir}|g' \
     %{buildroot}/%{_libdir}/pkgconfig/*.pc
 
 %files
@@ -143,9 +143,15 @@ sed -i \
 # Empty metapackage
 
 %files devel
+%{_includedir}/cuda
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
+* Fri Oct 31 2025 Simone Caronni <negativo17@gmail.com> - 1:13.0.85-3
+- Drop no longer existing %%{_includedir}/cuda references, but create an empty
+  path, as cuda-samples is checking for that.
+- Set also CUDA_PATH besides CUDA_ROOT.
+
 * Mon Oct 27 2025 Eric Work <work.eric@gmail.com> - 1:13.0.85-2
 - Remove cuda-nvprof dependency.
 
