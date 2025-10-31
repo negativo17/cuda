@@ -3,7 +3,7 @@
 
 Name:           cuda
 Version:        13.0.85
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        CUDA Toolkit
@@ -128,7 +128,8 @@ sed -i \
     -e 's|PREFIX|%{_prefix}|g' \
     -e 's|LIBDIR|%{_libdir}|g' \
     -e 's|INCLUDE_DIR|%{_includedir}|g' \
-    %{buildroot}/%{_libdir}/pkgconfig/*.pc
+    %{buildroot}%{_libdir}/pkgconfig/*.pc \
+    %{buildroot}%{_sysconfdir}/profile.d/%{name}.*sh
 
 %files
 %license LICENSE
@@ -148,6 +149,9 @@ sed -i \
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
+* Fri Oct 31 2025 Simone Caronni <negativo17@gmail.com> - 1:13.0.85-4
+- Fix environment files.
+
 * Fri Oct 31 2025 Simone Caronni <negativo17@gmail.com> - 1:13.0.85-3
 - Drop no longer existing %%{_includedir}/cuda references.
 - Set also CUDA_PATH besides CUDA_ROOT.
