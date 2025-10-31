@@ -3,7 +3,7 @@
 
 Name:           cuda
 Version:        13.0.85
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        CUDA Toolkit
@@ -14,8 +14,6 @@ ExclusiveArch:  x86_64 aarch64
 # it's really the same package.
 Source0:        https://developer.download.nvidia.com/compute/cuda/redist/cuda_documentation/linux-x86_64/cuda_documentation-linux-x86_64-%{version}-archive.tar.xz
 
-Source3:        %{name}.sh
-Source4:        %{name}.csh
 Source21:       cuda.pc
 
 Requires:       %{name}-libs%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -116,10 +114,6 @@ This package provides the development files of the %{name} package.
 
 %install
 mkdir -p %{buildroot}%{_libdir}/pkgconfig/
-mkdir -p %{buildroot}%{_sysconfdir}/profile.d/
-
-# Environment settings
-install -pm 644 %{SOURCE3} %{SOURCE4} %{buildroot}%{_sysconfdir}/profile.d
 
 # pkg-config files
 install -pm 644 %{SOURCE21} %{buildroot}/%{_libdir}/pkgconfig
@@ -128,13 +122,11 @@ sed -i \
     -e 's|PREFIX|%{_prefix}|g' \
     -e 's|LIBDIR|%{_libdir}|g' \
     -e 's|INCLUDE_DIR|%{_includedir}|g' \
-    %{buildroot}%{_libdir}/pkgconfig/*.pc \
-    %{buildroot}%{_sysconfdir}/profile.d/%{name}.*sh
+    %{buildroot}%{_libdir}/pkgconfig/*.pc
 
 %files
 %license LICENSE
 %doc CUDA_Toolkit_Release_Notes.txt DOCS EULA.txt README tools
-%config(noreplace) %{_sysconfdir}/profile.d/%{name}.*sh
 
 %files cli-tools
 # Empty metapackage
@@ -149,6 +141,9 @@ sed -i \
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
+* Fri Oct 31 2025 Simone Caronni <negativo17@gmail.com> - 1:13.0.85-5
+- Drop profile.
+
 * Fri Oct 31 2025 Simone Caronni <negativo17@gmail.com> - 1:13.0.85-4
 - Fix environment files.
 
