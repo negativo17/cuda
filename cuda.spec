@@ -3,7 +3,7 @@
 
 Name:           cuda
 Version:        13.0.85
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        CUDA Toolkit
@@ -29,7 +29,7 @@ graphics processing unit (GPU).
 Summary:        Compute Unified Device Architecture command-line tools
 Requires:       %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-cupti%{?_isa}
-Requires:       %{name}-devel%{?_isa}
+Requires:       %{name}-devel
 Requires:       %{name}-gdb%{?_isa}
 Requires:       %{name}-memcheck%{?_isa}
 Requires:       %{name}-nvdisasm%{?_isa}
@@ -76,27 +76,27 @@ Metapackage that installs all runtime NVIDIA CUDA libraries.
 Summary:        Development files for %{name}
 Requires:       %{name}%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-libs%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:       %{name}-cccl-devel%{?_isa}
-Requires:       %{name}-cudart-devel%{?_isa}
-Requires:       %{name}-cupti-devel%{?_isa}
+Requires:       %{name}-cccl-devel
+Requires:       %{name}-cudart-devel
+Requires:       %{name}-cupti-devel
 Requires:       %{name}-nvcc%{?_isa}
 Requires:       %{name}-nvprune%{?_isa}
-Requires:       %{name}-nvml-devel%{?_isa}
-Requires:       %{name}-nvrtc-devel%{?_isa}
-Requires:       %{name}-nvtx-devel%{?_isa}
+Requires:       %{name}-nvml-devel
+Requires:       %{name}-nvrtc-devel
+Requires:       %{name}-nvtx-devel
 Requires:       %{name}-cuobjdump%{?_isa}
-Requires:       %{name}-cuxxfilt-devel%{?_isa}
-Requires:       %{name}-profiler-devel%{?_isa}
-Requires:       %{name}-sandbox-devel%{?_isa}
-Requires:       libcublas-devel%{?_isa}
-Requires:       libcufft-devel%{?_isa}
-Requires:       libcufile-devel%{?_isa}
-Requires:       libcurand-devel%{?_isa}
-Requires:       libcusolver-devel%{?_isa}
-Requires:       libcusparse-devel%{?_isa}
-Requires:       libnpp-devel%{?_isa}
-Requires:       libnvjitlink-devel%{?_isa}
-Requires:       libnvjpeg-devel%{?_isa}
+Requires:       %{name}-cuxxfilt-devel
+Requires:       %{name}-profiler-devel
+Requires:       %{name}-sandbox-devel
+Requires:       libcublas-devel
+Requires:       libcufft-devel
+Requires:       libcufile-devel
+Requires:       libcurand-devel
+Requires:       libcusolver-devel
+Requires:       libcusparse-devel
+Requires:       libnpp-devel
+Requires:       libnvjitlink-devel
+Requires:       libnvjpeg-devel
 Conflicts:      %{name}-headers-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-libraries-dev-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
 Conflicts:      %{name}-misc-headers-%{major_package_version} < %{?epoch:%{epoch}:}%{version}
@@ -141,6 +141,9 @@ sed -i \
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
+* Sun Dec 07 2025 Simone Caronni <negativo17@gmail.com> - 1:13.0.85-6
+- Do not required ISAed devel packages.
+
 * Fri Oct 31 2025 Simone Caronni <negativo17@gmail.com> - 1:13.0.85-5
 - Drop profile.
 
