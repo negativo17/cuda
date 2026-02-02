@@ -2,8 +2,8 @@
 %global major_package_version 13-0
 
 Name:           cuda
-Version:        13.0.85
-Release:        6%{?dist}
+Version:        13.1.115
+Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        CUDA Toolkit
@@ -141,6 +141,9 @@ sed -i \
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
+* Mon Feb 02 2026 Simone Caronni <negativo17@gmail.com> - 1:13.1.115-1
+- Update to 13.1.115.
+
 * Sun Dec 07 2025 Simone Caronni <negativo17@gmail.com> - 1:13.0.85-6
 - Do not required ISAed devel packages.
 
