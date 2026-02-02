@@ -3,7 +3,7 @@
 
 Name:           cuda
 Version:        13.1.115
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        CUDA Toolkit
@@ -35,6 +35,7 @@ Requires:       %{name}-memcheck%{?_isa}
 Requires:       %{name}-nvdisasm%{?_isa}
 Requires:       %{name}-nvtx%{?_isa}
 Requires:       %{name}-sanitizer%{?_isa}
+Requires:       %{name}-tileiras%{?_isa}
 Requires:       expat >= 1.95
 Conflicts:      %{name}-command-line-tools-%{major_package_version} < %{?epoch:%{epoch}:}%{version}-%{release}
 
@@ -141,6 +142,9 @@ sed -i \
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
+* Mon Feb 02 2026 Simone Caronni <negativo17@gmail.com> - 1:13.1.115-2
+- Require cuda-tileiras.
+
 * Mon Feb 02 2026 Simone Caronni <negativo17@gmail.com> - 1:13.1.115-1
 - Update to 13.1.115.
 
