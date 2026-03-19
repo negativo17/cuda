@@ -2,8 +2,8 @@
 %global major_package_version 13-1
 
 Name:           cuda
-Version:        13.1.115
-Release:        2%{?dist}
+Version:        13.2.51
+Release:        1%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        CUDA Toolkit
@@ -142,6 +142,9 @@ sed -i \
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
+* Thu Mar 19 2026 Simone Caronni <negativo17@gmail.com> - 1:13.2.51-1
+- Update to 13.2.51.
+
 * Mon Feb 02 2026 Simone Caronni <negativo17@gmail.com> - 1:13.1.115-2
 - Require cuda-tileiras.
 
