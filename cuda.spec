@@ -3,7 +3,7 @@
 
 Name:           cuda
 Version:        13.3.73
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        NVIDIA Compute Unified Device Architecture Toolkit
 Epoch:          1
 License:        CUDA Toolkit
@@ -75,9 +75,9 @@ Metapackage that installs all runtime NVIDIA CUDA libraries.
 
 %package devel
 Summary:        Development files for %{name}
+Requires:       cccl-devel
 Requires:       %{name}%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires:       %{name}-libs%{_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:       %{name}-cccl-devel
 Requires:       %{name}-cudart-devel
 Requires:       %{name}-cupti-devel
 Requires:       %{name}-nvcc%{?_isa}
@@ -142,6 +142,9 @@ sed -i \
 %{_libdir}/pkgconfig/cuda.pc
 
 %changelog
+* Tue Sep 29 2026 Simone Caronni <negativo17@gmail.com> - 1:13.3.73-2
+- Require cccl-devel, not cuda-cccl-devel.
+
 * Wed Jul 22 2026 Simone Caronni <negativo17@gmail.com> - 1:13.3.73-1
 - Update to 13.3.73.
 
